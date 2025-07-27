@@ -84,9 +84,29 @@ class Order:
         self.buyer_id = buyer_id
         self.items = items  # List of {product_id, quantity, price}
         self.total_amount = total_amount
-        self.status = 'created'  # created, paid, delivered
+        # New workflow: pending → receipt_pending → admin_review → approved → delivered
+        self.status = 'pending'  # pending, receipt_pending, admin_review, approved, delivered
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
+        self.seller_receipt_approved = False
+        self.admin_approved = False
+        self.buyer_delivery_confirmed = False
+        
+    def update_status(self, new_status):
+        """Update order status and timestamp"""
+        self.status = new_status
+        self.updated_at = datetime.now()
+        
+    def get_status_display(self):
+        """Get human-readable status with emoji"""
+        status_map = {
+            'pending': '⏳ Payment Pending',
+            'receipt_pending': '📄 Awaiting Seller Receipt Approval',
+            'admin_review': '👑 Admin Review Required',
+            'approved': '✅ Approved - Ready for Delivery',
+            'delivered': '🚚 Delivered & Confirmed'
+        }
+        return status_map.get(self.status, self.status.title())
         
     def to_dict(self):
         return {
@@ -95,6 +115,10 @@ class Order:
             'items': self.items,
             'total_amount': self.total_amount,
             'status': self.status,
+            'status_display': self.get_status_display(),
+            'seller_receipt_approved': self.seller_receipt_approved,
+            'admin_approved': self.admin_approved,
+            'buyer_delivery_confirmed': self.buyer_delivery_confirmed,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }
@@ -206,6 +230,64 @@ def add_order_comment(order_id, user_id, message, user_role):
 
 def get_order_comments(order_id):
     return order_comments.get(order_id, [])
+
+def update_order_status(order_id, new_status, user_role=None):
+    """Update order status with workflow validation"""
+    order = orders.get(order_id)
+    if not order:
+        return False
+    
+    # Workflow validation
+    valid_transitions = {
+        'pending': ['receipt_pending'],  # Buyer pays
+        'receipt_pending': ['admin_review'],  # Seller approves receipt
+        'admin_review': ['approved'],  # Admin approves
+        'approved': ['delivered']  # Buyer confirms delivery
+    }
+    
+    if new_status not in valid_transitions.get(order.status, []):
+        logger.warning(f"Invalid status transition from {order.status} to {new_status}")
+        return False
+    
+    # Update order based on workflow step
+    if new_status == 'receipt_pending':
+        order.update_status(new_status)
+        logger.info(f"Order {order_id} moved to receipt pending (buyer paid)")
+    elif new_status == 'admin_review':
+        order.seller_receipt_approved = True
+        order.update_status(new_status)
+        logger.info(f"Order {order_id} approved by seller, moved to admin review")
+    elif new_status == 'approved':
+        order.admin_approved = True
+        order.update_status(new_status)
+        logger.info(f"Order {order_id} approved by admin")
+    elif new_status == 'delivered':
+        order.buyer_delivery_confirmed = True
+        order.update_status(new_status)
+        logger.info(f"Order {order_id} confirmed as delivered by buyer")
+    
+    return True
+
+def get_orders_for_admin():
+    """Get all orders for admin dashboard"""
+    return list(orders.values())
+
+def get_orders_pending_seller_approval(seller_id):
+    """Get orders awaiting seller receipt approval"""
+    seller_orders = []
+    for order in orders.values():
+        if order.status == 'receipt_pending':
+            # Check if this seller has products in the order
+            for item in order.items:
+                product = products.get(item['product_id'])
+                if product and product.seller_id == seller_id:
+                    seller_orders.append(order)
+                    break
+    return seller_orders
+
+def get_orders_pending_admin_approval():
+    """Get orders awaiting admin approval"""
+    return [order for order in orders.values() if order.status == 'admin_review']
 
 # Initialize with default users for testing
 def init_data():

@@ -8,7 +8,8 @@ from models import (users, products, orders, cart_items, order_comments as order
                     create_user, get_user_by_email, get_user_by_id, create_product, 
                     get_products_by_category, get_products_by_seller, add_to_cart, 
                     get_cart_items, create_order, get_orders_by_buyer, get_orders_by_seller,
-                    add_order_comment, get_order_comments)
+                    add_order_comment, get_order_comments, update_order_status,
+                    get_orders_for_admin, get_orders_pending_seller_approval, get_orders_pending_admin_approval)
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +39,11 @@ def role_required(roles):
         decorated_function.__name__ = f.__name__
         return decorated_function
     return decorator
+
+# Role-specific decorators for convenience
+admin_required = role_required(['admin'])
+seller_required = role_required(['seller'])
+buyer_required = role_required(['buyer'])
 
 @app.route('/')
 def index():
@@ -425,6 +431,51 @@ def order_comments(order_id):
     
     buyer = get_user_by_id(order.buyer_id)
     return render_template('order_comments.html', order=order, comments=comments, buyer=buyer)
+
+# New workflow routes
+@app.route('/checkout_payment/<order_id>', methods=['POST'])
+@buyer_required
+def checkout_payment(order_id):
+    """Handle buyer payment and move order to receipt_pending"""
+    if update_order_status(order_id, 'receipt_pending'):
+        flash('🎉 Payment successful! Your order is now awaiting seller receipt approval.', 'success')
+        logger.info(f"💳 Payment completed for order {order_id}")
+    else:
+        flash('❌ Payment failed. Please try again.', 'danger')
+    return redirect(url_for('buyer_dashboard'))
+
+@app.route('/seller_approve_receipt/<order_id>', methods=['POST'])
+@seller_required
+def seller_approve_receipt(order_id):
+    """Seller approves receipt and sends to admin"""
+    if update_order_status(order_id, 'admin_review'):
+        flash('✅ Receipt approved! Order sent to admin for final authorization.', 'success')
+        logger.info(f"📄 Seller approved receipt for order {order_id}")
+    else:
+        flash('❌ Unable to approve receipt. Please try again.', 'danger')
+    return redirect(url_for('seller_dashboard'))
+
+@app.route('/admin_approve_order/<order_id>', methods=['POST'])
+@admin_required
+def admin_approve_order(order_id):
+    """Admin approves order for delivery"""
+    if update_order_status(order_id, 'approved'):
+        flash('👑 Order approved! Ready for delivery.', 'success')
+        logger.info(f"👑 Admin approved order {order_id}")
+    else:
+        flash('❌ Unable to approve order. Please try again.', 'danger')
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/buyer_confirm_delivery/<order_id>', methods=['POST'])
+@buyer_required
+def buyer_confirm_delivery(order_id):
+    """Buyer confirms delivery completion"""
+    if update_order_status(order_id, 'delivered'):
+        flash('🚚 Delivery confirmed! Thank you for your purchase.', 'success')
+        logger.info(f"🚚 Buyer confirmed delivery for order {order_id}")
+    else:
+        flash('❌ Unable to confirm delivery. Please try again.', 'danger')
+    return redirect(url_for('buyer_dashboard'))
 
 # Debug route to check system status
 @app.route('/debug/status')

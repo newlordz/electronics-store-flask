@@ -74,17 +74,29 @@
                                         <td>{{ order.items|length }} items</td>
                                         <td class="price">${{ "%.2f"|format(order.total_amount) }}</td>
                                         <td>
-                                            <span class="badge bg-{{ 'primary' if order.status == 'created' else 'warning' if order.status == 'paid' else 'success' }}">
-                                                {{ order.status.title() }}
+                                            <span class="order-status status-{{ order.status.replace('_', '-') }}">
+                                                {{ order.get_status_display() }}
                                             </span>
                                         </td>
                                         <td>
-                                            <a href="{{ url_for('receipt', order_id=order.id) }}" class="btn btn-sm btn-outline-primary me-1">
-                                                <i class="fas fa-receipt"></i>
-                                            </a>
-                                            <a href="{{ url_for('order_comments', order_id=order.id) }}" class="btn btn-sm btn-outline-info">
-                                                <i class="fas fa-comments"></i>
-                                            </a>
+                                            <div class="btn-group" role="group">
+                                                {% if order.status == 'pending' %}
+                                                    <form method="POST" action="{{ url_for('checkout_payment', order_id=order.id) }}" class="d-inline">
+                                                        <button type="submit" class="btn btn-success btn-sm animate__animated animate__pulse animate__infinite">
+                                                            <i class="fas fa-credit-card me-1"></i>Pay Now
+                                                        </button>
+                                                    </form>
+                                                {% elif order.status == 'approved' %}
+                                                    <form method="POST" action="{{ url_for('buyer_confirm_delivery', order_id=order.id) }}" class="d-inline">
+                                                        <button type="submit" class="btn btn-primary btn-sm animate__animated animate__bounceIn">
+                                                            <i class="fas fa-check-circle me-1"></i>Confirm Delivery
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                                <a href="{{ url_for('order_comments', order_id=order.id) }}" class="btn btn-outline-info btn-sm">
+                                                    <i class="fas fa-comments me-1"></i>Chat
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                     {% endfor %}

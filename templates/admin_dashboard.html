@@ -153,8 +153,70 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">
-                        <i class="fas fa-shopping-cart me-2"></i>Orders
+                        <i class="fas fa-shopping-cart me-2"></i>Orders Awaiting Admin Approval
                     </h5>
+                </div>
+                <div class="card-body">
+                    {% if orders %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Customer</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}
+                                    <tr>
+                                        <td><code>{{ order.id[:8] }}...</code></td>
+                                        <td>
+                                            {% set buyer = users_dict[order.buyer_id] %}
+                                            {{ buyer.username if buyer else 'Unknown' }}
+                                        </td>
+                                        <td class="price">${{ "%.2f"|format(order.total_amount) }}</td>
+                                        <td>
+                                            <span class="order-status status-{{ order.status.replace('_', '-') }}">
+                                                {{ order.get_status_display() }}
+                                            </span>
+                                        </td>
+                                        <td>{{ order.created_at.strftime('%Y-%m-%d') }}</td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                {% if order.status == 'admin_review' %}
+                                                    <form method="POST" action="{{ url_for('admin_approve_order', order_id=order.id) }}" class="d-inline">
+                                                        <button type="submit" class="btn btn-success btn-sm animate__animated animate__pulse animate__infinite">
+                                                            <i class="fas fa-crown me-1"></i>Approve Order
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                                <a href="{{ url_for('order_comments', order_id=order.id) }}" class="btn btn-outline-info btn-sm">
+                                                    <i class="fas fa-comments me-1"></i>View Chat
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-shopping-cart fa-5x text-muted mb-3"></i>
+                            <h4>No Orders Awaiting Approval</h4>
+                            <p class="text-muted">Orders requiring admin approval will appear here.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
                 </div>
                 <div class="card-body">
                     {% if orders %}

@@ -6,12 +6,12 @@
     --orange-burst: #ff6b35;
     --pink-glow: #ff1493;
     --yellow-spark: #ffeb3b;
-    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    --gradient-warning: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-    --gradient-danger: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-    --gradient-rainbow: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff9ff3, #54a0ff);
+    --gradient-primary: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    --gradient-secondary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    --gradient-warning: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --gradient-danger: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+    --gradient-rainbow: linear-gradient(45deg, #1e3c72, #2a5298, #11998e, #38ef7d, #667eea, #764ba2, #fc466b);
     --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.3);
     --shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.1);
 }
@@ -22,7 +22,7 @@
 
 body {
     font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #1e3c72 100%);
     background-size: 400% 400%;
     animation: gradientShift 15s ease infinite;
     min-height: 100vh;

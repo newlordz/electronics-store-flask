@@ -302,7 +302,7 @@ def seller_dashboard():
     seller_products = get_products_by_seller(session['user_id'])
     seller_orders = get_orders_by_seller(session['user_id'])
     logger.debug(f"📊 Seller dashboard loaded for user {session['user_id']}, {len(seller_products)} products, {len(seller_orders)} orders")
-    return render_template('seller_dashboard.html', products=seller_products, orders=seller_orders)
+    return render_template('seller_dashboard.html', products=seller_products, orders=seller_orders, get_user_by_id=get_user_by_id)
 
 @app.route('/admin_dashboard')
 @role_required(['admin'])
@@ -311,7 +311,7 @@ def admin_dashboard():
     all_users = list(users.values())
     all_products = list(products.values())
     logger.debug(f"📊 Admin dashboard loaded: {len(all_users)} users, {len(all_products)} products, {len(all_orders)} orders")
-    return render_template('admin_dashboard.html', orders=all_orders, users=all_users, products=all_products, users_dict=users)
+    return render_template('admin_dashboard.html', orders=get_orders_pending_admin_approval(), users=all_users, products=all_products, users_dict=users)
 
 @app.route('/add_product', methods=['GET', 'POST'])
 @role_required(['seller'])

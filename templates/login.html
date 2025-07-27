@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Electronics Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-sign-in-alt fa-3x text-primary mb-3"></i>
+                        <h2>Login</h2>
+                        <p class="text-muted">Sign in to your account</p>
+                    </div>
+
+                    <form method="POST" class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                            <div class="invalid-feedback">
+                                Please enter a valid email address.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                            <div class="invalid-feedback">
+                                Please enter your password.
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login
+                        </button>
+                    </form>
+
+                    <hr>
+                    
+                    <div class="text-center">
+                        <p class="mb-0">Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+                    </div>
+                    
+                    <!-- Test Accounts Info -->
+                    <div class="mt-4">
+                        <h6 class="text-muted">Test Accounts:</h6>
+                        <small class="text-muted">
+                            <strong>Admin:</strong> admin@electronics.com / admin123<br>
+                            <strong>Seller:</strong> seller@test.com / seller123<br>
+                            <strong>Buyer:</strong> buyer@test.com / buyer123
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

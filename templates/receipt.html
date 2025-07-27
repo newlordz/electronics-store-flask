@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Order Receipt - Electronics Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <div class="text-center">
+                        <i class="fas fa-check-circle fa-3x mb-2"></i>
+                        <h2>Order Confirmed!</h2>
+                        <p class="mb-0">Thank you for your purchase</p>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Order Details -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Order Information</h5>
+                            <p class="mb-1"><strong>Order ID:</strong> {{ order.id }}</p>
+                            <p class="mb-1"><strong>Date:</strong> {{ order.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                            <p class="mb-1"><strong>Status:</strong> 
+                                <span class="badge bg-{{ 'primary' if order.status == 'created' else 'warning' if order.status == 'paid' else 'success' }}">
+                                    {{ order.status.title() }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Customer Information</h5>
+                            <p class="mb-1"><strong>Name:</strong> {{ buyer.username if buyer else 'N/A' }}</p>
+                            <p class="mb-1"><strong>Email:</strong> {{ buyer.email if buyer else 'N/A' }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Order Items -->
+                    <h5>Order Items</h5>
+                    <div class="table-responsive mb-4">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items %}
+                                <tr>
+                                    <td>{{ item.product_name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>${{ "%.2f"|format(item.price) }}</td>
+                                    <td>${{ "%.2f"|format(item.total) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="3">Total Amount:</th>
+                                    <th class="price">${{ "%.2f"|format(order.total_amount) }}</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="text-center">
+                        <a href="{{ url_for('buyer_dashboard') }}" class="btn btn-primary me-2">
+                            <i class="fas fa-tachometer-alt me-1"></i>View Dashboard
+                        </a>
+                        <a href="{{ url_for('products_list') }}" class="btn btn-outline-primary me-2">
+                            <i class="fas fa-shopping-bag me-1"></i>Continue Shopping
+                        </a>
+                        <a href="{{ url_for('order_comments', order_id=order.id) }}" class="btn btn-outline-info">
+                            <i class="fas fa-comments me-1"></i>Order Chat
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

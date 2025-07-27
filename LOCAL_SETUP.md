@@ -1,0 +1,7 @@
+# Local Setup Guide for Electronics Store
+
+## Quick Start
+
+### 1. Install Dependencies
+```bash
+pip install Flask==3.1.1 Flask-Session==0.8.0 Werkzeug==3.1.3 email-validator==2.2.0 gunicorn==23.0.0

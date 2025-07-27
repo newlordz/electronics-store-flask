@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Electronics Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="hero-section text-white p-5 mb-5">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-4 fw-bold">Welcome to Electronics Store</h1>
+                <p class="lead">Discover the latest in technology with our premium collection of electronics. From laptops to smartphones, we have everything you need.</p>
+                <a href="{{ url_for('products_list') }}" class="btn btn-light btn-lg">
+                    <i class="fas fa-shopping-bag me-2"></i>Shop Now
+                </a>
+            </div>
+            <div class="col-md-6 text-center">
+                <i class="fas fa-laptop display-1"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-4">Shop by Category</h2>
+            <div class="d-flex flex-wrap justify-content-center">
+                {% for category in categories %}
+                <a href="{{ url_for('products_list', category=category) }}" class="category-pill">
+                    {{ category }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Products -->
+    {% if products %}
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center mb-4">Featured Products</h2>
+        </div>
+    </div>
+    
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="card h-100">
+            {% if product.image_filename %}
+                <img src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" 
+                     class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+            {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-image fa-3x text-muted"></i>
+                </div>
+            {% endif %}
+            
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.description[:100] }}{% if product.description|length > 100 %}...{% endif %}</p>
+                <div class="mt-auto">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="price">${{ "%.2f"|format(product.price) }}</span>
+                        <span class="badge bg-secondary">{{ product.category }}</span>
+                    </div>
+                    <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-primary w-100 mt-2">
+                        <i class="fas fa-eye me-1"></i>View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-box-open fa-5x text-muted mb-3"></i>
+        <h3>No products available</h3>
+        <p class="text-muted">Check back later for new products!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

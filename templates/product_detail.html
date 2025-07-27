@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - Electronics Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-6">
+            {% if product.image_filename %}
+                <img src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" 
+                     class="img-fluid rounded" alt="{{ product.name }}">
+            {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center rounded" style="height: 400px;">
+                    <i class="fas fa-image fa-5x text-muted"></i>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('products_list') }}">Products</a></li>
+                    <li class="breadcrumb-item active">{{ product.name }}</li>
+                </ol>
+            </nav>
+            
+            <h1 class="mb-3">{{ product.name }}</h1>
+            
+            <div class="mb-3">
+                <span class="badge bg-secondary fs-6">{{ product.category }}</span>
+            </div>
+            
+            <div class="mb-4">
+                <span class="price fs-2">${{ "%.2f"|format(product.price) }}</span>
+            </div>
+            
+            <div class="mb-4">
+                <h5>Description</h5>
+                <p class="text-muted">{{ product.description }}</p>
+            </div>
+            
+            <div class="mb-4">
+                <h6>Seller Information</h6>
+                <p class="text-muted">
+                    <i class="fas fa-user me-1"></i>{{ seller.username if seller else 'Unknown Seller' }}
+                </p>
+            </div>
+            
+            {% if session.user_role == 'buyer' %}
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('add_to_cart_route', product_id=product.id) }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                    </a>
+                    <a href="{{ url_for('products_list') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Continue Shopping
+                    </a>
+                </div>
+            {% elif session.user_role == 'seller' %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>You are viewing this as a seller.
+                </div>
+            {% elif session.user_role == 'admin' %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-shield-alt me-2"></i>You are viewing this as an admin.
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-sign-in-alt me-2"></i>
+                    <a href="{{ url_for('login') }}">Login</a> as a buyer to add this item to your cart.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

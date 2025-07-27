@@ -477,6 +477,171 @@ def buyer_confirm_delivery(order_id):
         flash('❌ Unable to confirm delivery. Please try again.', 'danger')
     return redirect(url_for('buyer_dashboard'))
 
+# Cart routes
+@app.route('/add_to_cart/<product_id>', methods=['GET', 'POST'])
+@login_required
+def add_to_cart_route(product_id):
+    if session.get('user_role') != 'buyer':
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'Only buyers can add products to cart.'})
+        flash('Only buyers can add products to cart.', 'danger')
+        return redirect(url_for('products_list'))
+    
+    user_id = session['user_id']
+    product = products.get(product_id)
+    
+    if not product or not product.is_active:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'Product not found or unavailable.'})
+        flash('Product not found or unavailable.', 'danger')
+        return redirect(url_for('products_list'))
+    
+    # Add or update cart item
+    cart_key = (user_id, product_id)
+    if cart_key in cart_items:
+        cart_items[cart_key].quantity += 1
+        logger.debug(f"Updated cart item quantity for user {user_id}, product {product_id}")
+    else:
+        cart_items[cart_key] = CartItem(user_id, product_id, 1)
+        logger.debug(f"Added new cart item for user {user_id}, product {product_id}")
+    
+    logger.info(f"🛒 Added product {product.name} to cart for user {user_id}")
+    
+    # Check if it's an AJAX request
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        cart_count = sum(item.quantity for key, item in cart_items.items() if key[0] == user_id)
+        return jsonify({
+            'success': True,
+            'message': f'Added {product.name} to cart',
+            'cart_count': cart_count
+        })
+    
+    flash(f'Added {product.name} to your cart!', 'success')
+    return redirect(request.referrer or url_for('products_list'))
+
+@app.route('/view_cart')
+@role_required(['buyer'])
+def view_cart():
+    user_id = session['user_id']
+    user_cart_items = [(key, item) for key, item in cart_items.items() if key[0] == user_id]
+    
+    cart_with_products = []
+    total = 0
+    
+    for key, item in user_cart_items:
+        product = products.get(item.product_id)
+        if product and product.is_active:
+            item_total = product.price * item.quantity
+            cart_with_products.append({
+                'item': item,
+                'product': product,
+                'total': item_total
+            })
+            total += item_total
+    
+    return render_template('cart.html', cart_items=cart_with_products, total=total)
+
+@app.route('/update_cart_quantity/<product_id>', methods=['POST'])
+@role_required(['buyer'])
+def update_cart_quantity(product_id):
+    try:
+        data = request.get_json()
+        new_quantity = int(data.get('quantity', 1))
+        
+        if new_quantity < 1:
+            return jsonify({'success': False, 'message': 'Quantity must be at least 1'})
+        
+        user_id = session['user_id']
+        cart_key = (user_id, product_id)
+        
+        if cart_key in cart_items:
+            cart_items[cart_key].quantity = new_quantity
+            
+            # Calculate new totals
+            product = products.get(product_id)
+            if product:
+                item_total = product.price * new_quantity
+                
+                # Calculate cart total
+                cart_total = sum(
+                    products[item.product_id].price * item.quantity 
+                    for key, item in cart_items.items() 
+                    if key[0] == user_id and products.get(item.product_id)
+                )
+                
+                return jsonify({
+                    'success': True,
+                    'item_total': item_total,
+                    'cart_total': cart_total
+                })
+        
+        return jsonify({'success': False, 'message': 'Item not found in cart'})
+    except Exception as e:
+        logger.error(f"Error updating cart quantity: {e}")
+        return jsonify({'success': False, 'message': 'Server error'})
+
+@app.route('/remove_from_cart/<product_id>')
+@role_required(['buyer'])
+def remove_from_cart(product_id):
+    user_id = session['user_id']
+    cart_key = (user_id, product_id)
+    
+    if cart_key in cart_items:
+        product = products.get(product_id)
+        product_name = product.name if product else 'Product'
+        del cart_items[cart_key]
+        flash(f'Removed {product_name} from your cart.', 'success')
+    else:
+        flash('Item not found in cart.', 'danger')
+    
+    return redirect(url_for('view_cart'))
+
+# Product management routes
+@app.route('/toggle_product/<product_id>')
+@role_required(['seller', 'admin'])
+def toggle_product(product_id):
+    product = products.get(product_id)
+    if not product:
+        flash('Product not found.', 'danger')
+        return redirect(request.referrer or url_for('index'))
+    
+    user = get_user_by_id(session['user_id'])
+    # Check if seller owns the product or user is admin
+    if user.role == 'seller' and product.seller_id != session['user_id']:
+        flash('You can only manage your own products.', 'danger')
+        return redirect(url_for('seller_dashboard'))
+    
+    # Toggle product active status
+    product.is_active = not product.is_active
+    status = 'activated' if product.is_active else 'deactivated'
+    
+    flash(f'Product "{product.name}" has been {status}.', 'success')
+    logger.info(f"🔄 Product {product.name} {status} by {user.email}")
+    
+    return redirect(request.referrer or url_for('seller_dashboard'))
+
+@app.route('/delete_product/<product_id>')
+@role_required(['seller', 'admin'])
+def delete_product(product_id):
+    product = products.get(product_id)
+    if not product:
+        flash('Product not found.', 'danger')
+        return redirect(request.referrer or url_for('index'))
+    
+    user = get_user_by_id(session['user_id'])
+    # Check if seller owns the product or user is admin
+    if user.role == 'seller' and product.seller_id != session['user_id']:
+        flash('You can only delete your own products.', 'danger')
+        return redirect(url_for('seller_dashboard'))
+    
+    product_name = product.name
+    del products[product_id]
+    
+    flash(f'Product "{product_name}" has been deleted.', 'success')
+    logger.info(f"🗑️ Product {product_name} deleted by {user.email}")
+    
+    return redirect(request.referrer or (url_for('seller_dashboard') if user.role == 'seller' else url_for('admin_dashboard')))
+
 # Debug route to check system status
 @app.route('/debug/status')
 def debug_status():

@@ -5,163 +5,171 @@
 {% block content %}
 <div class="container py-5">
     <div class="row">
-        <div class="col-12">
-            <h1 class="mb-4">
-                <i class="fas fa-credit-card me-2"></i>Checkout
-            </h1>
-        </div>
-    </div>
-
-    <form method="POST" class="needs-validation" novalidate>
-        <div class="row">
-            <div class="col-lg-8">
-                <!-- Billing Information -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Billing Information</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="firstName" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="firstName" name="firstName" required>
-                                <div class="invalid-feedback">Please enter your first name.</div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="lastName" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="lastName" name="lastName" required>
-                                <div class="invalid-feedback">Please enter your last name.</div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                            <div class="invalid-feedback">Please enter a valid email address.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="address" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="address" name="address" required>
-                            <div class="invalid-feedback">Please enter your address.</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="city" class="form-label">City</label>
-                                <input type="text" class="form-control" id="city" name="city" required>
-                                <div class="invalid-feedback">Please enter your city.</div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="state" class="form-label">State</label>
-                                <input type="text" class="form-control" id="state" name="state" required>
-                                <div class="invalid-feedback">Please enter your state.</div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="zip" class="form-label">ZIP Code</label>
-                                <input type="text" class="form-control" id="zip" name="zip" required>
-                                <div class="invalid-feedback">Please enter your ZIP code.</div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-credit-card me-2"></i>Payment Information</h5>
                 </div>
-
-                <!-- Payment Information -->
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Payment Information</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label class="form-label">Payment Method</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="paymentMethod" id="credit" value="credit" checked>
-                                <label class="form-check-label" for="credit">
-                                    <i class="fas fa-credit-card me-1"></i>Credit Card
-                                </label>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label">First Name *</label>
+                                <input type="text" class="form-control" id="firstName" name="first_name" required>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="paymentMethod" id="paypal" value="paypal">
-                                <label class="form-check-label" for="paypal">
-                                    <i class="fab fa-paypal me-1"></i>PayPal
-                                </label>
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label">Last Name *</label>
+                                <input type="text" class="form-control" id="lastName" name="last_name" required>
                             </div>
                         </div>
-
-                        <div id="creditCardFields">
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address *</label>
+                            <input type="text" class="form-control" id="address" name="address" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="city" class="form-label">City *</label>
+                                <input type="text" class="form-control" id="city" name="city" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="state" class="form-label">State/Province *</label>
+                                <input type="text" class="form-control" id="state" name="state" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="zip" class="form-label">ZIP Code *</label>
+                                <input type="text" class="form-control" id="zip" name="zip" required>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <h6 class="mb-3">Payment Method</h6>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="creditCard" value="credit_card" checked>
+                                    <label class="form-check-label" for="creditCard">
+                                        <i class="fas fa-credit-card me-2"></i>Credit Card
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="paypal" value="paypal">
+                                    <label class="form-check-label" for="paypal">
+                                        <i class="fab fa-paypal me-2"></i>PayPal
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="momo" value="momo">
+                                    <label class="form-check-label" for="momo">
+                                        <i class="fas fa-mobile-alt me-2"></i>Mobile Money
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="creditCardFields" class="payment-fields">
                             <div class="mb-3">
                                 <label for="cardNumber" class="form-label">Card Number</label>
-                                <input type="text" class="form-control" id="cardNumber" name="cardNumber" 
-                                       placeholder="1234 5678 9012 3456" required>
-                                <div class="invalid-feedback">Please enter a valid card number.</div>
+                                <input type="text" class="form-control" id="cardNumber" name="card_number" placeholder="1234 5678 9012 3456">
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="expiryDate" class="form-label">Expiry Date</label>
-                                    <input type="text" class="form-control" id="expiryDate" name="expiryDate" 
-                                           placeholder="MM/YY" required>
-                                    <div class="invalid-feedback">Please enter the expiry date.</div>
+                                    <input type="text" class="form-control" id="expiryDate" name="expiry_date" placeholder="MM/YY">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="cvv" class="form-label">CVV</label>
-                                    <input type="text" class="form-control" id="cvv" name="cvv" 
-                                           placeholder="123" required>
-                                    <div class="invalid-feedback">Please enter the CVV.</div>
+                                    <input type="text" class="form-control" id="cvv" name="cvv" placeholder="123">
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-                <!-- Order Summary -->
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Order Summary</h5>
-                    </div>
-                    <div class="card-body">
-                        {% for cart_item in cart_items %}
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <div>
-                                <small class="fw-bold">{{ cart_item.product.name }}</small><br>
-                                <small class="text-muted">Qty: {{ cart_item.item.quantity }}</small>
+                        
+                        <div id="momoFields" class="payment-fields" style="display: none;">
+                            <div class="mb-3">
+                                <label for="momoNumber" class="form-label">Mobile Money Number</label>
+                                <input type="tel" class="form-control" id="momoNumber" name="momo_number" placeholder="+233 XX XXX XXXX">
                             </div>
-                            <small>${{ "%.2f"|format(cart_item.total) }}</small>
-                        </div>
-                        {% endfor %}
-                        
-                        <hr>
-                        
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Subtotal:</span>
-                            <span>${{ "%.2f"|format(total) }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Shipping:</span>
-                            <span>Free</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Tax:</span>
-                            <span>$0.00</span>
+                            <div class="mb-3">
+                                <label for="momoProvider" class="form-label">Provider</label>
+                                <select class="form-select" id="momoProvider" name="momo_provider">
+                                    <option value="">Select Provider</option>
+                                    <option value="mtn">MTN Mobile Money</option>
+                                    <option value="vodafone">Vodafone Cash</option>
+                                    <option value="airtel">AirtelTigo Money</option>
+                                </select>
+                            </div>
                         </div>
                         
-                        <hr>
-                        
-                        <div class="d-flex justify-content-between mb-3">
-                            <strong>Total:</strong>
-                            <strong class="price">${{ "%.2f"|format(total) }}</strong>
-                        </div>
-                        
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success btn-lg">
-                                <i class="fas fa-lock me-2"></i>Place Order
-                            </button>
-                            <a href="{{ url_for('cart') }}" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left me-1"></i>Back to Cart
-                            </a>
-                        </div>
-                    </div>
+                        <button type="submit" class="btn btn-success btn-lg w-100 animate__animated animate__pulse animate__infinite">
+                            <i class="fas fa-lock me-2"></i>Complete Order - ${{ "%.2f"|format(total) }}
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
-    </form>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    {% for item in cart_items %}
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <h6 class="mb-0">{{ item.product.name }}</h6>
+                                <small class="text-muted">Qty: {{ item.item.quantity }}</small>
+                            </div>
+                            <span class="price">${{ "%.2f"|format(item.total) }}</span>
+                        </div>
+                        <hr>
+                    {% endfor %}
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Total</h5>
+                        <h5 class="mb-0 price">${{ "%.2f"|format(total) }}</h5>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-3">
+                <a href="{{ url_for('view_cart') }}" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Cart
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentMethods = document.querySelectorAll('input[name="payment_method"]');
+    const creditCardFields = document.getElementById('creditCardFields');
+    const momoFields = document.getElementById('momoFields');
+    
+    paymentMethods.forEach(method => {
+        method.addEventListener('change', function() {
+            creditCardFields.style.display = 'none';
+            momoFields.style.display = 'none';
+            
+            if (this.value === 'credit_card') {
+                creditCardFields.style.display = 'block';
+            } else if (this.value === 'momo') {
+                momoFields.style.display = 'block';
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

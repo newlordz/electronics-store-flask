@@ -48,9 +48,11 @@
             
             {% if session.user_role == 'buyer' %}
                 <div class="d-grid gap-2">
-                    <a href="{{ url_for('add_to_cart_route', product_id=product.id) }}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-cart-plus me-2"></i>Add to Cart
-                    </a>
+                    <form method="POST" action="{{ url_for('add_to_cart_route', product_id=product.id) }}" class="ajax-cart-form">
+                        <button type="submit" class="btn btn-primary btn-lg add-to-cart-btn" data-product-id="{{ product.id }}">
+                            <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                        </button>
+                    </form>
                     <a href="{{ url_for('products_list') }}" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left me-1"></i>Continue Shopping
                     </a>

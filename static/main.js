@@ -1,391 +1,305 @@
-// Main JavaScript file for Electronics Store
-
-// Document ready function
+// Enhanced JavaScript for Electronics Store
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize tooltips
-    initializeTooltips();
     
-    // Initialize cart functionality
-    initializeCart();
+    // Initialize all components
+    initializeAjaxCart();
+    initializePaymentMethods();
+    initializeProductActions();
+    initializeAnimations();
     
-    // Initialize form validation
-    initializeFormValidation();
-    
-    // Initialize search functionality
-    initializeSearch();
-    
-    // Initialize product filters
-    initializeFilters();
-});
-
-// Initialize Bootstrap tooltips
-function initializeTooltips() {
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-}
-
-// Cart functionality
-function initializeCart() {
-    // Update cart count in navbar
-    updateCartCount();
-    
-    // Add to cart buttons
-    const addToCartButtons = document.querySelectorAll('.add-to-cart');
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const productId = this.dataset.productId;
-            addToCart(productId);
-        });
-    });
-    
-    // Remove from cart buttons
-    const removeFromCartButtons = document.querySelectorAll('.remove-from-cart');
-    removeFromCartButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const itemId = this.dataset.itemId;
-            removeFromCart(itemId);
-        });
-    });
-}
-
-// Add product to cart
-function addToCart(productId) {
-    // Show loading state
-    showLoading();
-    
-    // In a real application, this would be an AJAX call
-    // For now, we'll redirect to the add_to_cart route
-    window.location.href = `/add_to_cart/${productId}`;
-}
-
-// Remove item from cart
-function removeFromCart(itemId) {
-    if (confirm('Are you sure you want to remove this item from your cart?')) {
-        window.location.href = `/remove_from_cart/${itemId}`;
-    }
-}
-
-// Update cart count in navbar
-function updateCartCount() {
-    // This would normally fetch the cart count via AJAX
-    // For now, we'll use server-side rendering
-}
-
-// Form validation
-function initializeFormValidation() {
-    const forms = document.querySelectorAll('.needs-validation');
-    
-    forms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            if (!form.checkValidity()) {
+    // AJAX Cart functionality
+    function initializeAjaxCart() {
+        const cartForms = document.querySelectorAll('.ajax-cart-form');
+        
+        cartForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                e.stopPropagation();
-            }
-            form.classList.add('was-validated');
+                
+                const button = this.querySelector('.add-to-cart-btn');
+                const productId = button.dataset.productId;
+                const originalText = button.innerHTML;
+                
+                // Show loading state
+                button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Adding...';
+                button.disabled = true;
+                
+                // Send AJAX request
+                fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success feedback
+                        button.innerHTML = '<i class="fas fa-check me-1"></i>Added!';
+                        button.className = 'btn btn-success add-to-cart-btn';
+                        
+                        // Update cart count if element exists
+                        const cartBadge = document.querySelector('.cart-count');
+                        if (cartBadge) {
+                            cartBadge.textContent = data.cart_count;
+                        }
+                        
+                        // Show toast notification
+                        showToast('Product added to cart!', 'success');
+                        
+                        // Reset button after 2 seconds
+                        setTimeout(() => {
+                            button.innerHTML = originalText;
+                            button.className = 'btn btn-primary add-to-cart-btn';
+                            button.disabled = false;
+                        }, 2000);
+                    } else {
+                        // Show error
+                        showToast(data.message || 'Error adding to cart', 'error');
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Error adding to cart', 'error');
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                });
+            });
         });
-    });
-    
-    // Custom validation for checkout form
-    const checkoutForm = document.getElementById('checkout-form');
-    if (checkoutForm) {
-        validateCheckoutForm(checkoutForm);
     }
-}
-
-// Checkout form validation
-function validateCheckoutForm(form) {
-    const creditCardFields = document.getElementById('creditCardFields');
-    const paymentMethods = document.querySelectorAll('input[name="paymentMethod"]');
     
-    paymentMethods.forEach(method => {
-        method.addEventListener('change', function() {
-            if (this.value === 'credit') {
-                creditCardFields.style.display = 'block';
-                setFieldsRequired(creditCardFields, true);
-            } else {
-                creditCardFields.style.display = 'none';
-                setFieldsRequired(creditCardFields, false);
-            }
-        });
-    });
-}
-
-// Set required attribute for fields
-function setFieldsRequired(container, required) {
-    const inputs = container.querySelectorAll('input');
-    inputs.forEach(input => {
-        if (required) {
-            input.setAttribute('required', '');
-        } else {
-            input.removeAttribute('required');
+    // Payment method toggle
+    function initializePaymentMethods() {
+        const paymentMethods = document.querySelectorAll('input[name="payment_method"]');
+        const creditCardFields = document.getElementById('creditCardFields');
+        const momoFields = document.getElementById('momoFields');
+        
+        if (paymentMethods.length > 0) {
+            paymentMethods.forEach(method => {
+                method.addEventListener('change', function() {
+                    // Hide all fields
+                    if (creditCardFields) creditCardFields.style.display = 'none';
+                    if (momoFields) momoFields.style.display = 'none';
+                    
+                    // Show relevant fields
+                    if (this.value === 'credit_card' && creditCardFields) {
+                        creditCardFields.style.display = 'block';
+                    } else if (this.value === 'momo' && momoFields) {
+                        momoFields.style.display = 'block';
+                    }
+                });
+            });
         }
-    });
-}
-
-// Search functionality
-function initializeSearch() {
-    const searchInput = document.getElementById('search');
-    const searchButton = document.getElementById('search-button');
+    }
     
-    if (searchInput) {
-        // Auto-submit search on Enter
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
+    // Product management actions
+    function initializeProductActions() {
+        // Product delete buttons
+        const deleteButtons = document.querySelectorAll('.delete-product-btn');
+        deleteButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
                 e.preventDefault();
-                performSearch();
-            }
+                const productName = this.dataset.productName;
+                if (confirm(`Are you sure you want to delete "${productName}"? This action cannot be undone.`)) {
+                    window.location.href = this.href;
+                }
+            });
+        });
+        
+        // Product toggle buttons
+        const toggleButtons = document.querySelectorAll('.toggle-product-btn');
+        toggleButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const action = this.dataset.action;
+                const productName = this.dataset.productName;
+                if (confirm(`Are you sure you want to ${action} "${productName}"?`)) {
+                    window.location.href = this.href;
+                }
+            });
         });
     }
     
-    if (searchButton) {
-        searchButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            performSearch();
+    // Cart quantity controls
+    function initializeCartQuantity() {
+        const quantityButtons = document.querySelectorAll('.quantity-btn');
+        
+        quantityButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const action = this.dataset.action;
+                const productId = this.dataset.productId;
+                const quantitySpan = document.querySelector(`#quantity-${productId}`);
+                let currentQuantity = parseInt(quantitySpan.textContent);
+                
+                if (action === 'increase') {
+                    currentQuantity++;
+                } else if (action === 'decrease' && currentQuantity > 1) {
+                    currentQuantity--;
+                } else if (action === 'decrease' && currentQuantity === 1) {
+                    if (confirm('Remove this item from cart?')) {
+                        window.location.href = `/remove_from_cart/${productId}`;
+                        return;
+                    } else {
+                        return;
+                    }
+                }
+                
+                // Update quantity via AJAX
+                fetch(`/update_cart_quantity/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ quantity: currentQuantity })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        quantitySpan.textContent = currentQuantity;
+                        // Update item total and cart total
+                        document.querySelector(`#item-total-${productId}`).textContent = `$${data.item_total.toFixed(2)}`;
+                        document.querySelector('#cart-total').textContent = `$${data.cart_total.toFixed(2)}`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating quantity:', error);
+                    showToast('Error updating quantity', 'error');
+                });
+            });
         });
     }
-}
-
-// Perform search
-function performSearch() {
-    const searchInput = document.getElementById('search');
-    const categorySelect = document.getElementById('category');
     
-    let searchParams = new URLSearchParams();
-    
-    if (searchInput && searchInput.value.trim()) {
-        searchParams.set('search', searchInput.value.trim());
+    // Initialize cart quantity controls if on cart page
+    if (document.querySelector('.quantity-btn')) {
+        initializeCartQuantity();
     }
     
-    if (categorySelect && categorySelect.value) {
-        searchParams.set('category', categorySelect.value);
-    }
-    
-    window.location.href = `/products?${searchParams.toString()}`;
-}
-
-// Filter functionality
-function initializeFilters() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const filter = this.dataset.filter;
-            const value = this.dataset.value;
-            applyFilter(filter, value);
+    // Animation enhancements
+    function initializeAnimations() {
+        // Stagger animations for product cards
+        const productCards = document.querySelectorAll('.card');
+        productCards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.classList.add('animate__animated', 'animate__fadeInUp');
         });
-    });
-}
-
-// Apply filter
-function applyFilter(filter, value) {
-    let searchParams = new URLSearchParams(window.location.search);
-    
-    if (value) {
-        searchParams.set(filter, value);
-    } else {
-        searchParams.delete(filter);
+        
+        // Hover effects for buttons
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.classList.add('animate__animated', 'animate__pulse');
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.classList.remove('animate__animated', 'animate__pulse');
+            });
+        });
     }
     
-    window.location.href = `${window.location.pathname}?${searchParams.toString()}`;
-}
-
-// Show loading indicator
-function showLoading() {
-    const loadingIndicator = document.createElement('div');
-    loadingIndicator.className = 'loading-overlay';
-    loadingIndicator.innerHTML = `
-        <div class="loading-spinner">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+    // Toast notification system
+    function showToast(message, type = 'info') {
+        // Create toast container if it doesn't exist
+        let toastContainer = document.querySelector('.toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+            toastContainer.style.zIndex = '9999';
+            document.body.appendChild(toastContainer);
+        }
+        
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} border-0`;
+        toast.setAttribute('role', 'alert');
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-        </div>
-    `;
-    document.body.appendChild(loadingIndicator);
-}
-
-// Hide loading indicator
-function hideLoading() {
-    const loadingIndicator = document.querySelector('.loading-overlay');
-    if (loadingIndicator) {
-        loadingIndicator.remove();
-    }
-}
-
-// Format currency
-function formatCurrency(amount) {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD'
-    }).format(amount);
-}
-
-// Show notification
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `alert alert-${type} alert-dismissible fade show notification`;
-    notification.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    
-    const container = document.querySelector('.container');
-    container.insertBefore(notification, container.firstChild);
-    
-    // Auto-hide after 5 seconds
-    setTimeout(() => {
-        if (notification) {
-            notification.remove();
-        }
-    }, 5000);
-}
-
-// Confirm action
-function confirmAction(message, callback) {
-    if (confirm(message)) {
-        callback();
-    }
-}
-
-// Image preview for file uploads
-function previewImage(input, previewId) {
-    const file = input.files[0];
-    const preview = document.getElementById(previewId);
-    
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-            preview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-    }
-}
-
-// Quantity controls
-function updateQuantity(itemId, change) {
-    const quantityInput = document.querySelector(`input[data-item-id="${itemId}"]`);
-    if (quantityInput) {
-        let currentQuantity = parseInt(quantityInput.value);
-        let newQuantity = currentQuantity + change;
+        `;
         
-        if (newQuantity < 1) {
-            newQuantity = 1;
-        }
+        toastContainer.appendChild(toast);
         
-        quantityInput.value = newQuantity;
-        updateItemTotal(itemId, newQuantity);
-    }
-}
-
-// Update item total
-function updateItemTotal(itemId, quantity) {
-    const priceElement = document.querySelector(`[data-price-for="${itemId}"]`);
-    const totalElement = document.querySelector(`[data-total-for="${itemId}"]`);
-    
-    if (priceElement && totalElement) {
-        const price = parseFloat(priceElement.dataset.price);
-        const total = price * quantity;
-        totalElement.textContent = formatCurrency(total);
+        // Initialize and show toast
+        const bsToast = new bootstrap.Toast(toast, {
+            autohide: true,
+            delay: 3000
+        });
+        bsToast.show();
         
-        updateCartTotal();
-    }
-}
-
-// Update cart total
-function updateCartTotal() {
-    const totalElements = document.querySelectorAll('[data-total-for]');
-    let cartTotal = 0;
-    
-    totalElements.forEach(element => {
-        const total = parseFloat(element.textContent.replace('$', ''));
-        cartTotal += total;
-    });
-    
-    const cartTotalElement = document.getElementById('cart-total');
-    if (cartTotalElement) {
-        cartTotalElement.textContent = formatCurrency(cartTotal);
-    }
-}
-
-// Smooth scroll to element
-function scrollToElement(elementId) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.scrollIntoView({
-            behavior: 'smooth'
+        // Remove toast element after it's hidden
+        toast.addEventListener('hidden.bs.toast', function() {
+            this.remove();
         });
     }
-}
-
-// Copy to clipboard
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(function() {
-        showNotification('Copied to clipboard!', 'success');
-    }).catch(function(err) {
-        console.error('Could not copy text: ', err);
-        showNotification('Failed to copy to clipboard', 'danger');
-    });
-}
-
-// Debounce function for search
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// Initialize lazy loading for images
-function initializeLazyLoading() {
-    const images = document.querySelectorAll('img[data-src]');
     
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.classList.remove('lazy');
-                imageObserver.unobserve(img);
-            }
+    // Order workflow status updates
+    function initializeOrderWorkflow() {
+        const statusButtons = document.querySelectorAll('.order-status-btn');
+        
+        statusButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const action = this.dataset.action;
+                const orderId = this.dataset.orderId;
+                
+                let confirmMessage = '';
+                switch(action) {
+                    case 'seller_approve':
+                        confirmMessage = 'Approve this order receipt?';
+                        break;
+                    case 'admin_approve':
+                        confirmMessage = 'Authorize this order for delivery?';
+                        break;
+                    case 'buyer_confirm':
+                        confirmMessage = 'Confirm that you have received this order?';
+                        break;
+                    default:
+                        confirmMessage = 'Proceed with this action?';
+                }
+                
+                if (confirm(confirmMessage)) {
+                    // Show loading state
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+                    this.disabled = true;
+                    
+                    // Redirect to action
+                    window.location.href = this.href;
+                }
+            });
         });
-    });
+    }
     
-    images.forEach(img => imageObserver.observe(img));
-}
-
-// Handle form submission with loading state
-function handleFormSubmission(form) {
-    form.addEventListener('submit', function() {
-        const submitButton = form.querySelector('button[type="submit"]');
-        if (submitButton) {
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<span class="loading"></span> Processing...';
-        }
-    });
-}
-
-// Initialize all form submissions
-document.addEventListener('DOMContentLoaded', function() {
-    const forms = document.querySelectorAll('form');
-    forms.forEach(handleFormSubmission);
+    // Initialize order workflow if elements exist
+    if (document.querySelector('.order-status-btn')) {
+        initializeOrderWorkflow();
+    }
 });
 
-// Error handling for images
-document.addEventListener('DOMContentLoaded', function() {
-    const images = document.querySelectorAll('img');
-    images.forEach(img => {
-        img.addEventListener('error', function() {
-            this.src = '/static/images/placeholder.svg';
-            this.alt = 'Image not available';
-        });
-    });
-});
+// Global utility functions
+window.ElectronicsStore = {
+    // Show loading state for any button
+    showButtonLoading: function(button, loadingText = 'Loading...') {
+        button.dataset.originalText = button.innerHTML;
+        button.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${loadingText}`;
+        button.disabled = true;
+    },
+    
+    // Reset button to original state
+    resetButton: function(button) {
+        if (button.dataset.originalText) {
+            button.innerHTML = button.dataset.originalText;
+            button.disabled = false;
+        }
+    }
+};

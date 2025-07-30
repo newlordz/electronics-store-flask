@@ -2,7 +2,7 @@
 
 A modern, feature-rich e-commerce platform built with Flask for selling electronics and accessories.
 
-<!-- Deployment Trigger: Updated for Railway deployment with image fixes -->
+<!-- Deployment Trigger: Force data reset and image fixes -->
 
 ## Features
 

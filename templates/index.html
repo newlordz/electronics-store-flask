@@ -24,7 +24,7 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="hero-image-container animate__animated animate__fadeInRight">
-                        <img src="/static/uploads/electronics-store-ad.jpg" 
+                        <img src="/uploads/electronics-store-ad.jpg" 
                              alt="ELECTRONICS STORES - Premium Electronics Collection" 
                              class="hero-image"
                              style="border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
@@ -150,10 +150,10 @@
                     <div class="slide-content">
                         <div class="product-card-flash">
                             <div class="product-image-container">
-                                <img src="/static/uploads/{{ product.image_filename }}" 
+                                <img src="/uploads/{{ product.image_filename }}" 
                                      alt="{{ product.name }}" 
                                      class="product-image"
-                                     onerror="this.src='/static/uploads/placeholder.jpg';">
+                                     onerror="this.src='/uploads/placeholder.jpg';">
                                 <div class="flash-badge">
                                     <i class="fas fa-fire"></i> FLASH SALE
                                 </div>
@@ -226,10 +226,10 @@
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="product-card">
                     <div class="product-image-container">
-                        <img src="/static/uploads/{{ product.image_filename }}" 
+                        <img src="/uploads/{{ product.image_filename }}" 
                              alt="{{ product.name }}" 
                              class="product-image"
-                             onerror="this.src='/static/uploads/placeholder.jpg';">
+                             onerror="this.src='/uploads/placeholder.jpg';">
                         {% if product.is_promotional %}
                         <div class="promotional-badge">
                             <i class="fas fa-fire"></i> SALE

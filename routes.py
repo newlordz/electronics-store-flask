@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, flash, session, jsonify
+from flask import render_template, request, redirect, url_for, flash, session, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 import os
@@ -1844,3 +1844,8 @@ def wishlist():
     user = get_user_by_id(session['user_id'])
     wishlist_products = [products[pid] for pid in user.wishlist if pid in products]
     return render_template('wishlist.html', products=wishlist_products)
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    """Serve uploaded files (product images)."""
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)

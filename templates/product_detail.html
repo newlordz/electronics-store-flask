@@ -593,7 +593,7 @@
                     <div class="row g-0">
                         <div class="col-lg-6">
                             <div class="product-image-container">
-                            <img src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" 
+                            <img src="/uploads/{{ product.image_filename }}" 
                                      class="product-image" 
                                  alt="{{ product.name }}"
                                      onerror="this.onerror=null;this.src='{{ url_for('static', filename='uploads/placeholder.jpg') }}';">

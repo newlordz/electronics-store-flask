@@ -28,7 +28,7 @@
                                 <div class="card-body p-3">
                                     <div class="text-center mb-3">
                                         {% if product.image_filename %}
-                                            <img src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" 
+                                            <img src="/uploads/{{ product.image_filename }}" 
                                                  class="img-fluid product-image" alt="{{ product.name }}">
                                         {% else %}
                                             <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
@@ -90,7 +90,7 @@
                                 <div class="card-body p-3">
                                     <div class="text-center mb-3">
                                         {% if product.image_filename %}
-                                            <img src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" 
+                                            <img src="/uploads/{{ product.image_filename }}" 
                                                  class="img-fluid product-image" alt="{{ product.name }}">
                                         {% else %}
                                             <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">

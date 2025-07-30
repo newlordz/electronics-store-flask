@@ -17,7 +17,7 @@
             <div class="col">
                 <div class="card product-card h-100 animate__animated animate__fadeInUp">
                     <div class="position-relative">
-                        <img src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" 
+                                                    <img src="/uploads/{{ product.image_filename }}" 
                              class="card-img-top" 
                              alt="{{ product.name }}"
                              onerror="this.onerror=null;this.src='{{ url_for('static', filename='uploads/placeholder.jpg') }}';">

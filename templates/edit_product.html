@@ -76,7 +76,7 @@
                             <label for="image" class="form-label">Product Image</label>
                             {% if product.image_filename %}
                             <div class="mb-2">
-                                <img src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" 
+                                <img src="/uploads/{{ product.image_filename }}" 
                                      alt="{{ product.name }}" class="img-thumbnail" style="max-width: 200px;">
                                 <small class="form-text text-muted">Current image</small>
                             </div>

@@ -1,0 +1,5 @@
+[33ma487a05[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Fix remaining static file references in templates for Railway deployment
+[33m502d3e9[m Fix static file serving for product images on Railway deployment
+[33mc10ba57[m Prepare for Railway deployment - Add deployment files and configuration
+[33m70177e6[m Saved your changes before starting work
+[33mb538e5f[m Improve user login security and update the appearance of the home webpage

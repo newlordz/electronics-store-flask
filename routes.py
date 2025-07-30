@@ -1848,4 +1848,19 @@ def wishlist():
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     """Serve uploaded files (product images)."""
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    try:
+        upload_folder = app.config['UPLOAD_FOLDER']
+        logger.info(f"Attempting to serve file: {filename} from {upload_folder}")
+        
+        # Check if file exists
+        file_path = os.path.join(upload_folder, filename)
+        if not os.path.exists(file_path):
+            logger.warning(f"File not found: {file_path}")
+            # Return a default placeholder image
+            return send_from_directory('static/uploads', 'placeholder.jpg')
+        
+        return send_from_directory(upload_folder, filename)
+    except Exception as e:
+        logger.error(f"Error serving file {filename}: {e}")
+        # Return a default placeholder image
+        return send_from_directory('static/uploads', 'placeholder.jpg')

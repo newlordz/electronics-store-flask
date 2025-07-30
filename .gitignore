@@ -68,4 +68,19 @@ static/uploads/*.avi
 
 # Keep placeholder and essential images
 !static/uploads/placeholder.jpg
-!static/uploads/electronics-store-ad.jpg 
+!static/uploads/electronics-store-ad.jpg
+!static/uploads/gaming-laptop.jpg
+!static/uploads/smartphone-5g.jpg
+!static/uploads/noise-cancelling-headphones.jpg
+!static/uploads/mechanical-keyboard.jpg
+!static/uploads/gaming-mouse.jpg
+!static/uploads/tablet-pro.jpg
+!static/uploads/bluetooth-speaker.jpg
+!static/uploads/wireless-earbuds.jpg
+!static/uploads/usb-c-hub.jpg
+!static/uploads/laptop-stand.jpg
+!static/uploads/external-ssd.jpg
+!static/uploads/gaming-chair.jpg
+!static/uploads/graphics-card.jpg
+!static/uploads/smart-speaker.jpg
+!static/uploads/cable-organizer.jpg 

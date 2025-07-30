@@ -27,17 +27,58 @@
                         <div class="mb-3">
                             <label for="role" class="form-label">Account Type</label>
                             <select class="form-select" id="role" name="role" required>
-                                <option value="buyer">Buyer</option>
-                                <option value="seller">Seller</option>
-                                <!-- Admin registration typically handled internally or by specific admin invite -->
+                                <option value="buyer">Customer (Buy Products)</option>
+                                <option value="seller">Vendor (Sell Products)</option>
                             </select>
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Choose "Customer" to buy products or "Vendor" to sell products on our platform.
+                            </small>
                         </div>
                         <div class="d-grid gap-2 mb-3">
-                            <button type="submit" class="btn btn-primary btn-lg animate__animated animate__pulse animate__infinite">
+                            <button type="submit" class="btn btn-primary btn-lg" id="registerBtn">
                                 <i class="fas fa-user-plus me-2"></i>Register
                             </button>
                         </div>
                     </form>
+                    
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const form = document.querySelector('form');
+                        const registerBtn = document.getElementById('registerBtn');
+                        
+                        form.addEventListener('submit', function(e) {
+                            const username = document.getElementById('username').value.trim();
+                            const email = document.getElementById('email').value.trim();
+                            const password = document.getElementById('password').value;
+                            
+                            // Basic validation
+                            if (username.length < 3) {
+                                e.preventDefault();
+                                alert('Username must be at least 3 characters long.');
+                                return;
+                            }
+                            
+                            if (password.length < 6) {
+                                e.preventDefault();
+                                alert('Password must be at least 6 characters long.');
+                                return;
+                            }
+                            
+                            // Email validation
+                            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            if (!emailRegex.test(email)) {
+                                e.preventDefault();
+                                alert('Please enter a valid email address.');
+                                return;
+                            }
+                            
+                            // Disable button and show loading
+                            registerBtn.disabled = true;
+                            registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Account...';
+                        });
+                    });
+                    </script>
                     <div class="text-center mt-3">
                         <p class="text-muted">Already have an account? <a href="{{ url_for('login') }}" class="text-primary fw-bold">Login here</a></p>
                     </div>

@@ -232,10 +232,43 @@ def register():
         password = request.form.get('password', '')
         role = request.form.get('role', 'customer')
         
-        logger.debug(f"📝 Registration attempt for: {username} ({email}) as {role}")
+        # Map template roles to system roles
+        role_mapping = {
+            'buyer': 'customer',
+            'seller': 'vendor'
+        }
+        system_role = role_mapping.get(role, role)
         
-        if not username or not email or not password:
-            flash('Please fill in all fields.', 'danger')
+        logger.debug(f"📝 Registration attempt for: {username} ({email}) as {system_role}")
+        
+        # Validate input fields
+        if not username:
+            flash('Username is required.', 'danger')
+            return render_template('register.html')
+        
+        if not email:
+            flash('Email is required.', 'danger')
+            return render_template('register.html')
+        
+        if not password:
+            flash('Password is required.', 'danger')
+            return render_template('register.html')
+        
+        # Validate username length
+        if len(username) < 3:
+            flash('Username must be at least 3 characters long.', 'danger')
+            return render_template('register.html')
+        
+        # Validate password length
+        if len(password) < 6:
+            flash('Password must be at least 6 characters long.', 'danger')
+            return render_template('register.html')
+        
+        # Validate email format
+        import re
+        email_regex = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+        if not re.match(email_regex, email):
+            flash('Please enter a valid email address.', 'danger')
             return render_template('register.html')
         
         # Check if user already exists
@@ -244,12 +277,12 @@ def register():
             return render_template('register.html')
         
         # Create new user
-        user = create_user(username, email, password, role)
+        user = create_user(username, email, password, system_role)
         if user:
             session['user_id'] = user.id
             session['user_role'] = user.role
             flash('Registration successful! Welcome to Electronics Store!', 'success')
-            logger.info(f"🎉 New user registered: {username} ({email}) as {role}")
+            logger.info(f"🎉 New user registered: {username} ({email}) as {system_role}")
             
             # Redirect based on role
             if user.role == 'admin':

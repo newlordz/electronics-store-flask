@@ -87,7 +87,7 @@ class Chatbot:
         self.reports: Dict[str, Report] = {}
         self.keywords = {
             'order_status': ['order', 'track', 'shipping', 'delivery', 'status'],
-            'product_help': ['product', 'item', 'specs', 'features', 'compare'],
+            'product_help': ['product', 'item', 'specs', 'features', 'compare', 'laptop', 'computer', 'phone', 'smartphone', 'mobile', 'keyboard', 'mouse', 'headphones', 'headset', 'earbuds', 'tablet', 'ipad', 'accessories', 'cable', 'charger', 'speaker', 'monitor', 'screen', 'gaming', 'wireless', 'bluetooth', 'usb', 'camera', 'webcam', 'microphone', 'printer', 'scanner', 'router', 'modem', 'storage', 'ssd', 'hard drive', 'memory', 'ram', 'processor', 'cpu', 'graphics', 'gpu', 'motherboard', 'power supply', 'case', 'cooling', 'fan'],
             'return_refund': ['return', 'refund', 'exchange', 'damaged', 'wrong'],
             'payment_help': ['payment', 'card', 'pay', 'billing', 'charge'],
             'technical_support': ['bug', 'error', 'problem', 'issue', 'broken', 'not working'],
@@ -107,9 +107,9 @@ class Chatbot:
                 "Let me help you track your order. Do you have your order ID handy?"
             ],
             'product_help': [
-                "I'd be happy to help you with product information! What specific product are you interested in?",
-                "I can provide detailed product specs and help you compare items. Which product would you like to know more about?",
-                "Let me help you find the perfect product! What are you looking for?"
+                "Great! I can help you find information about that product. You can browse our full selection at /products or tell me more about what you're looking for!",
+                "Perfect! I'd be happy to help you with product information. You can view all our products at /products or ask me about specific features you need!",
+                "Excellent choice! I can help you find the perfect product. Check out our products at /products or let me know what specific features you're interested in!"
             ],
             'return_refund': [
                 "I understand you need help with a return or refund. Can you tell me more about the situation?",
@@ -173,6 +173,11 @@ class Chatbot:
         if any(word in message_lower for word in ['bye', 'goodbye', 'thanks', 'thank you', 'exit']):
             return self._get_random_response('goodbye')
         
+        # Check for specific product queries first
+        product_response = self._handle_product_query(message_lower)
+        if product_response:
+            return product_response
+        
         # Check for order status
         if any(word in message_lower for word in self.keywords['order_status']):
             return self._get_random_response('order_status')
@@ -205,6 +210,47 @@ class Chatbot:
         
         # Fallback response
         return self._get_random_response('fallback')
+    
+    def _handle_product_query(self, message: str) -> str:
+        """Handle specific product queries with intelligent responses"""
+        # Define product categories and their responses
+        product_categories = {
+            'laptop': {
+                'keywords': ['laptop', 'computer', 'notebook'],
+                'response': "Great choice! We have a wide selection of laptops including gaming laptops, business laptops, and everyday use computers. Check out our Laptops category at /products or tell me what you'll be using it for!"
+            },
+            'keyboard': {
+                'keywords': ['keyboard', 'mechanical', 'wireless keyboard'],
+                'response': "Excellent! We offer mechanical keyboards, wireless keyboards, and gaming keyboards. Our Keyboards category has options for every need. Visit /products or let me know if you prefer mechanical or wireless!"
+            },
+            'mouse': {
+                'keywords': ['mouse', 'gaming mouse', 'wireless mouse'],
+                'response': "Perfect! We have gaming mice, wireless mice, and ergonomic office mice. Check out our Mice category at /products. Are you looking for gaming performance or office comfort?"
+            },
+            'headphones': {
+                'keywords': ['headphones', 'headset', 'earbuds', 'wireless headphones'],
+                'response': "Awesome! We offer noise-cancelling headphones, gaming headsets, and wireless earbuds. Browse our Headphones category at /products. Do you need them for gaming, music, or calls?"
+            },
+            'phone': {
+                'keywords': ['phone', 'smartphone', 'mobile', 'iphone', 'android'],
+                'response': "Great! We have the latest smartphones with cutting-edge features. Check out our Smartphones category at /products. Are you looking for a specific brand or features?"
+            },
+            'tablet': {
+                'keywords': ['tablet', 'ipad', 'android tablet'],
+                'response': "Excellent choice! We offer iPads, Android tablets, and 2-in-1 convertible devices. Visit our Tablets category at /products. What size and features are you looking for?"
+            },
+            'accessories': {
+                'keywords': ['accessories', 'cable', 'charger', 'usb', 'hub'],
+                'response': "Perfect! We have cables, adapters, cases, and other essential accessories. Browse our Accessories category at /products. What specific accessory do you need?"
+            }
+        }
+        
+        # Check if message contains any product category keywords
+        for category, info in product_categories.items():
+            if any(keyword in message for keyword in info['keywords']):
+                return info['response']
+        
+        return None
     
     def _get_random_response(self, response_type: str) -> str:
         """Get a random response from the specified category"""

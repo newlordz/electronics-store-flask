@@ -165,41 +165,53 @@ class Chatbot:
         """Analyze message content and return appropriate response"""
         message_lower = message.lower().strip()
         
+        # Debug logging
+        logger.debug(f"Analyzing message: '{message}' -> '{message_lower}'")
+        
         # Check for greetings
         if any(word in message_lower for word in ['hello', 'hi', 'hey', 'greetings']):
+            logger.debug("Matched greeting")
             return self._get_random_response('greeting')
         
         # Check for goodbyes
         if any(word in message_lower for word in ['bye', 'goodbye', 'thanks', 'thank you', 'exit']):
+            logger.debug("Matched goodbye")
             return self._get_random_response('goodbye')
         
         # Check for specific product queries first
         product_response = self._handle_product_query(message_lower)
         if product_response:
+            logger.debug("Matched specific product query")
             return product_response
         
         # Check for order status
         if any(word in message_lower for word in self.keywords['order_status']):
+            logger.debug("Matched order status")
             return self._get_random_response('order_status')
         
         # Check for product help
         if any(word in message_lower for word in self.keywords['product_help']):
+            logger.debug("Matched product help")
             return self._get_random_response('product_help')
         
         # Check for return/refund
         if any(word in message_lower for word in self.keywords['return_refund']):
+            logger.debug("Matched return/refund")
             return self._get_random_response('return_refund')
         
         # Check for payment help
         if any(word in message_lower for word in self.keywords['payment_help']):
+            logger.debug("Matched payment help")
             return self._get_random_response('payment_help')
         
         # Check for technical support or reporting
         if any(word in message_lower for word in self.keywords['technical_support'] + self.keywords['report_issue']):
+            logger.debug("Matched technical support")
             return self._get_random_response('report_issue')
         
         # Check for general help
         if any(word in message_lower for word in self.keywords['general_help']):
+            logger.debug("Matched general help")
             return ("I can help you with:\n"
                    "• Order tracking and status\n"
                    "• Product information and comparisons\n"
@@ -209,6 +221,7 @@ class Chatbot:
                    "What would you like assistance with?")
         
         # Fallback response
+        logger.debug("No matches found, using fallback")
         return self._get_random_response('fallback')
     
     def _handle_product_query(self, message: str) -> str:
@@ -247,9 +260,12 @@ class Chatbot:
         
         # Check if message contains any product category keywords
         for category, info in product_categories.items():
+            logger.debug(f"Checking category '{category}' with keywords: {info['keywords']}")
             if any(keyword in message for keyword in info['keywords']):
+                logger.debug(f"Matched category '{category}' for message '{message}'")
                 return info['response']
         
+        logger.debug(f"No specific product category matched for message '{message}'")
         return None
     
     def _get_random_response(self, response_type: str) -> str:

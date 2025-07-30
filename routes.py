@@ -1539,6 +1539,36 @@ def cancel_pending_order(order_id):
         return redirect(url_for('customer_dashboard'))
 
 # Debug route to check system status
+@app.route('/debug/images')
+def debug_images():
+    """Debug route to check image availability and product data"""
+    try:
+        # Check available images
+        upload_folder = app.config['UPLOAD_FOLDER']
+        available_images = []
+        if os.path.exists(upload_folder):
+            available_images = os.listdir(upload_folder)
+        
+        # Get product data
+        product_data = []
+        for product_id, product in products.items():
+            product_data.append({
+                'id': product_id,
+                'name': product.name,
+                'image_filename': product.image_filename,
+                'image_exists': os.path.exists(os.path.join(upload_folder, product.image_filename)) if product.image_filename else False
+            })
+        
+        return jsonify({
+            'upload_folder': upload_folder,
+            'upload_folder_exists': os.path.exists(upload_folder),
+            'available_images': available_images,
+            'products': product_data,
+            'total_products': len(products)
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/debug/status')
 def debug_status():
     # Add session debugging
@@ -1850,16 +1880,26 @@ def uploaded_file(filename):
     """Serve uploaded files (product images)."""
     try:
         upload_folder = app.config['UPLOAD_FOLDER']
+        logger.info(f"Attempting to serve: {filename} from {upload_folder}")
         
         # Check if file exists
         file_path = os.path.join(upload_folder, filename)
         if not os.path.exists(file_path):
             logger.warning(f"File not found: {file_path}")
             # Return a default image instead of placeholder
-            return send_from_directory('static/uploads', 'electronics-store-ad.jpg')
+            default_path = os.path.join('static', 'uploads', 'electronics-store-ad.jpg')
+            if os.path.exists(default_path):
+                return send_from_directory('static/uploads', 'electronics-store-ad.jpg')
+            else:
+                logger.error(f"Default image not found at: {default_path}")
+                # Return a simple text response as last resort
+                return "Image not found", 404
         
         return send_from_directory(upload_folder, filename)
     except Exception as e:
         logger.error(f"Error serving file {filename}: {e}")
         # Return a default image instead of placeholder
-        return send_from_directory('static/uploads', 'electronics-store-ad.jpg')
+        try:
+            return send_from_directory('static/uploads', 'electronics-store-ad.jpg')
+        except:
+            return "Image error", 500

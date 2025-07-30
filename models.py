@@ -795,21 +795,21 @@ def initialize_data_and_defaults():
             create_product('Gaming Mouse Pro', 'Ergonomic gaming mouse with high DPI sensor.', 75.00, 'Mice', vendor_user.id, 'gaming-mouse.jpg', 30) # Regular
             create_product('Tablet Pro 12-inch', 'Powerful tablet for creativity and productivity.', 700.00, 'Tablets', vendor_user.id, 'tablet-pro.jpg', 8) # Regular
             create_product('Bluetooth Speaker', 'Portable wireless speaker with premium sound quality.', 89.00, 'Speakers', vendor_user.id, 'bluetooth-speaker.jpg', 15, True, 69.00, promo_end_date) # Promotional
-            create_product('Smart Watch', 'Fitness tracking smartwatch with heart rate monitor.', 299.00, 'Wearables', vendor_user.id, 'smartwatch.jpg', 12, False, None, None) # Regular
+            create_product('Smart Watch', 'Fitness tracking smartwatch with heart rate monitor.', 299.00, 'Wearables', vendor_user.id, 'electronics-store-ad.jpg', 12, False, None, None) # Regular
             create_product('Wireless Earbuds', 'True wireless earbuds with noise cancellation.', 159.00, 'Headphones', vendor_user.id, 'wireless-earbuds.jpg', 25, True, 129.00, promo_end_date) # Promotional
-            create_product('Gaming Headset', '7.1 surround sound gaming headset with microphone.', 129.00, 'Headphones', vendor_user.id, 'gaming-headset.jpg', 18, False, None, None) # Regular
+            create_product('Gaming Headset', '7.1 surround sound gaming headset with microphone.', 129.00, 'Headphones', vendor_user.id, 'noise-cancelling-headphones.jpg', 18, False, None, None) # Regular
             create_product('USB-C Hub', 'Multi-port USB-C hub for laptop connectivity.', 45.00, 'Accessories', vendor_user.id, 'usb-c-hub.jpg', 30, True, 35.00, promo_end_date) # Promotional
-            create_product('Wireless Charger', 'Fast wireless charging pad for smartphones.', 39.00, 'Accessories', vendor_user.id, 'wireless-charger.jpg', 22, False, None, None) # Regular
+            create_product('Wireless Charger', 'Fast wireless charging pad for smartphones.', 39.00, 'Accessories', vendor_user.id, 'electronics-store-ad.jpg', 22, False, None, None) # Regular
             create_product('Laptop Stand', 'Adjustable aluminum laptop stand for ergonomic setup.', 29.00, 'Accessories', vendor_user.id, 'laptop-stand.jpg', 35, True, 24.00, promo_end_date) # Promotional
-            create_product('Webcam HD', '1080p HD webcam for video conferencing.', 79.00, 'Accessories', vendor_user.id, 'webcam-hd.jpg', 20, False, None, None) # Regular
+            create_product('Webcam HD', '1080p HD webcam for video conferencing.', 79.00, 'Accessories', vendor_user.id, 'electronics-store-ad.jpg', 20, False, None, None) # Regular
             create_product('External SSD', '1TB portable SSD with USB 3.2 Gen 2.', 129.00, 'Storage', vendor_user.id, 'external-ssd.jpg', 14, True, 99.00, promo_end_date) # Promotional
-            create_product('Monitor 4K', '27-inch 4K Ultra HD monitor for professional work.', 399.00, 'Monitors', vendor_user.id, 'monitor-4k.jpg', 8, False, None, None) # Regular
+            create_product('Monitor 4K', '27-inch 4K Ultra HD monitor for professional work.', 399.00, 'Monitors', vendor_user.id, 'electronics-store-ad.jpg', 8, False, None, None) # Regular
             create_product('Gaming Chair', 'Ergonomic gaming chair with lumbar support.', 249.00, 'Furniture', vendor_user.id, 'gaming-chair.jpg', 12, True, 199.00, promo_end_date) # Promotional
-            create_product('Microphone Pro', 'USB condenser microphone for streaming.', 89.00, 'Audio', vendor_user.id, 'microphone-pro.jpg', 25, False, None, None) # Regular
+            create_product('Microphone Pro', 'USB condenser microphone for streaming.', 89.00, 'Audio', vendor_user.id, 'electronics-store-ad.jpg', 25, False, None, None) # Regular
             create_product('Graphics Card', 'RTX 4070 graphics card for gaming.', 599.00, 'Components', vendor_user.id, 'graphics-card.jpg', 6, True, 549.00, promo_end_date) # Promotional
-            create_product('Power Bank', '20000mAh portable charger for devices.', 49.00, 'Accessories', vendor_user.id, 'power-bank.jpg', 30, False, None, None) # Regular
+            create_product('Power Bank', '20000mAh portable charger for devices.', 49.00, 'Accessories', vendor_user.id, 'electronics-store-ad.jpg', 30, False, None, None) # Regular
             create_product('Smart Speaker', 'Voice-controlled smart speaker with Alexa.', 79.00, 'Speakers', vendor_user.id, 'smart-speaker.jpg', 20, True, 59.00, promo_end_date) # Promotional
-            create_product('Tablet Stand', 'Adjustable tablet holder for desk use.', 19.00, 'Accessories', vendor_user.id, 'tablet-stand.jpg', 40, False, None, None) # Regular
+            create_product('Tablet Stand', 'Adjustable tablet holder for desk use.', 19.00, 'Accessories', vendor_user.id, 'electronics-store-ad.jpg', 40, False, None, None) # Regular
             create_product('Cable Organizer', 'Multi-compartment cable management box.', 15.00, 'Accessories', vendor_user.id, 'cable-organizer.jpg', 50, True, 12.00, promo_end_date) # Promotional
             logger.info("✅ Created sample products with promotional offers (after loading existing data)")
 
@@ -832,21 +832,21 @@ def initialize_data_and_defaults():
             create_product('Gaming Mouse Pro', 'Ergonomic gaming mouse with high DPI sensor.', 75.00, 'Mice', vendor_user.id, 'gaming-mouse.jpg', 30) # Regular
             create_product('Tablet Pro 12-inch', 'Powerful tablet for creativity and productivity.', 700.00, 'Tablets', vendor_user.id, 'tablet-pro.jpg', 8) # Regular
             create_product('Bluetooth Speaker', 'Portable wireless speaker with premium sound quality.', 89.00, 'Speakers', vendor_user.id, 'bluetooth-speaker.jpg', 15, True, 69.00, promo_end_date) # Promotional
-            create_product('Smart Watch', 'Fitness tracking smartwatch with heart rate monitor.', 299.00, 'Wearables', vendor_user.id, 'smartwatch.jpg', 12, False, None, None) # Regular
+            create_product('Smart Watch', 'Fitness tracking smartwatch with heart rate monitor.', 299.00, 'Wearables', vendor_user.id, 'electronics-store-ad.jpg', 12, False, None, None) # Regular
             create_product('Wireless Earbuds', 'True wireless earbuds with noise cancellation.', 159.00, 'Headphones', vendor_user.id, 'wireless-earbuds.jpg', 25, True, 129.00, promo_end_date) # Promotional
-            create_product('Gaming Headset', '7.1 surround sound gaming headset with microphone.', 129.00, 'Headphones', vendor_user.id, 'gaming-headset.jpg', 18, False, None, None) # Regular
+            create_product('Gaming Headset', '7.1 surround sound gaming headset with microphone.', 129.00, 'Headphones', vendor_user.id, 'noise-cancelling-headphones.jpg', 18, False, None, None) # Regular
             create_product('USB-C Hub', 'Multi-port USB-C hub for laptop connectivity.', 45.00, 'Accessories', vendor_user.id, 'usb-c-hub.jpg', 30, True, 35.00, promo_end_date) # Promotional
-            create_product('Wireless Charger', 'Fast wireless charging pad for smartphones.', 39.00, 'Accessories', vendor_user.id, 'wireless-charger.jpg', 22, False, None, None) # Regular
+            create_product('Wireless Charger', 'Fast wireless charging pad for smartphones.', 39.00, 'Accessories', vendor_user.id, 'electronics-store-ad.jpg', 22, False, None, None) # Regular
             create_product('Laptop Stand', 'Adjustable aluminum laptop stand for ergonomic setup.', 29.00, 'Accessories', vendor_user.id, 'laptop-stand.jpg', 35, True, 24.00, promo_end_date) # Promotional
-            create_product('Webcam HD', '1080p HD webcam for video conferencing.', 79.00, 'Accessories', vendor_user.id, 'webcam-hd.jpg', 20, False, None, None) # Regular
+            create_product('Webcam HD', '1080p HD webcam for video conferencing.', 79.00, 'Accessories', vendor_user.id, 'electronics-store-ad.jpg', 20, False, None, None) # Regular
             create_product('External SSD', '1TB portable SSD with USB 3.2 Gen 2.', 129.00, 'Storage', vendor_user.id, 'external-ssd.jpg', 14, True, 99.00, promo_end_date) # Promotional
-            create_product('Monitor 4K', '27-inch 4K Ultra HD monitor for professional work.', 399.00, 'Monitors', vendor_user.id, 'monitor-4k.jpg', 8, False, None, None) # Regular
+            create_product('Monitor 4K', '27-inch 4K Ultra HD monitor for professional work.', 399.00, 'Monitors', vendor_user.id, 'electronics-store-ad.jpg', 8, False, None, None) # Regular
             create_product('Gaming Chair', 'Ergonomic gaming chair with lumbar support.', 249.00, 'Furniture', vendor_user.id, 'gaming-chair.jpg', 12, True, 199.00, promo_end_date) # Promotional
-            create_product('Microphone Pro', 'USB condenser microphone for streaming.', 89.00, 'Audio', vendor_user.id, 'microphone-pro.jpg', 25, False, None, None) # Regular
+            create_product('Microphone Pro', 'USB condenser microphone for streaming.', 89.00, 'Audio', vendor_user.id, 'electronics-store-ad.jpg', 25, False, None, None) # Regular
             create_product('Graphics Card', 'RTX 4070 graphics card for gaming.', 599.00, 'Components', vendor_user.id, 'graphics-card.jpg', 6, True, 549.00, promo_end_date) # Promotional
-            create_product('Power Bank', '20000mAh portable charger for devices.', 49.00, 'Accessories', vendor_user.id, 'power-bank.jpg', 30, False, None, None) # Regular
+            create_product('Power Bank', '20000mAh portable charger for devices.', 49.00, 'Accessories', vendor_user.id, 'electronics-store-ad.jpg', 30, False, None, None) # Regular
             create_product('Smart Speaker', 'Voice-controlled smart speaker with Alexa.', 79.00, 'Speakers', vendor_user.id, 'smart-speaker.jpg', 20, True, 59.00, promo_end_date) # Promotional
-            create_product('Tablet Stand', 'Adjustable tablet holder for desk use.', 19.00, 'Accessories', vendor_user.id, 'tablet-stand.jpg', 40, False, None, None) # Regular
+            create_product('Tablet Stand', 'Adjustable tablet holder for desk use.', 19.00, 'Accessories', vendor_user.id, 'electronics-store-ad.jpg', 40, False, None, None) # Regular
             create_product('Cable Organizer', 'Multi-compartment cable management box.', 15.00, 'Accessories', vendor_user.id, 'cable-organizer.jpg', 50, True, 12.00, promo_end_date) # Promotional
             logger.info("✅ Created sample products with promotional offers (initial setup)")
 

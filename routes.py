@@ -14,7 +14,8 @@ from models import (users, products, orders, cart_items, order_comments as order
                     create_discount_code, validate_discount_code, use_discount_code,
                     CartItem, spin_attempts, can_user_spin, get_next_spin_number, 
                     determine_spin_result, record_spin_attempt, get_user_spin_attempts,
-                    add_product_review, get_product_reviews, get_product_average_rating, save_data) 
+                    add_product_review, get_product_reviews, get_product_average_rating, save_data)
+from chatbot import chatbot, save_chatbot_data 
 
 logger = logging.getLogger(__name__)
 
@@ -1903,3 +1904,132 @@ def uploaded_file(filename):
             return send_from_directory('static/uploads', 'electronics-store-ad.jpg')
         except:
             return "Image error", 500
+
+# ==================== CHATBOT ROUTES ====================
+
+@app.route('/chatbot/send_message', methods=['POST'])
+def chatbot_send_message():
+    """Send a message to the chatbot and get response"""
+    try:
+        data = request.get_json()
+        message = data.get('message', '').strip()
+        
+        if not message:
+            return jsonify({'success': False, 'message': 'Message cannot be empty'}), 400
+        
+        # Get user ID (use session ID for guests, user ID for logged in users)
+        user_id = session.get('user_id', f"guest_{session.get('_id', 'anonymous')}")
+        
+        # Get response from chatbot
+        response = chatbot.get_response(user_id, message)
+        
+        # Save chatbot data
+        save_chatbot_data()
+        
+        return jsonify({
+            'success': True,
+            'response': response,
+            'user_id': user_id
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in chatbot send message: {e}")
+        return jsonify({'success': False, 'message': 'An error occurred'}), 500
+
+@app.route('/chatbot/history')
+def chatbot_history():
+    """Get conversation history for current user"""
+    try:
+        user_id = session.get('user_id', f"guest_{session.get('_id', 'anonymous')}")
+        history = chatbot.get_conversation_history(user_id)
+        
+        return jsonify({
+            'success': True,
+            'history': history
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting chatbot history: {e}")
+        return jsonify({'success': False, 'message': 'An error occurred'}), 500
+
+@app.route('/chatbot/create_report', methods=['POST'])
+def chatbot_create_report():
+    """Create a support report through chatbot"""
+    try:
+        data = request.get_json()
+        report_type = data.get('report_type', 'general')
+        description = data.get('description', '').strip()
+        priority = data.get('priority', 'medium')
+        
+        if not description:
+            return jsonify({'success': False, 'message': 'Description cannot be empty'}), 400
+        
+        # Get user ID
+        user_id = session.get('user_id', f"guest_{session.get('_id', 'anonymous')}")
+        
+        # Create report
+        response = chatbot.create_report(user_id, report_type, description, priority)
+        
+        # Save chatbot data
+        save_chatbot_data()
+        
+        return jsonify({
+            'success': True,
+            'response': response
+        })
+        
+    except Exception as e:
+        logger.error(f"Error creating report: {e}")
+        return jsonify({'success': False, 'message': 'An error occurred'}), 500
+
+@app.route('/chatbot/my_reports')
+@login_required
+def chatbot_my_reports():
+    """Get user's reports (requires login)"""
+    try:
+        user_id = session['user_id']
+        reports = chatbot.get_user_reports(user_id)
+        
+        return jsonify({
+            'success': True,
+            'reports': reports
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting user reports: {e}")
+        return jsonify({'success': False, 'message': 'An error occurred'}), 500
+
+@app.route('/admin/chatbot/reports')
+@admin_required
+def admin_chatbot_reports():
+    """Admin view of all reports"""
+    try:
+        reports = chatbot.get_all_reports()
+        
+        return render_template('admin_reports.html', reports=reports)
+        
+    except Exception as e:
+        logger.error(f"Error getting all reports: {e}")
+        flash('Error loading reports', 'danger')
+        return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/chatbot/reports/<report_id>/update', methods=['POST'])
+@admin_required
+def admin_update_report(report_id):
+    """Update report status (admin only)"""
+    try:
+        data = request.get_json()
+        new_status = data.get('status', 'open')
+        admin_notes = data.get('admin_notes', '')
+        
+        success = chatbot.update_report_status(report_id, new_status, admin_notes)
+        
+        if success:
+            save_chatbot_data()
+            return jsonify({'success': True, 'message': 'Report updated successfully'})
+        else:
+            return jsonify({'success': False, 'message': 'Report not found'}), 404
+        
+    except Exception as e:
+        logger.error(f"Error updating report: {e}")
+        return jsonify({'success': False, 'message': 'An error occurred'}), 500

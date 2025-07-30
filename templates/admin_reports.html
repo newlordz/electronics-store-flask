@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - Chatbot Reports{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="mb-0">
+                    <i class="fas fa-bug text-danger me-2"></i>Chatbot Reports
+                </h1>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>Support Reports
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if reports %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Report ID</th>
+                                        <th>User</th>
+                                        <th>Type</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for report in reports %}
+                                    <tr>
+                                        <td>
+                                            <code>{{ report.id }}</code>
+                                        </td>
+                                        <td>
+                                            {% if report.user_id.startswith('guest_') %}
+                                                <span class="badge bg-secondary">Guest User</span>
+                                            {% else %}
+                                                <span class="badge bg-primary">Registered User</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">{{ report.report_type|title }}</span>
+                                        </td>
+                                        <td>
+                                            {% if report.priority == 'urgent' %}
+                                                <span class="badge bg-danger">Urgent</span>
+                                            {% elif report.priority == 'high' %}
+                                                <span class="badge bg-warning">High</span>
+                                            {% elif report.priority == 'medium' %}
+                                                <span class="badge bg-info">Medium</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Low</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if report.status == 'open' %}
+                                                <span class="badge bg-warning">Open</span>
+                                            {% elif report.status == 'in_progress' %}
+                                                <span class="badge bg-info">In Progress</span>
+                                            {% elif report.status == 'resolved' %}
+                                                <span class="badge bg-success">Resolved</span>
+                                            {% elif report.status == 'closed' %}
+                                                <span class="badge bg-secondary">Closed</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small>{{ report.created_at.split('T')[0] }}</small>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" 
+                                                    onclick="viewReport('{{ report.id }}')">
+                                                <i class="fas fa-eye"></i> View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Reports Found</h4>
+                            <p class="text-muted">No support reports have been submitted yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Report Detail Modal -->
+<div class="modal fade" id="reportModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-bug me-2"></i>Report Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="reportModalBody">
+                <!-- Report details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="updateReportStatus()">
+                    <i class="fas fa-save me-2"></i>Update Status
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentReportId = null;
+
+function viewReport(reportId) {
+    currentReportId = reportId;
+    
+    // Find the report data
+    const reports = {{ reports|tojson }};
+    const report = reports.find(r => r.id === reportId);
+    
+    if (!report) {
+        alert('Report not found');
+        return;
+    }
+    
+    // Create modal content
+    const modalBody = document.getElementById('reportModalBody');
+    modalBody.innerHTML = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Report Information</h6>
+                <table class="table table-sm">
+                    <tr>
+                        <td><strong>Report ID:</strong></td>
+                        <td><code>${report.id}</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>User ID:</strong></td>
+                        <td>${report.user_id}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Type:</strong></td>
+                        <td><span class="badge bg-info">${report.report_type}</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Priority:</strong></td>
+                        <td><span class="badge bg-${getPriorityColor(report.priority)}">${report.priority}</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Status:</strong></td>
+                        <td>
+                            <select class="form-select form-select-sm" id="statusSelect">
+                                <option value="open" ${report.status === 'open' ? 'selected' : ''}>Open</option>
+                                <option value="in_progress" ${report.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="resolved" ${report.status === 'resolved' ? 'selected' : ''}>Resolved</option>
+                                <option value="closed" ${report.status === 'closed' ? 'selected' : ''}>Closed</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Created:</strong></td>
+                        <td>${new Date(report.created_at).toLocaleString()}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Updated:</strong></td>
+                        <td>${new Date(report.updated_at).toLocaleString()}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h6>Description</h6>
+                <div class="border rounded p-3 bg-light">
+                    ${report.description.replace(/\n/g, '<br>')}
+                </div>
+                
+                <h6 class="mt-3">Admin Notes</h6>
+                <textarea class="form-control" id="adminNotes" rows="4" 
+                          placeholder="Add admin notes here...">${report.admin_notes || ''}</textarea>
+            </div>
+        </div>
+    `;
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('reportModal'));
+    modal.show();
+}
+
+function getPriorityColor(priority) {
+    switch (priority) {
+        case 'urgent': return 'danger';
+        case 'high': return 'warning';
+        case 'medium': return 'info';
+        case 'low': return 'secondary';
+        default: return 'secondary';
+    }
+}
+
+async function updateReportStatus() {
+    if (!currentReportId) return;
+    
+    const status = document.getElementById('statusSelect').value;
+    const adminNotes = document.getElementById('adminNotes').value;
+    
+    try {
+        const response = await fetch(`/admin/chatbot/reports/${currentReportId}/update`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                status: status,
+                admin_notes: adminNotes
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Show success message
+            showToast('Report status updated successfully!', 'success');
+            
+            // Close modal and reload page
+            const modal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
+            modal.hide();
+            
+            // Reload page to show updated data
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        } else {
+            showToast('Error updating report: ' + data.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error updating report:', error);
+        showToast('Error updating report. Please try again.', 'error');
+    }
+}
+
+function showToast(message, type = 'info') {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
+    }
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} border-0`;
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Initialize and show toast
+    const bsToast = new bootstrap.Toast(toast, {
+        autohide: true,
+        delay: 3000
+    });
+    bsToast.show();
+    
+    // Remove toast element after it's hidden
+    toast.addEventListener('hidden.bs.toast', function() {
+        this.remove();
+    });
+}
+</script>
+{% endblock %} 

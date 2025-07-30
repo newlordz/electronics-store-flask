@@ -17,8 +17,8 @@
                             <small class="text-muted">Order ID: {{ order.id }}</small>
                         </div>
                         <div class="col-auto">
-                            <span class="badge bg-{{ 'primary' if order.status == 'created' else 'warning' if order.status == 'paid' else 'success' }} fs-6">
-                                {{ order.status.title() }}
+                            <span class="order-status status-{{ order.status.replace('_', '-') }}">
+                                {{ order.status.replace('_', ' ').title() }}
                             </span>
                         </div>
                     </div>
@@ -46,11 +46,11 @@
                 <div class="card-body" style="max-height: 400px; overflow-y: auto;">
                     {% if comments %}
                         {% for comment in comments %}
-                        <div class="comment-bubble mb-3">
+                        <div class="comment-bubble mb-3 {% if comment.user_role == 'seller' or comment.user_role == 'vendor' or comment.user_role == 'admin' %}vendor-message{% else %}customer-message{% endif %}">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
-                                    <strong class="text-{{ 'danger' if comment.user_role == 'admin' else 'warning' if comment.user_role == 'seller' else 'primary' }}">
-                                        <i class="fas fa-{{ 'shield-alt' if comment.user_role == 'admin' else 'store' if comment.user_role == 'seller' else 'user' }} me-1"></i>
+                                    <strong class="text-{{ 'danger' if comment.user_role == 'admin' else 'warning' if comment.user_role == 'seller' or comment.user_role == 'vendor' else 'primary' }}">
+                                        <i class="fas fa-{{ 'shield-alt' if comment.user_role == 'admin' else 'store' if comment.user_role == 'seller' or comment.user_role == 'vendor' else 'user' }} me-1"></i>
                                         {{ comment.username }} ({{ comment.user_role.title() }})
                                     </strong>
                                 </div>
@@ -82,20 +82,50 @@
 
             <!-- Back Button -->
             <div class="text-center mt-4">
-                {% if session.user_role == 'admin' %}
-                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                {% if current_user.role == 'admin' %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary" id="backButton">
                         <i class="fas fa-arrow-left me-1"></i>Back to Admin Dashboard
                     </a>
-                {% elif session.user_role == 'seller' %}
-                    <a href="{{ url_for('seller_dashboard') }}" class="btn btn-outline-secondary">
+                {% elif current_user.role == 'seller' or current_user.role == 'vendor' %}
+                    <a href="{{ url_for('seller_dashboard') }}" class="btn btn-outline-secondary" id="backButton">
                         <i class="fas fa-arrow-left me-1"></i>Back to Seller Dashboard
                     </a>
                 {% else %}
-                    <a href="{{ url_for('buyer_dashboard') }}" class="btn btn-outline-secondary">
+                    <a href="{{ url_for('customer_dashboard') }}" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
                     </a>
                 {% endif %}
             </div>
+
+            <script>
+            // Detect which section the user came from and set the appropriate hash
+            document.addEventListener('DOMContentLoaded', function() {
+                const backButton = document.getElementById('backButton');
+                if (backButton) {
+                    // Check if current URL has a hash to determine the section
+                    if (window.location.hash === '#all-orders') {
+                        {% if current_user.role == 'admin' %}
+                            backButton.href = "{{ url_for('admin_dashboard') }}#all-orders";
+                        {% else %}
+                            backButton.href = "{{ url_for('seller_dashboard') }}#all-orders";
+                        {% endif %}
+                    } else if (window.location.hash === '#orders-awaiting-approval') {
+                        {% if current_user.role == 'admin' %}
+                            backButton.href = "{{ url_for('admin_dashboard') }}#orders-awaiting-approval";
+                        {% else %}
+                            backButton.href = "{{ url_for('seller_dashboard') }}#orders-pending-approval";
+                        {% endif %}
+                    } else {
+                        // Default to appropriate section based on user role
+                        {% if current_user.role == 'admin' %}
+                            backButton.href = "{{ url_for('admin_dashboard') }}#orders-awaiting-approval";
+                        {% else %}
+                            backButton.href = "{{ url_for('seller_dashboard') }}#orders-pending-approval";
+                        {% endif %}
+                    }
+                }
+            });
+            </script>
         </div>
     </div>
 </div>

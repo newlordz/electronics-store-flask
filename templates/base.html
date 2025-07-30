@@ -1,139 +1,510 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}🎮 Vibrant Electronics Store{% endblock %}</title>
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
+    <title>{% block title %}Electronics Store{% endblock %}</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <!-- Custom CSS -->
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
-    
-    <!-- Animate.css for additional animations -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Admin restricted navigation styles */
+        .nav-link.admin-restricted {
+            filter: blur(2px);
+            opacity: 0.6;
+            pointer-events: none;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link.admin-restricted::after {
+            content: "🚫";
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            font-size: 12px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+        
+        .nav-link.admin-restricted:hover {
+            filter: blur(1px);
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+        
+        /* Vendor/Seller restricted navigation styles */
+        .nav-link.vendor-restricted {
+            filter: blur(2px);
+            opacity: 0.6;
+            pointer-events: none;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link.vendor-restricted::after {
+            content: "🏪";
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            font-size: 12px;
+            background: rgba(255, 193, 7, 0.9);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+        
+        .nav-link.vendor-restricted:hover {
+            filter: blur(1px);
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Tooltip for restricted links */
+        .nav-link.admin-restricted::before {
+            content: "Access restricted for admins";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .nav-link.admin-restricted:hover::before {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .nav-link.vendor-restricted::before {
+            content: "Access restricted for vendors";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .nav-link.vendor-restricted:hover::before {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Ensure dropdown menu text is visible */
+        .dropdown-menu {
+            background-color: #fff !important;
+            border: 1px solid rgba(0,0,0,.15) !important;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,.175) !important;
+            z-index: 1050 !important;
+        }
+        
+        .dropdown-item {
+            color: #212529 !important;
+            background-color: transparent !important;
+            border: 0 !important;
+            padding: 0.5rem 1rem !important;
+            font-weight: 400 !important;
+            line-height: 1.5 !important;
+            text-decoration: none !important;
+            display: block !important;
+            width: 100% !important;
+            clear: both !important;
+            text-align: inherit !important;
+            white-space: nowrap !important;
+            background-color: transparent !important;
+            border: 0 !important;
+        }
+        
+        .dropdown-item:hover {
+            color: #1e2125 !important;
+            background-color: #f8f9fa !important;
+            text-decoration: none !important;
+        }
+        
+        .dropdown-item:focus {
+            color: #1e2125 !important;
+            background-color: #f8f9fa !important;
+            text-decoration: none !important;
+        }
+        
+        .dropdown-item:active {
+            color: #fff !important;
+            background-color: #0d6efd !important;
+            text-decoration: none !important;
+        }
+        
+        .dropdown-divider {
+            border-top: 1px solid #dee2e6 !important;
+            margin: 0.5rem 0 !important;
+        }
+        
+        /* Override any navbar styles that might affect dropdown */
+        .navbar .dropdown-menu {
+            background-color: #fff !important;
+            color: #212529 !important;
+        }
+        
+        .navbar .dropdown-item {
+            color: #212529 !important;
+            background-color: transparent !important;
+        }
+        
+        .navbar .dropdown-item:hover {
+            color: #1e2125 !important;
+            background-color: #f8f9fa !important;
+        }
+        
+        /* Simple visibility fix for dropdown items */
+        .navbar .dropdown-item {
+            color: #212529 !important;
+            background-color: transparent !important;
+        }
+        
+        /* Dropdown animations */
+        @keyframes dropdownSlideIn {
+            0% {
+                opacity: 0 !important;
+                transform: translateY(-10px) scale(0.95) !important;
+            }
+            100% {
+                opacity: 1 !important;
+                transform: translateY(0) scale(1) !important;
+            }
+        }
+        
+        /* Staggered animation for dropdown items - only in navbar */
+        /* Temporarily disabled animations to fix visibility */
+        /*
+        .navbar .dropdown-menu .dropdown-item:nth-child(1) { animation: itemSlideIn 0.4s ease-out 0.1s forwards !important; }
+        .navbar .dropdown-menu .dropdown-item:nth-child(2) { animation: itemSlideIn 0.4s ease-out 0.2s forwards !important; }
+        .navbar .dropdown-menu .dropdown-item:nth-child(3) { animation: itemSlideIn 0.4s ease-out 0.3s forwards !important; }
+        .navbar .dropdown-menu .dropdown-item:nth-child(4) { animation: itemSlideIn 0.4s ease-out 0.4s forwards !important; }
+        .navbar .dropdown-menu .dropdown-item:nth-child(5) { animation: itemSlideIn 0.4s ease-out 0.5s forwards !important; }
+        */
+        
+        @keyframes itemSlideIn {
+            0% {
+                opacity: 0 !important;
+                transform: translateX(-20px) !important;
+                visibility: hidden !important;
+            }
+            100% {
+                opacity: 1 !important;
+                transform: translateX(0) !important;
+                visibility: visible !important;
+            }
+        }
+        
+        /* Dropdown divider animation - only in navbar */
+        .navbar .dropdown-menu .dropdown-divider {
+            animation: dividerExpand 0.5s ease-out 0.3s forwards !important;
+        }
+        
+        @keyframes dividerExpand {
+            0% {
+                width: 0 !important;
+                opacity: 0 !important;
+            }
+            100% {
+                width: 100% !important;
+                opacity: 1 !important;
+            }
+        }
+    </style>
 </head>
-<body class="d-flex flex-column min-vh-100">
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i class="fas fa-store me-2"></i>Electronics Store
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand" href="{{ url_for('index') }}">Electronics Store</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}">
+                        <a class="nav-link {% if session.user_role == 'admin' %}admin-restricted{% elif session.user_role == 'seller' or session.user_role == 'vendor' %}vendor-restricted{% endif %}" 
+                           href="{{ url_for('index') }}"
+                           {% if session.user_role == 'admin' or session.user_role == 'seller' or session.user_role == 'vendor' %}onclick="return false;"{% endif %}>
                             <i class="fas fa-home me-1"></i>Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('products_list') }}">
+                        <a class="nav-link {% if session.user_role == 'admin' %}admin-restricted{% elif session.user_role == 'seller' or session.user_role == 'vendor' %}vendor-restricted{% endif %}" 
+                           href="{{ url_for('products_list') }}"
+                           {% if session.user_role == 'admin' or session.user_role == 'seller' or session.user_role == 'vendor' %}onclick="return false;"{% endif %}>
                             <i class="fas fa-box me-1"></i>Products
                         </a>
                     </li>
+                    {% if session.get('user_id') and session.get('user_role') == 'customer' %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if session.user_role == 'admin' %}admin-restricted{% elif session.user_role == 'seller' or session.user_role == 'vendor' %}vendor-restricted{% endif %}" 
+                           href="{{ url_for('wishlist') }}"
+                           {% if session.user_role == 'admin' or session.user_role == 'seller' or session.user_role == 'vendor' %}onclick="return false;"{% endif %}>
+                            <i class="fas fa-heart text-danger me-1"></i>Wishlist
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if session.user_role == 'admin' %}admin-restricted{% elif session.user_role == 'seller' or session.user_role == 'vendor' %}vendor-restricted{% endif %}" 
+                           href="{{ url_for('categories') }}"
+                           {% if session.user_role == 'admin' or session.user_role == 'seller' or session.user_role == 'vendor' %}onclick="return false;"{% endif %}>
+                            <i class="fas fa-th-large me-1"></i>Categories
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if session.user_role == 'admin' %}admin-restricted{% elif session.user_role == 'seller' or session.user_role == 'vendor' %}vendor-restricted{% endif %}" 
+                           href="{{ url_for('deals') }}"
+                           {% if session.user_role == 'admin' or session.user_role == 'seller' or session.user_role == 'vendor' %}onclick="return false;"{% endif %}>
+                            <i class="fas fa-tags me-1"></i>Deals
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if session.user_role == 'admin' %}admin-restricted{% elif session.user_role == 'seller' or session.user_role == 'vendor' %}vendor-restricted{% endif %}" 
+                           href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" 
+                           aria-expanded="false"
+                           {% if session.user_role == 'admin' or session.user_role == 'seller' or session.user_role == 'vendor' %}onclick="return false;"{% endif %}>
+                            <i class="fas fa-info-circle me-1"></i>Info
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('about') }}">
+                                <i class="fas fa-store me-2"></i>About Us
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('contact') }}">
+                                <i class="fas fa-envelope me-2"></i>Contact
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('help_page') }}">
+                                <i class="fas fa-question-circle me-2"></i>Help & FAQ
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('privacy') }}">
+                                <i class="fas fa-shield-alt me-2"></i>Privacy Policy
+                            </a></li>
+                        </ul>
+                    </li>
                 </ul>
-                
-                <ul class="navbar-nav">
+                <div class="navbar-nav ms-auto d-flex align-items-center">
+                    <div class="vr mx-3 d-none d-lg-block" style="height: 30px; opacity: 0.3;"></div>
+                    <ul class="navbar-nav">
                     {% if session.user_id %}
-                        {% if session.user_role == 'buyer' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('cart') }}">
-                                    <i class="fas fa-shopping-cart me-1"></i>Cart
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('buyer_dashboard') }}">
-                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                                </a>
-                            </li>
-                        {% elif session.user_role == 'seller' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('seller_dashboard') }}">
-                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                                </a>
-                            </li>
-                        {% elif session.user_role == 'admin' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
-                                    <i class="fas fa-cogs me-1"></i>Admin
-                                </a>
-                            </li>
+                        {% if session.user_role == 'customer' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('cart') }}"><i class="fas fa-shopping-cart me-1"></i>Cart (<span class="cart-count">{{ cart_items_count if cart_items_count is not none else 0 }}</span>)</a>
+                        </li>
                         {% endif %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('logout') }}">
-                                <i class="fas fa-sign-out-alt me-1"></i>Logout
-                            </a>
+                            {% if session.user_role == 'admin' %}
+                                <a class="nav-link" href="{{ url_for('admin_dashboard') }}"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a>
+                            {% elif session.user_role == 'seller' %}
+                                <a class="nav-link" href="{{ url_for('seller_dashboard') }}"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a>
+                            {% else %} {# buyer #}
+                                <a class="nav-link" href="{{ url_for('customer_dashboard') }}"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a>
+                            {% endif %}
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">
-                                <i class="fas fa-sign-in-alt me-1"></i>Login
-                            </a>
+                            <a class="nav-link" href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt me-1"></i>Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('register') }}">
-                                <i class="fas fa-user-plus me-1"></i>Register
-                            </a>
+                            <a class="nav-link" href="{{ url_for('register') }}"><i class="fas fa-user-plus me-1"></i>Register</a>
                         </li>
                     {% endif %}
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Flash Messages -->
-    <div class="container mt-3">
+    <div class="container mt-5 pt-5"> {# Added pt-5 to push content below fixed navbar #}
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
+                <div class="alert-container fixed-top-alert"> {# Custom class for fixed top alerts #}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show animate__animated animate__fadeInDown" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
             {% endif %}
         {% endwith %}
     </div>
 
-    <!-- Main Content -->
-    <main class="flex-grow-1">
-        {% block content %}{% endblock %}
-    </main>
+    {% block content %}{% endblock %}
 
-    <!-- Footer -->
-    <footer class="bg-dark text-light py-4 mt-5">
+    <footer class="text-center py-4 mt-auto">
         <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>Electronics Store</h5>
-                    <p>Your one-stop shop for all electronics needs.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p>&copy; 2025 Electronics Store. All rights reserved.</p>
-                </div>
-            </div>
+            <p class="mb-0">&copy; 2025 Electronics Store. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Custom JS -->
+    <!-- jQuery (required for wishlist button JS) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Custom JavaScript -->
     <script src="{{ url_for('static', filename='main.js') }}"></script>
-    
+    <script>
+        // Global function for login modal
+        function showLoginModal() {
+            // Create modal if it doesn't exist
+            let loginModal = document.getElementById('loginModal');
+            if (!loginModal) {
+                loginModal = document.createElement('div');
+                loginModal.className = 'modal fade';
+                loginModal.id = 'loginModal';
+                loginModal.setAttribute('tabindex', '-1');
+                loginModal.setAttribute('aria-labelledby', 'loginModalLabel');
+                loginModal.setAttribute('aria-hidden', 'true');
+                loginModal.innerHTML = `
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="loginModalLabel">Login Required</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Please log in to add items to your wishlist.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <a href="/login" class="btn btn-primary">Login</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(loginModal);
+            }
+            
+            // Show the modal
+            const modal = new bootstrap.Modal(loginModal);
+            modal.show();
+        }
+        // Get the current path without the base URL
+        const currentPath = window.location.pathname;
+
+        // Select all nav links
+        const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+
+        navLinks.forEach(link => {
+            // Get the href attribute of the link
+            const linkPath = new URL(link.href).pathname;
+
+            // Check if the current path starts with the link's path
+            // This handles cases like /products and /products?category=Laptops
+            if (currentPath.startsWith(linkPath) && linkPath !== '/') {
+                link.classList.add('active');
+            } else if (currentPath === '/' && linkPath === '/') {
+                link.classList.add('active');
+            }
+        });
+
+        // Handle cart count update in navbar (if not done by AJAX)
+        // This is a fallback if AJAX doesn't update it immediately
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartBadge = document.querySelector('.cart-count');
+            if (cartBadge && typeof window.updateCartCount === 'function') {
+                window.updateCartCount(); // Call a global function if defined by main.js
+            }
+            
+            // Handle admin restricted links
+            const restrictedLinks = document.querySelectorAll('.nav-link.admin-restricted');
+            restrictedLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Create a temporary notification
+                    const notification = document.createElement('div');
+                    notification.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: linear-gradient(135deg, #dc3545, #c82333);
+                        color: white;
+                        padding: 15px 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                        z-index: 9999;
+                        font-weight: 600;
+                        animation: slideInRight 0.3s ease;
+                        max-width: 300px;
+                    `;
+                    notification.innerHTML = `
+                        <i class="fas fa-ban me-2"></i>
+                        Access restricted for administrators
+                    `;
+                    
+                    document.body.appendChild(notification);
+                    
+                    // Remove notification after 3 seconds
+                    setTimeout(() => {
+                        notification.style.animation = 'slideOutRight 0.3s ease';
+                        setTimeout(() => {
+                            if (notification.parentNode) {
+                                notification.parentNode.removeChild(notification);
+                            }
+                        }, 300);
+                    }, 3000);
+                });
+            });
+        });
+        
+        // Add CSS animations for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

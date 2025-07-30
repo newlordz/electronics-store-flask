@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Categories - Electronics Store{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-5 text-primary">
+                <i class="fas fa-th-large me-3"></i>Shop by Category
+            </h1>
+            
+            <div class="row">
+                {% for category in categories %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 shadow-lg border-0 category-card" 
+                         onclick="window.location.href='{{ url_for('products_list', category=category) }}'">
+                        <div class="card-body text-center p-4">
+                            <div class="category-icon mb-3">
+                                {% if category == 'Laptops' %}
+                                    <i class="fas fa-laptop fa-4x text-primary"></i>
+                                {% elif category == 'Smartphones' %}
+                                    <i class="fas fa-mobile-alt fa-4x text-success"></i>
+                                {% elif category == 'Mice' %}
+                                    <i class="fas fa-mouse fa-4x text-info"></i>
+                                {% elif category == 'Keyboards' %}
+                                    <i class="fas fa-keyboard fa-4x text-warning"></i>
+                                {% elif category == 'Headphones' %}
+                                    <i class="fas fa-headphones fa-4x text-danger"></i>
+                                {% elif category == 'Tablets' %}
+                                    <i class="fas fa-tablet-alt fa-4x text-secondary"></i>
+                                {% elif category == 'Accessories' %}
+                                    <i class="fas fa-tools fa-4x text-dark"></i>
+                                {% else %}
+                                    <i class="fas fa-box fa-4x text-muted"></i>
+                                {% endif %}
+                            </div>
+                            
+                            <h3 class="card-title text-primary mb-2">{{ category }}</h3>
+                            
+                            <p class="text-muted mb-3">
+                                {{ category_counts.get(category, 0) }} products available
+                            </p>
+                            
+                            <div class="category-description mb-3">
+                                {% if category == 'Laptops' %}
+                                    High-performance laptops for work, gaming, and everyday use
+                                {% elif category == 'Smartphones' %}
+                                    Latest smartphones with cutting-edge features and technology
+                                {% elif category == 'Mice' %}
+                                    Precision gaming mice and ergonomic office mice
+                                {% elif category == 'Keyboards' %}
+                                    Mechanical keyboards, wireless keyboards, and gaming keyboards
+                                {% elif category == 'Headphones' %}
+                                    Noise-cancelling headphones, gaming headsets, and wireless earbuds
+                                {% elif category == 'Tablets' %}
+                                    iPads, Android tablets, and 2-in-1 convertible devices
+                                {% elif category == 'Accessories' %}
+                                    Cables, adapters, cases, and other essential accessories
+                                {% else %}
+                                    Quality electronics and accessories
+                                {% endif %}
+                            </div>
+                            
+                            <button class="btn btn-primary btn-lg">
+                                <i class="fas fa-arrow-right me-2"></i>Browse {{ category }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Featured Categories Section -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <h2 class="text-center mb-4 text-success">
+                        <i class="fas fa-star me-2"></i>Featured Categories
+                    </h2>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card bg-gradient-primary text-white h-100">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <i class="fas fa-fire fa-3x"></i>
+                                        </div>
+                                        <div>
+                                            <h4>Hot Deals</h4>
+                                            <p class="mb-3">Check out our latest promotional offers and discounts</p>
+                                            <a href="{{ url_for('deals') }}" class="btn btn-light">
+                                                <i class="fas fa-tags me-2"></i>View Deals
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="card bg-gradient-success text-white h-100">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <i class="fas fa-gift fa-3x"></i>
+                                        </div>
+                                        <div>
+                                            <h4>New Arrivals</h4>
+                                            <p class="mb-3">Discover the latest products just added to our store</p>
+                                            <a href="{{ url_for('products_list') }}" class="btn btn-light">
+                                                <i class="fas fa-plus me-2"></i>Explore New
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Category Tips Section -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="card bg-light border-0">
+                        <div class="card-body p-4">
+                            <h3 class="text-center mb-4 text-primary">
+                                <i class="fas fa-lightbulb me-2"></i>Shopping Tips
+                            </h3>
+                            
+                            <div class="row">
+                                <div class="col-md-4 text-center mb-3">
+                                    <i class="fas fa-search fa-2x text-info mb-2"></i>
+                                    <h5>Compare Products</h5>
+                                    <p class="small">Use our comparison tools to find the best value for your needs</p>
+                                </div>
+                                <div class="col-md-4 text-center mb-3">
+                                    <i class="fas fa-star fa-2x text-warning mb-2"></i>
+                                    <h5>Read Reviews</h5>
+                                    <p class="small">Check customer reviews and ratings before making your purchase</p>
+                                </div>
+                                <div class="col-md-4 text-center mb-3">
+                                    <i class="fas fa-shipping-fast fa-2x text-success mb-2"></i>
+                                    <h5>Fast Shipping</h5>
+                                    <p class="small">Most orders ship within 24 hours with tracking included</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.category-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+
+.category-icon {
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-icon {
+    transform: scale(1.1);
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+}
+</style>
+{% endblock %} 

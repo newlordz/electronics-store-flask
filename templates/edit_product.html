@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Product - Electronics Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg rounded-3">
+                <div class="card-header bg-primary text-white rounded-top-3">
+                    <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Product</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ product.name }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="5" required>{{ product.description }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price ($)</label>
+                            <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" value="{{ "%.2f"|format(product.price) }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" id="category" name="category" required>
+                                <option value="">Select a Category</option>
+                                {% for cat in categories %}
+                                <option value="{{ cat }}" {% if cat == product.category %}selected{% endif %}>{{ cat }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="stock" class="form-label">Stock Quantity</label>
+                            <input type="number" class="form-control" id="stock" name="stock" min="0" value="{{ product.stock }}" required>
+                        </div>
+                        
+                        <!-- Promotional Options -->
+                        <div class="card mb-3 border-warning">
+                            <div class="card-header bg-warning text-dark">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-fire me-2"></i>Promotional Settings
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="is_promotional" name="is_promotional" {% if product.is_promotional %}checked{% endif %}>
+                                        <label class="form-check-label" for="is_promotional">
+                                            <strong>Make this a Flash Sale item</strong>
+                                        </label>
+                                    </div>
+                                    <small class="form-text text-muted">Enable to make this product appear in flash sales and promotional sections.</small>
+                                </div>
+                                
+                                <div id="promotional-fields" style="display: {% if product.is_promotional %}block{% else %}none{% endif %};">
+                                    <div class="mb-3">
+                                        <label for="promotional_price" class="form-label">Promotional Price ($)</label>
+                                        <input type="number" class="form-control" id="promotional_price" name="promotional_price" step="0.01" min="0" value="{{ "%.2f"|format(product.promotional_price) if product.promotional_price else '' }}">
+                                        <small class="form-text text-muted">Enter the discounted price for this promotional item.</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="promotional_end_date" class="form-label">Promotion End Date</label>
+                                        <input type="datetime-local" class="form-control" id="promotional_end_date" name="promotional_end_date" 
+                                               value="{{ product.promotional_end_date.strftime('%Y-%m-%dT%H:%M') if product.promotional_end_date else '' }}">
+                                        <small class="form-text text-muted">When should this promotion end? (Leave empty for 7 days from now)</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Product Image</label>
+                            {% if product.image_filename %}
+                            <div class="mb-2">
+                                <img src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" 
+                                     alt="{{ product.name }}" class="img-thumbnail" style="max-width: 200px;">
+                                <small class="form-text text-muted">Current image</small>
+                            </div>
+                            {% endif %}
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                            <small class="form-text text-muted">Upload a new image to replace the current one.</small>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg w-100 animate__animated animate__pulse animate__infinite">
+                            <i class="fas fa-save me-2"></i>Update Product
+                        </button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('seller_dashboard') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const isPromotionalCheckbox = document.getElementById('is_promotional');
+    const promotionalFields = document.getElementById('promotional-fields');
+    const promotionalPriceInput = document.getElementById('promotional_price');
+    const promotionalEndDateInput = document.getElementById('promotional_end_date');
+    
+    // Show/hide promotional fields based on checkbox
+    isPromotionalCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            promotionalFields.style.display = 'block';
+            promotionalPriceInput.required = true;
+        } else {
+            promotionalFields.style.display = 'none';
+            promotionalPriceInput.required = false;
+            promotionalPriceInput.value = '';
+            promotionalEndDateInput.value = '';
+        }
+    });
+    
+    // Set default end date if not already set
+    if (!promotionalEndDateInput.value) {
+        const now = new Date();
+        const sevenDaysFromNow = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000));
+        const formattedDate = sevenDaysFromNow.toISOString().slice(0, 16);
+        promotionalEndDateInput.value = formattedDate;
+    }
+});
+</script>
+{% endblock %} 

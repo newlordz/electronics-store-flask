@@ -1,0 +1,471 @@
+{% extends "base.html" %}
+
+{% block title %}Deals & Promotions - Electronics Store{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-5 text-primary">
+                <i class="fas fa-tags me-3"></i>Deals & Promotions
+            </h1>
+            
+            <!-- Promotional Products Section -->
+            {% if promotional_products %}
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h2 class="text-center mb-4 text-danger animate__animated animate__pulse animate__infinite">
+                        <i class="fas fa-fire me-2 text-danger animate__animated animate__pulse animate__infinite"></i>Hot Deals - Limited Time!
+                    </h2>
+                    
+                    <div class="row">
+                        {% for product in promotional_products %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card h-100 shadow-lg border-0 deal-card animate__animated animate__fadeInUp">
+                                <div class="card-header bg-gradient-primary text-white text-center py-2">
+                                    <i class="fas fa-clock me-2 animate__animated animate__bounce animate__infinite"></i>Limited Time Offer
+                                </div>
+                                <div class="card-body p-3">
+                                    <div class="text-center mb-3">
+                                        {% if product.image_filename %}
+                                            <img src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" 
+                                                 class="img-fluid product-image" alt="{{ product.name }}">
+                                        {% else %}
+                                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                <i class="fas fa-image fa-3x text-muted"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <h5 class="card-title text-primary">{{ product.name }}</h5>
+                                    <p class="card-text text-muted small">{{ product.description[:100] }}...</p>
+                                    
+                                    <div class="price-section mb-3">
+                                        <span class="text-decoration-line-through text-light-red me-2">
+                                            ${{ "%.2f"|format(product.price) }}
+                                        </span>
+                                        <span class="text-gold fw-bold fs-5 animate__animated animate__pulse animate__infinite">
+                                            ${{ "%.2f"|format(product.promotional_price) }}
+                                        </span>
+                                        <span class="badge bg-light-red ms-2 animate__animated animate__bounce animate__infinite">
+                                            {{ "%.0f"|format(((product.price - product.promotional_price) / product.price) * 100) }}% OFF
+                                        </span>
+                                    </div>
+                                    
+                                    {% if product.promotional_end_date %}
+                                    <div class="countdown-section mb-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar-alt me-1"></i>
+                                            Ends: {{ product.promotional_end_date.strftime('%B %d, %Y') }}
+                                        </small>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <div class="d-grid">
+                                        <a href="{{ url_for('product_detail', product_id=product.id) }}" 
+                                           class="btn btn-primary btn-hover-effect">
+                                            <i class="fas fa-shopping-cart me-2"></i>Shop Now
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Featured Products Section -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h2 class="text-center mb-4 text-pink animate__animated animate__fadeInDown">
+                        <i class="fas fa-star me-2 animate__animated animate__rotateIn animate__infinite"></i>Featured Products
+                    </h2>
+                    
+                    <div class="row">
+                        {% for product in featured_products[:6] %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card h-100 shadow border-0 animate__animated animate__fadeInUp" style="animation-delay: {{ loop.index * 0.1 }}s;">
+                                <div class="card-body p-3">
+                                    <div class="text-center mb-3">
+                                        {% if product.image_filename %}
+                                            <img src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" 
+                                                 class="img-fluid product-image" alt="{{ product.name }}">
+                                        {% else %}
+                                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                <i class="fas fa-image fa-3x text-muted"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <h5 class="card-title text-primary">{{ product.name }}</h5>
+                                    <p class="card-text text-muted small">{{ product.description[:100] }}...</p>
+                                    
+                                    <div class="price-section mb-3">
+                                        <span class="text-pink fw-bold fs-5">
+                                            ${{ "%.2f"|format(product.price) }}
+                                        </span>
+                                        {% if product.is_promotional and product.promotional_price %}
+                                        <span class="badge bg-pink text-white ms-2">On Sale</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <a href="{{ url_for('product_detail', product_id=product.id) }}" 
+                                           class="btn btn-outline-primary">
+                                            <i class="fas fa-eye me-2"></i>View Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Special Offers Section -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h2 class="text-center mb-4 text-info animate__animated animate__fadeInUp">
+                        <i class="fas fa-gift me-2 animate__animated animate__tada animate__infinite"></i>Special Offers
+                    </h2>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card bg-gradient-purple text-white h-100 animate__animated animate__fadeInLeft">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <i class="fas fa-percentage fa-3x animate__animated animate__pulse animate__infinite"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="red-shimmer">Spin & Win Discount</h4>
+                                            <p class="mb-3">Spin our wheel and win up to <span class="red-shimmer">30% off</span> your next purchase!</p>
+                                            <button class="btn btn-light" onclick="openSpinWheel()">
+                                                <i class="fas fa-dice me-2"></i>Spin Now
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="card bg-gradient-pink text-white h-100 animate__animated animate__fadeInRight">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <i class="fas fa-shipping-fast fa-3x animate__animated animate__bounce animate__infinite"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="red-shimmer">Free Shipping</h4>
+                                            <p class="mb-3">Free shipping on all orders over <span class="red-shimmer">$50</span>. No minimum on electronics!</p>
+                                            <a href="{{ url_for('products_list') }}" class="btn btn-light">
+                                                <i class="fas fa-shopping-cart me-2"></i>Shop Now
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Newsletter Signup -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card bg-light border-0 animate__animated animate__fadeInUp">
+                        <div class="card-body p-4 text-center">
+                            <h3 class="text-primary mb-3 animate__animated animate__pulse animate__infinite">
+                                <i class="fas fa-envelope me-2 animate__animated animate__bounce animate__infinite"></i>Stay Updated
+                            </h3>
+                            <p class="mb-3">Subscribe to our newsletter for exclusive deals and early access to sales!</p>
+                            
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <input type="email" class="form-control" placeholder="Enter your email address">
+                                        <button class="btn btn-primary" type="button">
+                                            <i class="fas fa-paper-plane me-2"></i>Subscribe
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.deal-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation-delay: calc(var(--animation-order) * 0.1s);
+}
+
+.deal-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+}
+
+.product-image {
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.deal-card:hover .product-image {
+    transform: scale(1.05);
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+}
+
+.bg-gradient-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+.bg-gradient-pink {
+    background: linear-gradient(135deg, #EC4899, #DB2777);
+}
+
+.price-section {
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+}
+
+.countdown-section {
+    background: #fff5f5;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #fed7d7;
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+.btn-hover-effect {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-hover-effect:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.btn-hover-effect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-hover-effect:hover::before {
+    left: 100%;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 5px #007bff;
+    }
+    to {
+        box-shadow: 0 0 20px #007bff, 0 0 30px #0056b3;
+    }
+}
+
+/* Floating animation for special elements */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse animation for prices */
+@keyframes pricePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.price-pulse {
+    animation: pricePulse 2s ease-in-out infinite;
+}
+
+/* Card entrance animations */
+.card {
+    opacity: 0;
+    animation: slideInUp 0.6s ease forwards;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hover effects for special offer cards */
+.card.bg-gradient-primary:hover,
+.card.bg-gradient-success:hover,
+.card.bg-gradient-danger:hover,
+.card.bg-gradient-pink:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+/* Newsletter input animation */
+.form-control:focus {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(0,123,255,0.3);
+}
+
+/* Custom gold and light red color classes */
+.text-gold {
+    color: #FFD700 !important;
+}
+
+.bg-gold {
+    background-color: #FFD700 !important;
+}
+
+.text-light-red {
+    color: #ff6b6b !important;
+}
+
+/* Enhanced visibility for price numbers */
+.price-section .text-gold {
+    font-weight: 900 !important;
+    font-size: 1.5rem !important;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    background: linear-gradient(45deg, #FFEB3B, #FFC107, #FFEB3B, #FFF59D);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: goldShimmer 3s ease-in-out infinite;
+    color: #FFEB3B !important;
+}
+
+@keyframes goldShimmer {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Red shimmer effect for deals area */
+.red-shimmer {
+    background: linear-gradient(45deg, #dc3545, #c82333, #dc3545, #e74c3c);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: redShimmer 3s ease-in-out infinite;
+    font-weight: bold;
+}
+
+.badge.bg-success {
+    font-weight: bold !important;
+    font-size: 0.9rem !important;
+    padding: 0.5rem 0.75rem !important;
+    background-color: #28a745 !important;
+    color: white !important;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Custom light red badge */
+.badge.bg-light-red {
+    background-color: #ffcccb !important;
+    color: #8b0000 !important;
+    font-weight: bold !important;
+    font-size: 0.9rem !important;
+    padding: 0.5rem 0.75rem !important;
+    text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Custom pink text colors for featured products */
+.text-pink {
+    color: #EC4899 !important;
+}
+
+.bg-pink {
+    background-color: #EC4899 !important;
+}
+</style>
+
+<script>
+// Add animation delays to deal cards
+document.addEventListener('DOMContentLoaded', function() {
+    const dealCards = document.querySelectorAll('.deal-card');
+    dealCards.forEach((card, index) => {
+        card.style.setProperty('--animation-order', index);
+    });
+    
+    // Add floating animation to special elements
+    const specialElements = document.querySelectorAll('.fa-fire, .fa-star, .fa-gift');
+    specialElements.forEach(element => {
+        element.classList.add('floating');
+    });
+    
+    // Add price pulse animation
+    const priceElements = document.querySelectorAll('.text-gold.fw-bold, .text-pink.fw-bold');
+    priceElements.forEach(element => {
+        element.classList.add('price-pulse');
+    });
+});
+
+function openSpinWheel() {
+    // This would typically open a modal with the spin wheel
+    alert('Spin wheel feature coming soon! Stay tuned for exciting discounts.');
+}
+
+// Add scroll-triggered animations
+window.addEventListener('scroll', function() {
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        const cardTop = card.getBoundingClientRect().top;
+        const cardBottom = card.getBoundingClientRect().bottom;
+        
+        if (cardTop < window.innerHeight && cardBottom > 0) {
+            card.style.opacity = '1';
+        }
+    });
+});
+</script>
+{% endblock %} 

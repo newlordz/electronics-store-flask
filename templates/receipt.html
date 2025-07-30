@@ -3,79 +3,178 @@
 {% block title %}Order Receipt - Electronics Store{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="container py-5 receipt-page">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <div class="text-center">
-                        <i class="fas fa-check-circle fa-3x mb-2"></i>
-                        <h2>Order Confirmed!</h2>
-                        <p class="mb-0">Thank you for your purchase</p>
-                    </div>
+            <div class="card shadow-lg rounded-3">
+                <div class="card-header bg-primary text-white rounded-top-3">
+                    <h4 class="mb-0"><i class="fas fa-receipt me-2"></i>Order Receipt</h4>
                 </div>
-                
                 <div class="card-body">
-                    <!-- Order Details -->
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <h5>Order Information</h5>
-                            <p class="mb-1"><strong>Order ID:</strong> {{ order.id }}</p>
-                            <p class="mb-1"><strong>Date:</strong> {{ order.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
-                            <p class="mb-1"><strong>Status:</strong> 
-                                <span class="badge bg-{{ 'primary' if order.status == 'created' else 'warning' if order.status == 'paid' else 'success' }}">
-                                    {{ order.status.title() }}
-                                </span>
-                            </p>
-                        </div>
-                        <div class="col-md-6">
-                            <h5>Customer Information</h5>
-                            <p class="mb-1"><strong>Name:</strong> {{ buyer.username if buyer else 'N/A' }}</p>
-                            <p class="mb-1"><strong>Email:</strong> {{ buyer.email if buyer else 'N/A' }}</p>
-                        </div>
+                    <h5 class="card-title mb-3">Order ID: <code>{{ order.id }}</code></h5>
+                    <p class="card-text"><strong>Customer:</strong> {{ buyer.username if buyer else 'N/A' }}</p>
+                    <p class="card-text"><strong>Order Date:</strong> {{ order.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                    <p class="card-text">
+                        <strong>Status:</strong> 
+                        <span class="order-status status-{{ order.status.replace('_', '-') }}">
+                            {{ order.status.replace('_', ' ').title() }}
+                        </span>
+                    </p>
+                    <hr>
+
+                    <h6 class="mb-3">Order Items:</h6>
+                    <ul class="list-group list-group-flush mb-4">
+                        {% for item in order.items %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ item.product_name }}</strong>
+                                <br><small class="text-muted">Quantity: {{ item.quantity }} x ${{ "%.2f"|format(item.price) }}</small>
+                            </div>
+                            <span class="price">${{ "%.2f"|format(item.total) }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    {% if order.discount_code %}
+                    <div class="alert alert-success mb-3">
+                        <i class="fas fa-tag me-2"></i>
+                        <strong>Discount Applied!</strong>
+                        <br>Code: <code>{{ order.discount_code }}</code> ({{ order.discount_percentage }}% off)
+                        <br>You saved: <strong>${{ "%.2f"|format(order.discount_amount) }}</strong>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Subtotal:</span>
+                        <span>${{ "%.2f"|format(order.subtotal) }}</span>
+                    </div>
+                    
+                    {% if order.discount_amount > 0 %}
+                    <div class="d-flex justify-content-between align-items-center mb-2 text-success">
+                        <span>Discount ({{ order.discount_code }}):</span>
+                        <span>-${{ "%.2f"|format(order.discount_amount) }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0">Total Amount:</h5>
+                        <h4 class="price mb-0">${{ "%.2f"|format(order.total_amount) }}</h4>
                     </div>
 
-                    <!-- Order Items -->
-                    <h5>Order Items</h5>
-                    <div class="table-responsive mb-4">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in order.items %}
-                                <tr>
-                                    <td>{{ item.product_name }}</td>
-                                    <td>{{ item.quantity }}</td>
-                                    <td>${{ "%.2f"|format(item.price) }}</td>
-                                    <td>${{ "%.2f"|format(item.total) }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="3">Total Amount:</th>
-                                    <th class="price">${{ "%.2f"|format(order.total_amount) }}</th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                    {% if order.status == 'pending' %}
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-credit-card me-2"></i>
+                        <strong>Payment Summary:</strong>
+                        <br>Amount to pay: <strong>${{ "%.2f"|format(order.total_amount) }}</strong>
+                        {% if order.discount_code %}
+                        <br><small class="text-success">✓ Discount applied: {{ order.discount_code }} ({{ order.discount_percentage }}% off)</small>
+                        {% endif %}
                     </div>
+                    {% endif %}
 
-                    <!-- Actions -->
-                    <div class="text-center">
-                        <a href="{{ url_for('buyer_dashboard') }}" class="btn btn-primary me-2">
-                            <i class="fas fa-tachometer-alt me-1"></i>View Dashboard
-                        </a>
-                        <a href="{{ url_for('products_list') }}" class="btn btn-outline-primary me-2">
-                            <i class="fas fa-shopping-bag me-1"></i>Continue Shopping
-                        </a>
-                        <a href="{{ url_for('order_comments', order_id=order.id) }}" class="btn btn-outline-info">
-                            <i class="fas fa-comments me-1"></i>Order Chat
+                    <div class="d-grid gap-2">
+                        {% if order.status == 'pending' %} {# Only show Pay Now if status is pending #}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-success btn-lg w-100 animate__animated animate__pulse animate__infinite order-status-btn shadow" data-action="buyer_pay" data-order-id="{{ order.id }}" data-amount="{{ "%.2f"|format(order.total_amount) }}">
+                                    <i class="fas fa-money-bill-wave me-2"></i>Pay ${{ "%.2f"|format(order.total_amount) }} Now
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-outline-danger btn-lg w-100" data-action="buyer_cancel" data-order-id="{{ order.id }}">
+                                    <i class="fas fa-times me-2"></i>Cancel Order
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Form (Hidden) -->
+                        <div id="paymentFormContainer" class="mt-3" style="display: none;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0"><i class="fas fa-credit-card me-2"></i>Payment Details</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Payment Method:</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="payment_method" id="creditCard" value="credit_card" checked>
+                                            <label class="form-check-label" for="creditCard">Credit Card</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="payment_method" id="momo" value="momo">
+                                            <label class="form-check-label" for="momo">Mobile Money (MoMo)</label>
+                                        </div>
+                                    </div>
+
+                                    <div id="creditCardFields">
+                                        <div class="mb-3">
+                                            <label for="cardNumber" class="form-label">Card Number</label>
+                                            <input type="text" class="form-control" id="cardNumber" placeholder="XXXX XXXX XXXX XXXX" required>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="expiryDate" class="form-label">Expiry Date</label>
+                                                <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="cvv" class="form-label">CVV</label>
+                                                <input type="text" class="form-control" id="cvv" placeholder="XXX" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="momoFields" style="display: none;">
+                                        <div class="mb-3">
+                                            <label for="momoNumber" class="form-label">Mobile Money Number</label>
+                                            <input type="text" class="form-control" id="momoNumber" placeholder="e.g., 05XXXXXXXX" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="momoProvider" class="form-label">Provider</label>
+                                            <select class="form-select" id="momoProvider" required>
+                                                <option value="">Select Provider</option>
+                                                <option value="mtn">MTN Mobile Money</option>
+                                                <option value="vodafone">Vodafone Cash</option>
+                                                <option value="airtel_tigo">AirtelTigo Money</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Role-based navigation buttons -->
+                        {% if session.user_role == 'buyer' %}
+                            <a href="{{ url_for('customer_dashboard') }}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i>View Dashboard
+                            </a>
+                            <a href="{{ url_for('products_list') }}" class="btn btn-outline-info btn-lg">
+                                <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
+                            </a>
+                        {% elif session.user_role == 'seller' %}
+                            <a href="{{ url_for('seller_dashboard') }}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i>Seller Dashboard
+                            </a>
+                            {% if order.status == 'receipt_pending' %}
+                                <button type="button" class="btn btn-success btn-lg" data-action="seller_approve" data-order-id="{{ order.id }}">
+                                    <i class="fas fa-check-circle me-2"></i>Approve Receipt
+                                </button>
+                            {% endif %}
+                        {% elif session.user_role == 'admin' %}
+                            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i>Admin Dashboard
+                            </a>
+                            {% if order.status == 'admin_review' %}
+                                <button type="button" class="btn btn-success btn-lg" data-action="admin_approve" data-order-id="{{ order.id }}">
+                                    <i class="fas fa-check-circle me-2"></i>Approve Order
+                                </button>
+                            {% endif %}
+                        {% endif %}
+                        
+                        <a href="{{ url_for('order_comments', order_id=order.id) }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-comments me-2"></i>Order Chat
                         </a>
                     </div>
                 </div>
@@ -83,4 +182,516 @@
         </div>
     </div>
 </div>
+
+<!-- Custom Confirmation Popup -->
+<div id="confirmationPopup" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="popupTitle">
+                    <i class="fas fa-question-circle me-2"></i>Confirm Action
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="popupMessage">Are you sure you want to proceed?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>No, Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="confirmButton">
+                    <i class="fas fa-check me-1"></i>Yes, Proceed
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Modal -->
+<div id="errorModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Payment Error
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage">An error occurred during payment.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Override browser confirm to prevent native dialogs
+const originalConfirm = window.confirm;
+window.confirm = function(message) {
+    console.log('Browser confirm intercepted:', message);
+    return false; // Always return false to prevent any browser confirmations
+};
+
+
+
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners to payment and cancel buttons
+    const paymentBtn = document.querySelector('[data-action="buyer_pay"]');
+    const cancelBtn = document.querySelector('[data-action="buyer_cancel"]');
+    
+    if (paymentBtn) {
+        paymentBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            
+            const orderId = this.getAttribute('data-order-id');
+            const amount = this.getAttribute('data-amount');
+            showPaymentConfirmation(orderId, amount);
+        });
+    }
+    
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            
+            const orderId = this.getAttribute('data-order-id');
+            showCancelConfirmation(orderId);
+        });
+    }
+    
+    // Handle payment method toggle
+    const paymentMethods = document.querySelectorAll('input[name="payment_method"]');
+    const creditCardFields = document.getElementById('creditCardFields');
+    const momoFields = document.getElementById('momoFields');
+    
+    if (paymentMethods.length > 0) {
+        paymentMethods.forEach(method => {
+            method.addEventListener('change', function() {
+                if (creditCardFields) creditCardFields.style.display = 'none';
+                if (momoFields) momoFields.style.display = 'none';
+                
+                if (this.value === 'credit_card' && creditCardFields) {
+                    creditCardFields.style.display = 'block';
+                } else if (this.value === 'momo' && momoFields) {
+                    momoFields.style.display = 'block';
+                }
+            });
+        });
+        // Trigger change on load to show correct fields initially
+        const checkedMethod = document.querySelector('input[name="payment_method"]:checked');
+        if (checkedMethod) {
+            checkedMethod.dispatchEvent(new Event('change'));
+        }
+    }
+    
+    // Handle seller approval buttons
+    const sellerApproveButtons = document.querySelectorAll('[data-action="seller_approve"]');
+    sellerApproveButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const orderId = this.getAttribute('data-order-id');
+            showConfirmationModal(
+                'Approve Receipt',
+                'Are you sure you want to approve this receipt? This will send the order to admin for final review.',
+                'Approve',
+                'btn-success',
+                () => approveReceipt(orderId)
+            );
+        });
+    });
+    
+    // Handle admin approval buttons
+    const adminApproveButtons = document.querySelectorAll('[data-action="admin_approve"]');
+    adminApproveButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const orderId = this.getAttribute('data-order-id');
+            showConfirmationModal(
+                'Approve Order',
+                'Are you sure you want to approve this order? This will mark the order as approved for delivery.',
+                'Approve',
+                'btn-success',
+                () => approveOrder(orderId)
+            );
+        });
+    });
+});
+
+// Payment confirmation popup
+function showPaymentConfirmation(orderId, amount) {
+    // Show payment form instead of confirmation popup
+    const paymentFormContainer = document.getElementById('paymentFormContainer');
+    if (paymentFormContainer) {
+        paymentFormContainer.style.display = 'block';
+        
+        // Scroll to payment form
+        paymentFormContainer.scrollIntoView({ behavior: 'smooth' });
+        
+        // Add submit button to payment form
+        const submitBtn = document.createElement('button');
+        submitBtn.type = 'button';
+        submitBtn.className = 'btn btn-success btn-lg w-100 mt-3';
+        submitBtn.innerHTML = '<i class="fas fa-credit-card me-2"></i>Submit Payment';
+        submitBtn.onclick = function() {
+            // Clear any placeholder values before submission
+            const cardNumber = document.getElementById('cardNumber');
+            const expiryDate = document.getElementById('expiryDate');
+            const cvv = document.getElementById('cvv');
+            
+            if (cardNumber && cardNumber.value === 'XXXX XXXX XXXX XXXX') {
+                cardNumber.value = '';
+            }
+            if (expiryDate && expiryDate.value === 'MM/YY') {
+                expiryDate.value = '';
+            }
+            if (cvv && cvv.value === 'XXX') {
+                cvv.value = '';
+            }
+            
+            submitPayment(orderId, amount);
+        };
+        
+        // Remove existing submit button if any
+        const existingBtn = paymentFormContainer.querySelector('.btn-success');
+        if (existingBtn) {
+            existingBtn.remove();
+        }
+        
+        paymentFormContainer.appendChild(submitBtn);
+    }
+}
+
+// Submit payment with validation
+function submitPayment(orderId, amount) {
+    // Get payment method
+    const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
+    if (!paymentMethod) {
+        alert('Please select a payment method.');
+        return;
+    }
+    
+    // Validate payment details based on method
+    if (paymentMethod.value === 'momo') {
+        const momoNumber = document.getElementById('momoNumber').value.trim();
+        const momoProvider = document.getElementById('momoProvider').value.trim();
+        
+        if (!momoNumber) {
+            showErrorModal('Please enter your mobile money number.');
+            return;
+        }
+        
+        if (!momoProvider) {
+            showErrorModal('Please select your mobile money provider.');
+            return;
+        }
+        
+        if (!momoNumber.match(/^\d{10,}$/)) {
+            showErrorModal('Please enter a valid mobile money number (at least 10 digits).');
+            return;
+        }
+    } else if (paymentMethod.value === 'credit_card') {
+        const cardNumber = document.getElementById('cardNumber').value.trim();
+        const expiryDate = document.getElementById('expiryDate').value.trim();
+        const cvv = document.getElementById('cvv').value.trim();
+        
+        if (!cardNumber) {
+            showErrorModal('Please enter your card number.');
+            return;
+        }
+        
+        if (!expiryDate) {
+            showErrorModal('Please enter your card expiry date.');
+            return;
+        }
+        
+        if (!cvv) {
+            showErrorModal('Please enter your card CVV.');
+            return;
+        }
+        
+        const cleanCardNumber = cardNumber.replace(/\s/g, '');
+        if (!cleanCardNumber.match(/^\d{13,19}$/)) {
+            showErrorModal('Please enter a valid card number.');
+            return;
+        }
+    }
+    
+    // Show confirmation popup
+    const popup = document.getElementById('confirmationPopup');
+    const title = document.getElementById('popupTitle');
+    const message = document.getElementById('popupMessage');
+    const confirmBtn = document.getElementById('confirmButton');
+    
+    title.innerHTML = '<i class="fas fa-credit-card me-2"></i>Confirm Payment';
+    message.innerHTML = `Are you sure you want to proceed with payment for this order?<br><br><strong>Amount to pay: $${amount}</strong>`;
+    confirmBtn.innerHTML = '<i class="fas fa-check me-1"></i>Yes, Pay Now';
+    confirmBtn.className = 'btn btn-success';
+    
+    // Remove any existing click handlers
+    confirmBtn.onclick = null;
+    
+    // Set up confirmation action
+    confirmBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Hide the modal first
+        const modal = bootstrap.Modal.getInstance(popup);
+        modal.hide();
+        
+        // Collect payment data
+        const formData = new FormData();
+        formData.append('payment_method', paymentMethod.value);
+        
+        if (paymentMethod.value === 'momo') {
+            formData.append('momo_number', document.getElementById('momoNumber').value.trim());
+            formData.append('momo_provider', document.getElementById('momoProvider').value.trim());
+        } else if (paymentMethod.value === 'credit_card') {
+            formData.append('card_number', document.getElementById('cardNumber').value.trim());
+            formData.append('expiry_date', document.getElementById('expiryDate').value.trim());
+            formData.append('cvv', document.getElementById('cvv').value.trim());
+        }
+        
+        // Debug: Log form data
+        console.log('Submitting payment form with data:');
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+        
+        // Check if any required fields are empty or contain placeholder values
+        const paymentMethodValue = formData.get('payment_method');
+        console.log('Payment method:', paymentMethodValue);
+        
+        if (paymentMethodValue === 'credit_card') {
+            const cardNumber = formData.get('card_number');
+            const expiryDate = formData.get('expiry_date');
+            const cvv = formData.get('cvv');
+            
+            console.log('Credit card data:', { cardNumber, expiryDate, cvv });
+            
+            if (!cardNumber || cardNumber === 'XXXX XXXX XXXX XXXX' || 
+                !expiryDate || expiryDate === 'MM/YY' || 
+                !cvv || cvv === 'XXX') {
+                console.error('Credit card fields contain placeholder values or are empty');
+                showErrorModal('Please fill in all credit card details with valid information.');
+                return;
+            }
+        } else if (paymentMethodValue === 'momo') {
+            const momoNumber = formData.get('momo_number');
+            const momoProvider = formData.get('momo_provider');
+            
+            console.log('MoMo data:', { momoNumber, momoProvider });
+            
+            if (!momoNumber || !momoProvider) {
+                console.error('MoMo fields are empty');
+                showErrorModal('Please fill in all mobile money details.');
+                return;
+            }
+        }
+        
+        // Create a form and submit it
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = "{{ url_for('checkout_payment', order_id='PLACEHOLDER') }}".replace('PLACEHOLDER', orderId);
+        
+        // Add form data as hidden inputs
+        for (let [key, value] of formData.entries()) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+        }
+        
+        // Submit the form
+        document.body.appendChild(form);
+        console.log('Form created and submitting to:', form.action);
+        console.log('Form method:', form.method);
+        console.log('Form action:', form.action);
+        
+        // Add a small delay to ensure form is properly added to DOM
+        setTimeout(() => {
+            console.log('Submitting form now...');
+            console.log('Form element:', form);
+            console.log('Form action URL:', form.action);
+            console.log('Form method:', form.method);
+            console.log('Form inputs:', form.querySelectorAll('input'));
+            
+            try {
+                form.submit();
+                console.log('Form submitted successfully');
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                showErrorModal('Error submitting payment. Please try again.');
+            }
+        }, 100);
+    };
+    
+    // Show popup
+    const modal = new bootstrap.Modal(popup, {
+        backdrop: 'static',
+        keyboard: false
+    });
+    modal.show();
+}
+
+// Show confirmation modal
+function showConfirmationModal(title, message, confirmText, confirmClass, onConfirm) {
+    const modal = document.getElementById('confirmationPopup');
+    const modalTitle = document.getElementById('popupTitle');
+    const modalMessage = document.getElementById('popupMessage');
+    const confirmBtn = document.getElementById('confirmButton');
+    
+    // Update modal content
+    modalTitle.innerHTML = `<i class="fas fa-question-circle me-2"></i>${title}`;
+    modalMessage.textContent = message;
+    confirmBtn.textContent = confirmText;
+    confirmBtn.className = `btn ${confirmClass}`;
+    
+    // Remove any existing click handlers
+    confirmBtn.onclick = null;
+    
+    // Set up confirmation action
+    confirmBtn.onclick = function() {
+        const bootstrapModal = bootstrap.Modal.getInstance(modal);
+        bootstrapModal.hide();
+        onConfirm();
+    };
+    
+    // Show modal
+    const bootstrapModal = new bootstrap.Modal(modal, {
+        backdrop: 'static',
+        keyboard: false
+    });
+    bootstrapModal.show();
+}
+
+// Show error modal
+function showErrorModal(message) {
+    const errorModal = document.getElementById('errorModal');
+    const errorMessage = document.getElementById('errorMessage');
+    
+    // Set the error message
+    errorMessage.textContent = message;
+    
+    // Show the modal
+    const modal = new bootstrap.Modal(errorModal, {
+        backdrop: 'static',
+        keyboard: false
+    });
+    modal.show();
+}
+
+// Cancel confirmation popup
+function showCancelConfirmation(orderId) {
+    const popup = document.getElementById('confirmationPopup');
+    const title = document.getElementById('popupTitle');
+    const message = document.getElementById('popupMessage');
+    const confirmBtn = document.getElementById('confirmButton');
+    
+    // Update popup content
+    title.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Confirm Cancellation';
+    message.innerHTML = 'Are you sure you want to cancel this order?<br><br><strong>Your cart items will be preserved and you will be redirected to your dashboard.</strong>';
+    confirmBtn.innerHTML = '<i class="fas fa-times me-1"></i>Yes, Cancel Order';
+    confirmBtn.className = 'btn btn-danger';
+    
+    // Remove any existing click handlers
+    confirmBtn.onclick = null;
+    
+    // Set up confirmation action using fetch instead of form submission
+    confirmBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Hide the modal first
+        const modal = bootstrap.Modal.getInstance(popup);
+        modal.hide();
+        
+        // Use fetch to submit the request without triggering browser confirmations
+        fetch("{{ url_for('cancel_pending_order', order_id='PLACEHOLDER') }}".replace('PLACEHOLDER', orderId), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'csrf_token=' // Empty body since we removed CSRF
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = "{{ url_for('customer_dashboard') }}";
+            } else {
+                showErrorModal('Cancellation failed. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showErrorModal('Cancellation failed. Please try again.');
+        });
+    };
+    
+    // Show popup immediately
+    const modal = new bootstrap.Modal(popup, {
+        backdrop: 'static',
+        keyboard: false
+    });
+    modal.show();
+}
+
+// Approve receipt function (for seller)
+function approveReceipt(orderId) {
+    fetch("{{ url_for('vendor_approve_receipt', order_id='PLACEHOLDER') }}".replace('PLACEHOLDER', orderId), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'csrf_token=' // Empty body since we removed CSRF
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            showErrorModal('Failed to approve receipt. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showErrorModal('Failed to approve receipt. Please try again.');
+    });
+}
+
+// Approve order function (for admin)
+function approveOrder(orderId) {
+    fetch("{{ url_for('admin_approve_order', order_id='PLACEHOLDER') }}".replace('PLACEHOLDER', orderId), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'csrf_token=' // Empty body since we removed CSRF
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            showErrorModal('Failed to approve order. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showErrorModal('Failed to approve order. Please try again.');
+    });
+}
+</script>
 {% endblock %}

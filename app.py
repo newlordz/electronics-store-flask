@@ -1,6 +1,6 @@
 import os
 import logging
-from flask import Flask
+from flask import Flask, g, session, request
 from flask_session import Session
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -20,13 +20,38 @@ app.config['SESSION_USE_SIGNER'] = True
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
+# Create necessary directories
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+os.makedirs('flask_session', exist_ok=True)
+
 # Initialize session
 Session(app)
 
-# Create upload directory if it doesn't exist
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
 logger.info("Flask app initialized successfully")
 
-# Import routes after app creation to avoid circular imports
+# --- IMPORTANT: Initialize default data / Load persisted data BEFORE importing routes ---
+# This ensures that 'users' and 'products' dictionaries are populated
+# before any route functions try to access them for authentication or product display.
+from models import initialize_data_and_defaults, save_data, get_cart_items
+initialize_data_and_defaults() # Call the new combined function
+
+# Register a teardown function to save data when the app context ends
+@app.teardown_appcontext
+def teardown_db(exception):
+    save_data()
+
+# Context processor to make cart_items_count available in all templates
+@app.context_processor
+def inject_global_data():
+    cart_items_count = 0
+    if 'user_id' in session:
+        user_cart = get_cart_items(session['user_id'])
+        cart_items_count = sum(item.quantity for item in user_cart)
+    return dict(cart_items_count=cart_items_count)
+
+
+# Import routes after app creation and data initialization to avoid circular imports
 from routes import *
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)

@@ -6,66 +6,116 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="mb-0">
-                        <i class="fas fa-plus me-2"></i>Add New Product
-                    </h2>
+            <div class="card shadow-lg rounded-3">
+                <div class="card-header bg-primary text-white rounded-top-3">
+                    <h4 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Add New Product</h4>
                 </div>
-                
                 <div class="card-body">
-                    <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="name" class="form-label">Product Name</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                                <div class="invalid-feedback">Please enter a product name.</div>
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price ($)</label>
+                            <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" id="category" name="category" required>
+                                <option value="">Select a Category</option>
+                                {% for cat in categories %}
+                                <option value="{{ cat }}">{{ cat }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="stock" class="form-label">Stock Quantity</label>
+                            <input type="number" class="form-control" id="stock" name="stock" min="0" required>
+                        </div>
+                        
+                        <!-- Promotional Options -->
+                        <div class="card mb-3 border-warning">
+                            <div class="card-header bg-warning text-dark">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-fire me-2"></i>Promotional Settings
+                                </h6>
                             </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label for="category" class="form-label">Category</label>
-                                <select class="form-select" id="category" name="category" required>
-                                    <option value="">Select Category</option>
-                                    {% for category in categories %}
-                                        <option value="{{ category }}">{{ category }}</option>
-                                    {% endfor %}
-                                </select>
-                                <div class="invalid-feedback">Please select a category.</div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="is_promotional" name="is_promotional">
+                                        <label class="form-check-label" for="is_promotional">
+                                            <strong>Make this a Flash Sale item</strong>
+                                        </label>
+                                    </div>
+                                    <small class="form-text text-muted">Enable to make this product appear in flash sales and promotional sections.</small>
+                                </div>
+                                
+                                <div id="promotional-fields" style="display: none;">
+                                    <div class="mb-3">
+                                        <label for="promotional_price" class="form-label">Promotional Price ($)</label>
+                                        <input type="number" class="form-control" id="promotional_price" name="promotional_price" step="0.01" min="0">
+                                        <small class="form-text text-muted">Enter the discounted price for this promotional item.</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="promotional_end_date" class="form-label">Promotion End Date</label>
+                                        <input type="datetime-local" class="form-control" id="promotional_end_date" name="promotional_end_date">
+                                        <small class="form-text text-muted">When should this promotion end? (Leave empty for 7 days from now)</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
-                            <div class="invalid-feedback">Please enter a product description.</div>
+                            <label for="image" class="form-label">Product Image</label>
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                            <small class="form-text text-muted">Optional: Upload an image for your product.</small>
                         </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="price" class="form-label">Price ($)</label>
-                                <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" required>
-                                <div class="invalid-feedback">Please enter a valid price.</div>
-                            </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label for="image" class="form-label">Product Image</label>
-                                <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                                <div class="form-text">Optional: Upload a product image (JPG, PNG, etc.)</div>
-                            </div>
-                        </div>
-                        
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="{{ url_for('seller_dashboard') }}" class="btn btn-outline-secondary me-md-2">
-                                <i class="fas fa-times me-1"></i>Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-plus me-1"></i>Add Product
-                            </button>
-                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100 animate__animated animate__pulse animate__infinite">
+                            <i class="fas fa-plus me-2"></i>Add Product
+                        </button>
                     </form>
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('seller_dashboard') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const isPromotionalCheckbox = document.getElementById('is_promotional');
+    const promotionalFields = document.getElementById('promotional-fields');
+    const promotionalPriceInput = document.getElementById('promotional_price');
+    const promotionalEndDateInput = document.getElementById('promotional_end_date');
+    
+    // Show/hide promotional fields based on checkbox
+    isPromotionalCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            promotionalFields.style.display = 'block';
+            promotionalPriceInput.required = true;
+        } else {
+            promotionalFields.style.display = 'none';
+            promotionalPriceInput.required = false;
+            promotionalPriceInput.value = '';
+            promotionalEndDateInput.value = '';
+        }
+    });
+    
+    // Set default end date to 7 days from now
+    const now = new Date();
+    const sevenDaysFromNow = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000));
+    const formattedDate = sevenDaysFromNow.toISOString().slice(0, 16);
+    promotionalEndDateInput.value = formattedDate;
+});
+</script>
 {% endblock %}

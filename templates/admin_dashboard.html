@@ -3,10 +3,810 @@
 {% block title %}Admin Dashboard - Electronics Store{% endblock %}
 
 {% block content %}
+<style>
+.admin-products-table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.admin-products-table thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.admin-products-table th {
+    border: none;
+    padding: 1rem 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.admin-products-table td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+}
+
+.admin-products-table tbody tr {
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.admin-products-table tbody tr:hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 4px solid #007bff;
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.product-row {
+    animation-duration: 0.6s;
+}
+
+.product-name {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.product-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.seller-info {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.seller-info i {
+    color: #007bff;
+    font-size: 1.1rem;
+}
+
+.seller-name {
+    color: #495057;
+    font-weight: 600;
+}
+
+.category-badge {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%) !important;
+    color: #2c3e50 !important;
+    border: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
+/* Admin Products section improvements */
+#admin-products .card-header button {
+    transition: all 0.3s ease;
+}
+
+#admin-products .card-header button:hover {
+    transform: scale(1.05);
+}
+
+#admin-products .collapse {
+    transition: all 0.3s ease;
+}
+
+/* Summary cards styling */
+#admin-products .bg-light {
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+#admin-products .bg-light:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.price-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.main-price {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+}
+
+.main-price i {
+    color: #28a745;
+    font-size: 1rem;
+}
+
+.price-amount {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #28a745;
+}
+
+.promotional-price {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.promotional-price i {
+    color: #fd7e14;
+    font-size: 0.9rem;
+}
+
+.promo-amount {
+    font-weight: 600;
+    color: #fd7e14;
+    animation: pulse 2s infinite;
+}
+
+.stock-info {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.stock-info i {
+    color: #28a745;
+    font-size: 1.1rem;
+}
+
+.stock-count {
+    color: #495057;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.status-info {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.status-info i {
+    font-size: 1.1rem;
+}
+
+.status-info i.fa-check {
+    color: #28a745;
+}
+
+.status-info i.fa-times {
+    color: #dc3545;
+}
+
+.status-text {
+    color: #495057;
+    font-weight: 600;
+}
+
+.btn-group .btn {
+    border-radius: 8px;
+    margin: 0 2px;
+    transition: all 0.3s ease;
+}
+
+.btn-group .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* Users Table Styles */
+.admin-users-table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.admin-users-table thead {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+}
+
+.admin-users-table th {
+    border: none;
+    padding: 1rem 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.admin-users-table td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+}
+
+.admin-users-table tbody tr {
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.admin-users-table tbody tr:hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 4px solid #28a745;
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.user-row {
+    animation-duration: 0.6s;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.user-name {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.email-info {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.email-info i {
+    color: #007bff;
+    font-size: 1rem;
+}
+
+.email-text {
+    color: #495057;
+    font-weight: 500;
+}
+
+.role-info {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.role-info i {
+    color: #6f42c1;
+    font-size: 1rem;
+}
+
+.role-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.role-admin {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+}
+
+.role-seller {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+    color: #212529;
+}
+
+.role-buyer {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+}
+
+.date-info {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.date-info i {
+    color: #6c757d;
+    font-size: 1rem;
+}
+
+.date-text {
+    color: #495057;
+    font-weight: 500;
+}
+
+/* Orders Table Styles */
+.admin-orders-table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.admin-orders-table thead {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    color: white;
+}
+
+.admin-orders-table th {
+    border: none;
+    padding: 1rem 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.admin-orders-table td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+}
+
+.admin-orders-table tbody tr {
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.admin-orders-table tbody tr:hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 4px solid #17a2b8;
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.order-row {
+    animation-duration: 0.6s;
+}
+
+.order-id-info {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.order-id-info i {
+    color: #17a2b8;
+    font-size: 1rem;
+}
+
+.order-id {
+    color: #495057;
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+    background: #f8f9fa;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.customer-info {
+    display: flex;
+    align-items: center;
+}
+
+.customer-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.customer-name {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.order-price-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.order-price-info .main-price {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+}
+
+.order-price-info .main-price i {
+    color: #28a745;
+    font-size: 1rem;
+}
+
+.order-price-info .price-amount {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #28a745;
+}
+
+.discount-info {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+.discount-info i {
+    color: #fd7e14;
+    font-size: 0.8rem;
+}
+
+.discount-text {
+    color: #fd7e14;
+    font-weight: 500;
+}
+
+.status-info {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.status-info i {
+    color: #6f42c1;
+    font-size: 1rem;
+}
+
+.status-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pending {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+    color: #212529;
+}
+
+.status-receipt-pending {
+    background: linear-gradient(135deg, #fd7e14 0%, #e55a00 100%);
+    color: white;
+}
+
+.status-admin-review {
+    background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%);
+    color: white;
+}
+
+.status-approved {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    color: white;
+}
+
+.status-delivered {
+    background: linear-gradient(135deg, #20c997 0%, #1a9f7a 100%);
+    color: white;
+}
+
+.status-cancelled {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+}
+
+.admin-orders-table .btn-group .btn {
+    border-radius: 8px;
+    margin: 0 2px;
+    transition: all 0.3s ease;
+}
+
+.admin-orders-table .btn-group .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Dropdown Styling */
+.admin-orders-table .dropdown-menu {
+    min-width: 200px;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    z-index: 1050;
+    background: white;
+}
+
+.admin-orders-table .dropdown-item {
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-radius: 0;
+}
+
+.admin-orders-table .dropdown-item:hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    transform: translateX(5px);
+}
+
+.admin-orders-table .dropdown-item i {
+    width: 16px;
+    text-align: center;
+}
+
+.admin-orders-table .dropdown-divider {
+    margin: 0.5rem 0;
+    border-color: #dee2e6;
+}
+
+/* Ensure table container doesn't clip dropdowns */
+.table-responsive {
+    overflow: visible !important;
+}
+
+.card-body {
+    overflow: visible !important;
+}
+
+/* Fix dropdown positioning */
+.admin-orders-table .dropdown {
+    position: relative !important;
+}
+
+.admin-orders-table .dropdown-menu {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    z-index: 9999 !important;
+    transform: none !important;
+}
+
+/* Ensure dropdowns are visible when shown */
+.dropdown-menu.show {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 9999 !important;
+    position: absolute !important;
+    background: white !important;
+    border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    min-width: 200px !important;
+    padding: 0.5rem 0 !important;
+    margin-top: 0.25rem !important;
+}
+
+.dropdown-item {
+    padding: 0.75rem 1rem !important;
+    color: #495057 !important;
+    text-decoration: none !important;
+    display: block !important;
+    clear: both !important;
+    font-weight: 500 !important;
+    line-height: 1.5 !important;
+    white-space: nowrap !important;
+    background-color: transparent !important;
+    border: 0 !important;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa !important;
+    color: #16181b !important;
+}
+
+.dropdown-divider {
+    height: 0 !important;
+    margin: 0.5rem 0 !important;
+    overflow: hidden !important;
+    border-top: 1px solid #e9ecef !important;
+}
+
+/* Custom button colors for modal */
+.btn-outline-orange {
+    color: #fd7e14;
+    border-color: #fd7e14;
+}
+
+.btn-outline-orange:hover {
+    color: white;
+    background-color: #fd7e14;
+    border-color: #fd7e14;
+}
+
+.btn-outline-purple {
+    color: #6f42c1;
+    border-color: #6f42c1;
+}
+
+.btn-outline-purple:hover {
+    color: white;
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+}
+
+/* Ensure approve button is green */
+.btn-success {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    color: white !important;
+}
+
+.btn-success:hover {
+    background-color: #218838 !important;
+    border-color: #1e7e34 !important;
+    color: white !important;
+}
+
+/* Fix status badge styling */
+.status-badge {
+    padding: 0.5rem 1rem !important;
+    border-radius: 20px !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    white-space: nowrap !important;
+    display: inline-block !important;
+    text-align: center !important;
+    min-width: 120px !important;
+}
+
+.status-admin-review {
+    background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%) !important;
+    color: white !important;
+    border: none !important;
+}
+
+/* Stats Cards Styling */
+.stats-card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: all 0.4s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.stats-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.stats-card:hover::before {
+    transform: translateX(100%);
+}
+
+.stats-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.stats-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.stats-card:hover .stats-icon {
+    transform: scale(1.1);
+}
+
+.users-icon {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.products-icon {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.orders-icon {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+}
+
+.revenue-icon {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    color: white;
+}
+
+.stats-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stats-label {
+    color: #6c757d;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0;
+}
+
+/* Specific card colors */
+.users-card .stats-number {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.products-card .stats-number {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.orders-card .stats-number {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.revenue-card .stats-number {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+</style>
 <div class="container py-5">
     <div class="row">
-        <div class="col-12">
-            <h1 class="mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">
                 <i class="fas fa-cogs me-2"></i>Admin Dashboard
             </h1>
         </div>
@@ -15,38 +815,46 @@
     <!-- Stats Cards -->
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card dashboard-card">
+            <div class="card stats-card users-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
                 <div class="card-body text-center">
-                    <i class="fas fa-users fa-3x mb-3"></i>
-                    <h3>{{ users|length }}</h3>
-                    <p class="mb-0">Total Users</p>
+                    <div class="stats-icon users-icon">
+                        <i class="fas fa-users fa-3x"></i>
+                    </div>
+                    <h3 class="stats-number">{{ users|length }}</h3>
+                    <p class="stats-label">Total Users</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card dashboard-card">
+            <div class="card stats-card products-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
                 <div class="card-body text-center">
-                    <i class="fas fa-box fa-3x mb-3"></i>
-                    <h3>{{ products|length }}</h3>
-                    <p class="mb-0">Total Products</p>
+                    <div class="stats-icon products-icon">
+                        <i class="fas fa-box fa-3x"></i>
+                    </div>
+                    <h3 class="stats-number">{{ products|length }}</h3>
+                    <p class="stats-label">Total Products</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card dashboard-card">
+            <div class="card stats-card orders-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
                 <div class="card-body text-center">
-                    <i class="fas fa-shopping-cart fa-3x mb-3"></i>
-                    <h3>{{ orders|length }}</h3>
-                    <p class="mb-0">Total Orders</p>
+                    <div class="stats-icon orders-icon">
+                        <i class="fas fa-shopping-cart fa-3x"></i>
+                    </div>
+                    <h3 class="stats-number">{{ orders|length }}</h3>
+                    <p class="stats-label">Total Orders</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card dashboard-card">
+            <div class="card stats-card revenue-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
                 <div class="card-body text-center">
-                    <i class="fas fa-dollar-sign fa-3x mb-3"></i>
-                    <h3>${{ "%.2f"|format(orders|sum(attribute='total_amount') or 0) }}</h3>
-                    <p class="mb-0">Total Revenue</p>
+                    <div class="stats-icon revenue-icon">
+                        <i class="fas fa-dollar-sign fa-3x"></i>
+                    </div>
+                    <h3 class="stats-number">${{ "%.2f"|format(orders|sum(attribute='total_amount') or 0) }}</h3>
+                    <p class="stats-label">Total Revenue</p>
                 </div>
             </div>
         </div>
@@ -55,34 +863,54 @@
     <!-- Users Section -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
+            <div class="card shadow-lg rounded-3">
+                <div class="card-header bg-success text-white rounded-top-3">
                     <h5 class="mb-0">
                         <i class="fas fa-users me-2"></i>Users
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
+                        <table class="table table-hover admin-users-table">
+                            <thead class="table-dark">
                                 <tr>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Joined</th>
+                                    <th><i class="fas fa-user me-1"></i>Username</th>
+                                    <th><i class="fas fa-envelope me-1"></i>Email</th>
+                                    <th><i class="fas fa-user-tag me-1"></i>Role</th>
+                                    <th><i class="fas fa-calendar me-1"></i>Joined</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for user in users %}
-                                <tr>
-                                    <td>{{ user.username }}</td>
-                                    <td>{{ user.email }}</td>
+                                <tr class="user-row animate__animated animate__fadeIn" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
                                     <td>
-                                        <span class="badge bg-{{ 'danger' if user.role == 'admin' else 'warning' if user.role == 'seller' else 'primary' }}">
-                                            {{ user.role.title() }}
-                                        </span>
+                                        <div class="user-info">
+                                            <div class="user-icon me-3">
+                                                <i class="fas fa-user text-success"></i>
+                                            </div>
+                                            <div>
+                                                <strong class="user-name">{{ user.username }}</strong>
+                                            </div>
+                                        </div>
                                     </td>
-                                    <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                        <div class="email-info">
+                                            <i class="fas fa-envelope me-2"></i>
+                                            <span class="email-text">{{ user.email }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="role-info">
+                                            <i class="fas fa-user-tag me-2"></i>
+                                            <span class="role-badge role-{{ user.role }}">{{ user.role.title() }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="date-info">
+                                            <i class="fas fa-calendar me-2"></i>
+                                            <span class="date-text">{{ user.created_at.strftime('%Y-%m-%d') }}</span>
+                                        </div>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -96,44 +924,123 @@
     <!-- Products Section -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
+            <div class="card shadow-lg rounded-3" id="admin-products">
+                <div class="card-header bg-primary text-white rounded-top-3 d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
                         <i class="fas fa-box me-2"></i>Products
                     </h5>
+                    <button class="btn btn-outline-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#adminProductsTable" aria-expanded="false" aria-controls="adminProductsTable">
+                        <i class="fas fa-chevron-down me-1"></i>Toggle View
+                    </button>
                 </div>
                 <div class="card-body">
                     {% if products %}
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Seller</th>
-                                        <th>Category</th>
-                                        <th>Price</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for product in products %}
-                                    <tr>
-                                        <td>
-                                            <strong>{{ product.name }}</strong><br>
-                                            <small class="text-muted">{{ product.description[:50] }}{% if product.description|length > 50 %}...{% endif %}</small>
-                                        </td>
-                                        <td>{{ users_dict[product.seller_id].username if users_dict[product.seller_id] else 'Unknown' }}</td>
-                                        <td><span class="badge bg-secondary">{{ product.category }}</span></td>
-                                        <td class="price">${{ "%.2f"|format(product.price) }}</td>
-                                        <td>
-                                            <span class="badge bg-{{ 'success' if product.is_active else 'danger' }}">
-                                                {{ 'Active' if product.is_active else 'Inactive' }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                        <!-- Products Summary -->
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h4 class="text-primary mb-1">{{ products|length }}</h4>
+                                    <small class="text-muted">Total Products</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h4 class="text-success mb-1">{{ products|selectattr('is_active', 'equalto', true)|list|length }}</h4>
+                                    <small class="text-muted">Active Products</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h4 class="text-warning mb-1">{{ products|selectattr('is_promotional', 'equalto', true)|list|length }}</h4>
+                                    <small class="text-muted">Flash Sales</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h4 class="text-info mb-1">{{ products|selectattr('stock', 'gt', 0)|list|length }}</h4>
+                                    <small class="text-muted">In Stock</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Collapsible Products Table -->
+                        <div class="collapse" id="adminProductsTable">
+                            <div class="table-responsive">
+                                <table class="table table-hover admin-products-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th><i class="fas fa-box me-1"></i>Product</th>
+                                            <th><i class="fas fa-user me-1"></i>Seller</th>
+                                            <th><i class="fas fa-tag me-1"></i>Category</th>
+                                            <th><i class="fas fa-dollar-sign me-1"></i>Price</th>
+                                            <th><i class="fas fa-warehouse me-1"></i>Stock</th>
+                                            <th><i class="fas fa-toggle-on me-1"></i>Status</th>
+                                            <th><i class="fas fa-cogs me-1"></i>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for product in products %}
+                                        <tr class="product-row animate__animated animate__fadeIn" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="product-icon me-3">
+                                                        <i class="fas fa-box text-primary"></i>
+                                                    </div>
+                                                    <div>
+                                                        <strong class="product-name">{{ product.name }}</strong><br>
+                                                        <small class="text-muted">{{ product.description[:50] }}{% if product.description|length > 50 %}...{% endif %}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="seller-info">
+                                                    <i class="fas fa-user me-2"></i>
+                                                    <span class="seller-name">{{ users_dict[product.seller_id].username if users_dict[product.seller_id] else 'Unknown' }}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-secondary category-badge">
+                                                    <i class="fas fa-tag me-1"></i>{{ product.category }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="price-info">
+                                                    <div class="main-price">
+                                                        <i class="fas fa-dollar-sign me-2"></i>
+                                                        <span class="price-amount">${{ "%.2f"|format(product.price) }}</span>
+                                                    </div>
+                                                    {% if product.is_promotional and product.promotional_price %}
+                                                    <div class="promotional-price">
+                                                        <i class="fas fa-fire me-1"></i>
+                                                        <span class="promo-amount">${{ "%.2f"|format(product.promotional_price) }}</span>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="stock-info">
+                                                    <i class="fas fa-warehouse me-2"></i>
+                                                    <span class="stock-count">{{ product.stock }}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="status-info">
+                                                    <i class="fas fa-{{ 'check' if product.is_active else 'times' }} me-2"></i>
+                                                    <span class="status-text">{{ 'Active' if product.is_active else 'Inactive' }}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="{{ url_for('delete_product', product_id=product.id) }}" class="btn btn-outline-danger btn-sm" title="Delete Product" onclick="return confirm('Are you sure you want to delete this product?');">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     {% else %}
                         <div class="text-center py-5">
@@ -147,17 +1054,17 @@
         </div>
     </div>
 
-    <!-- Orders Section -->
-    <div class="row">
+    <!-- Orders Awaiting Admin Approval Section -->
+    <div class="row mb-4">
         <div class="col-12">
-            <div class="card">
+            <div class="card" id="orders-awaiting-approval">
                 <div class="card-header">
                     <h5 class="mb-0">
-                        <i class="fas fa-shopping-cart me-2"></i>Orders Awaiting Admin Approval
+                        <i class="fas fa-check-circle me-2"></i>Orders Awaiting Admin Approval
                     </h5>
                 </div>
                 <div class="card-body">
-                    {% if orders %}
+                    {% if orders_pending_admin_approval %}
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
@@ -165,38 +1072,148 @@
                                         <th>Order ID</th>
                                         <th>Customer</th>
                                         <th>Total</th>
-                                        <th>Status</th>
+                                        <th>Current Status</th>
                                         <th>Date</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for order in orders %}
+                                    {% for order in orders_pending_admin_approval %}
+                                        {% if order.status != 'cancelled' %}
+                                        <tr data-order-id="{{ order.id }}">
+                                            <td><code>{{ order.id[:8] }}...</code></td>
+                                            <td>
+                                                {% set buyer = users_dict[order.buyer_id] %}
+                                                {{ buyer.username if buyer else 'N/A' }}
+                                            </td>
+                                            <td class="price">
+                                                ${{ "%.2f"|format(order.total_amount) }}
+                                                {% if order.discount_code %}
+                                                <br><small class="text-success">
+                                                    <i class="fas fa-tag me-1"></i>{{ order.discount_code }} ({{ order.discount_percentage }}% off)
+                                                </small>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <span class="badge status-badge status-{{ order.status.replace('_', '-') }}">
+                                                    {{ order.status.replace('_', ' ').title() }}
+                                                </span>
+                                            </td>
+                                            <td>{{ order.created_at.strftime('%Y-%m-%d') }}</td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#approveOrderModal{{ order.id }}">
+                                                        <i class="fas fa-crown me-1"></i>Approve Order
+                                                    </button>
+                                                    <a href="{{ url_for('order_comments', order_id=order.id) }}#orders-awaiting-approval" class="btn btn-outline-info btn-sm">
+                                                        <i class="fas fa-comments me-1"></i>View Chat
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-check-circle fa-5x text-muted mb-3"></i>
+                            <h4>No Orders Awaiting Admin Approval</h4>
+                            <p class="text-muted">Orders requiring your final authorization will appear here.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Orders Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-lg rounded-3" id="all-orders">
+                <div class="card-header bg-info text-white rounded-top-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shopping-cart me-2"></i>All Orders
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if orders %}
+                        <div class="table-responsive">
+                            <table class="table table-hover admin-orders-table">
+                                <thead class="table-dark">
                                     <tr>
-                                        <td><code>{{ order.id[:8] }}...</code></td>
+                                        <th><i class="fas fa-hashtag me-1"></i>Order ID</th>
+                                        <th><i class="fas fa-user me-1"></i>Customer</th>
+                                        <th><i class="fas fa-dollar-sign me-1"></i>Total</th>
+                                        <th><i class="fas fa-info-circle me-1"></i>Status</th>
+                                        <th><i class="fas fa-calendar me-1"></i>Date</th>
+                                        <th><i class="fas fa-cogs me-1"></i>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}
+                                    <tr class="order-row animate__animated animate__fadeIn" data-order-id="{{ order.id }}" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
                                         <td>
-                                            {% set buyer = users_dict[order.buyer_id] %}
-                                            {{ buyer.username if buyer else 'Unknown' }}
+                                            <div class="order-id-info">
+                                                <i class="fas fa-hashtag me-2"></i>
+                                                <code class="order-id">{{ order.id[:8] }}...</code>
+                                            </div>
                                         </td>
-                                        <td class="price">${{ "%.2f"|format(order.total_amount) }}</td>
                                         <td>
-                                            <span class="order-status status-{{ order.status.replace('_', '-') }}">
-                                                {{ order.get_status_display() }}
-                                            </span>
+                                            <div class="customer-info">
+                                                <div class="customer-icon me-3">
+                                                    <i class="fas fa-user text-info"></i>
+                                                </div>
+                                                <div>
+                                                    {% set buyer = users_dict[order.buyer_id] %}
+                                                    <strong class="customer-name">{{ buyer.username if buyer else 'N/A' }}</strong>
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td>{{ order.created_at.strftime('%Y-%m-%d') }}</td>
+                                        <td>
+                                            <div class="order-price-info">
+                                                <div class="main-price">
+                                                    <i class="fas fa-dollar-sign me-2"></i>
+                                                    <span class="price-amount">${{ "%.2f"|format(order.total_amount) }}</span>
+                                                </div>
+                                                {% if order.discount_code %}
+                                                <div class="discount-info">
+                                                    <i class="fas fa-tag me-1"></i>
+                                                    <span class="discount-text">{{ order.discount_code }} ({{ order.discount_percentage }}% off)</span>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="status-info">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                <span class="status-badge status-{{ order.status.replace('_', '-') }}">{{ order.status.replace('_', ' ').title() }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="date-info">
+                                                <i class="fas fa-calendar me-2"></i>
+                                                <span class="date-text">{{ order.created_at.strftime('%Y-%m-%d') }}</span>
+                                            </div>
+                                        </td>
                                         <td>
                                             <div class="btn-group" role="group">
-                                                {% if order.status == 'admin_review' %}
-                                                    <form method="POST" action="{{ url_for('admin_approve_order', order_id=order.id) }}" class="d-inline">
-                                                        <button type="submit" class="btn btn-success btn-sm animate__animated animate__pulse animate__infinite">
-                                                            <i class="fas fa-crown me-1"></i>Approve Order
-                                                        </button>
-                                                    </form>
-                                                {% endif %}
-                                                <a href="{{ url_for('order_comments', order_id=order.id) }}" class="btn btn-outline-info btn-sm">
-                                                    <i class="fas fa-comments me-1"></i>View Chat
+                                                <a href="{{ url_for('receipt', order_id=order.id) }}" class="btn btn-outline-primary btn-sm" title="View Details">
+                                                    <i class="fas fa-info-circle"></i>
                                                 </a>
+                                                <a href="{{ url_for('order_comments', order_id=order.id) }}#all-orders" class="btn btn-outline-info btn-sm" title="Order Chat">
+                                                    <i class="fas fa-comments"></i>
+                                                </a>
+                                                {% if order.status != 'cancelled' %}
+                                                <button class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#statusModal{{ order.id }}" title="Change Status">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                {% else %}
+                                                <button class="btn btn-outline-danger btn-sm" type="button" onclick="deleteOrder('{{ order.id }}')" title="Delete Cancelled Order">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                                {% endif %}
                                             </div>
                                         </td>
                                     </tr>
@@ -207,8 +1224,8 @@
                     {% else %}
                         <div class="text-center py-5">
                             <i class="fas fa-shopping-cart fa-5x text-muted mb-3"></i>
-                            <h4>No Orders Awaiting Approval</h4>
-                            <p class="text-muted">Orders requiring admin approval will appear here.</p>
+                            <h4>No Orders</h4>
+                            <p class="text-muted">No orders have been placed yet.</p>
                         </div>
                     {% endif %}
                 </div>
@@ -216,4 +1233,1806 @@
         </div>
     </div>
 </div>
+
+<!-- Status Change Modals -->
+{% for order in orders %}
+<div class="modal fade" id="statusModal{{ order.id }}" tabindex="-1" aria-labelledby="statusModalLabel{{ order.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="statusModalLabel{{ order.id }}">
+                    <i class="fas fa-edit me-2"></i>Change Order Status
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <strong>Order ID:</strong> {{ order.id[:8] }}...<br>
+                    <strong>Customer:</strong> {{ users_dict[order.buyer_id].username if users_dict[order.buyer_id] else 'N/A' }}<br>
+                    <strong>Current Status:</strong> 
+                    <span class="badge status-badge status-{{ order.status.replace('_', '-') }}">
+                        {{ order.status.replace('_', ' ').title() }}
+                    </span>
+                </div>
+                <hr>
+                <h6 class="mb-3">Select New Status:</h6>
+                <div class="d-grid gap-2">
+                    {% if order.status == 'pending' %}
+                        <button type="button" class="btn btn-outline-orange" onclick="changeOrderStatus('{{ order.id }}', 'receipt_pending', event)">
+                            <i class="fas fa-receipt me-2"></i>Mark as Receipt Pending
+                        </button>
+                        <button type="button" class="btn btn-outline-purple" onclick="changeOrderStatus('{{ order.id }}', 'admin_review', event)">
+                            <i class="fas fa-eye me-2"></i>Send to Admin Review
+                        </button>
+                        <button type="button" class="btn btn-outline-success" onclick="changeOrderStatus('{{ order.id }}', 'approved', event)">
+                            <i class="fas fa-check me-2"></i>Approve for Delivery
+                        </button>
+                    {% elif order.status == 'receipt_pending' %}
+                        <button type="button" class="btn btn-outline-purple" onclick="changeOrderStatus('{{ order.id }}', 'admin_review', event)">
+                            <i class="fas fa-eye me-2"></i>Send to Admin Review
+                        </button>
+                        <button type="button" class="btn btn-outline-success" onclick="changeOrderStatus('{{ order.id }}', 'approved', event)">
+                            <i class="fas fa-check me-2"></i>Approve for Delivery
+                        </button>
+                    {% elif order.status == 'admin_review' %}
+                        <button type="button" class="btn btn-outline-success" onclick="changeOrderStatus('{{ order.id }}', 'approved', event)">
+                            <i class="fas fa-check me-2"></i>Approve for Delivery
+                        </button>
+                    {% elif order.status == 'approved' %}
+                        <button type="button" class="btn btn-outline-warning" onclick="changeOrderStatus('{{ order.id }}', 'admin_review', event)" data-order-id="{{ order.id }}">
+                            <i class="fas fa-undo me-2"></i>Bring Back for Review
+                        </button>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Order is approved for delivery.</strong><br>
+                            <small>The buyer will confirm delivery when they receive the order.</small>
+                        </div>
+                    {% elif order.status == 'delivered' %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>Order has been delivered and confirmed by the buyer.</strong><br>
+                            <small>This order is complete and cannot be modified.</small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- Admin Approval Modals -->
+{% for order in orders_pending_admin_approval %}
+<div class="modal fade" id="approveOrderModal{{ order.id }}" tabindex="-1" aria-labelledby="approveOrderModalLabel{{ order.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="approveOrderModalLabel{{ order.id }}">
+                    <i class="fas fa-crown me-2"></i>Authorize Order for Delivery
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Order Details:</strong>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Order ID:</strong> {{ order.id[:8] }}...<br>
+                            <strong>Customer:</strong> {{ users_dict[order.buyer_id].username if users_dict[order.buyer_id] else 'N/A' }}<br>
+                            <strong>Total Amount:</strong> ${{ "%.2f"|format(order.total_amount) }}<br>
+                            <strong>Order Date:</strong> {{ order.created_at.strftime('%Y-%m-%d') }}
+                        </div>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Are you sure you want to authorize this order for delivery?</strong><br>
+                            <small>This action will approve the order and allow it to proceed to the delivery stage.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                                        <button type="button" class="btn btn-success approve-delivery-btn" data-order-id="{{ order.id }}" onclick="approveOrder('{{ order.id }}')">
+                            <i class="fas fa-crown me-2"></i>Authorize Delivery
+                        </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Deletion
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Are you sure you want to delete this cancelled order?</strong>
+                </div>
+                <p class="text-muted">
+                    <i class="fas fa-info-circle me-2"></i>
+                    This action cannot be undone. The order will be permanently removed from the system.
+                </p>
+                <div class="order-details mt-3">
+                    <strong>Order ID:</strong> <span id="deleteOrderId"></span><br>
+                    <strong>Status:</strong> <span class="badge bg-danger">CANCELLED</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash me-2"></i>Delete Order
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Global flag to prevent multiple simultaneous requests
+let isProcessingRequest = false;
+
+// Simple function to show toast messages
+function showToast(message, type = 'info') {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 350px;
+        `;
+        document.body.appendChild(toastContainer);
+    }
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show`;
+    toast.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    // Add to container
+    toastContainer.appendChild(toast);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.remove();
+        }
+    }, 5000);
+}
+
+function approveOrder(orderId) {
+    // Prevent multiple simultaneous requests
+    if (isProcessingRequest) {
+        console.log('Request already in progress, ignoring click');
+        return;
+    }
+    
+    isProcessingRequest = true;
+    console.log('approveOrder called with orderId:', orderId);
+    
+    // Show loading state
+    const approveBtn = event ? event.target : document.querySelector(`button[onclick*="approveOrder('${orderId}')"]`);
+    if (!approveBtn) {
+        console.error('Could not find approve button for orderId:', orderId);
+        return;
+    }
+    
+    const originalText = approveBtn.innerHTML;
+    approveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+    approveBtn.disabled = true;
+    
+    console.log('Making AJAX request to:', `/admin_approve_order/${orderId}`);
+    
+    // Make AJAX request with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    
+    fetch(`/admin_approve_order/${orderId}`, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        signal: controller.signal
+    })
+    .then(response => {
+        clearTimeout(timeoutId); // Clear the timeout
+        console.log('Response received:', response);
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('JSON data received:', data);
+        
+        if (data.success) {
+            console.log('Success! Order approved');
+            // Show success message
+            showToast('Order approved successfully!', 'success');
+            
+            // Close the modal
+            const modal = document.getElementById(`approveOrderModal${orderId}`);
+            if (modal) {
+                const modalInstance = bootstrap.Modal.getInstance(modal);
+                if (modalInstance) {
+                    try {
+                        modalInstance.hide();
+                    } catch (error) {
+                        console.log('Modal hide error (non-critical):', error);
+                    }
+                }
+            }
+            
+            // Update the status badge immediately in the table
+            const statusBadges = document.querySelectorAll(`tr[data-order-id="${orderId}"] .status-badge`);
+            statusBadges.forEach(statusBadge => {
+                if (statusBadge) {
+                    statusBadge.className = `badge status-badge status-approved`;
+                    statusBadge.textContent = 'APPROVED';
+                    statusBadge.style.animation = 'pulse 0.5s ease';
+                    setTimeout(() => {
+                        statusBadge.style.animation = '';
+                    }, 500);
+                }
+            });
+            
+            // Also update any status badges in the pending approval section
+            const pendingStatusBadges = document.querySelectorAll(`tr[data-order-id="${orderId}"] .status-badge`);
+            pendingStatusBadges.forEach(statusBadge => {
+                if (statusBadge) {
+                    statusBadge.className = `badge status-badge status-approved`;
+                    statusBadge.textContent = 'APPROVED';
+                    statusBadge.style.animation = 'pulse 0.5s ease';
+                    setTimeout(() => {
+                        statusBadge.style.animation = '';
+                    }, 500);
+                }
+            });
+            
+            // Order movement is now handled by changeOrderStatus function
+            
+            // Update stats if they exist
+            updateStats();
+            
+            // Reset global flag
+            isProcessingRequest = false;
+        } else {
+            console.log('Error in response:', data.message);
+            // Show error message
+            showToast(data.message || 'Error approving order', 'error');
+            
+            // Reset button
+            approveBtn.innerHTML = originalText;
+            approveBtn.disabled = false;
+            
+            // Reset global flag
+            isProcessingRequest = false;
+        }
+    })
+    .catch(error => {
+        clearTimeout(timeoutId); // Clear the timeout
+        console.error('Fetch error:', error);
+        console.error('Error details:', error.message);
+        console.error('Error name:', error.name);
+        
+        if (error.name === 'AbortError') {
+            showToast('Request timed out. Please try again.', 'error');
+        } else {
+            showToast('Error approving order. Please try again.', 'error');
+        }
+        
+        // Reset button
+        approveBtn.innerHTML = originalText;
+        approveBtn.disabled = false;
+        
+        // Reset global flag
+        isProcessingRequest = false;
+    });
+}
+
+function updateStats() {
+    // Update the stats cards if they exist
+    const statsCards = document.querySelectorAll('.stats-number');
+    if (statsCards.length > 0) {
+        // You could make an AJAX call here to get updated stats
+        // For now, we'll just add a subtle animation
+        statsCards.forEach(card => {
+            card.style.animation = 'pulse 0.5s ease';
+            setTimeout(() => {
+                card.style.animation = '';
+            }, 500);
+        });
+    }
+}
+
+function changeOrderStatus(orderId, newStatus, event) {
+    console.log('changeOrderStatus called with orderId:', orderId, 'newStatus:', newStatus);
+    console.log('Event target:', event.target);
+    console.log('Event type:', event.type);
+    
+    // Prevent multiple simultaneous requests
+    if (isProcessingRequest) {
+        console.log('Request already in progress, ignoring click');
+        showToast('Please wait for the current request to complete.', 'warning');
+        return;
+    }
+    
+    isProcessingRequest = true;
+    
+    // Show loading state
+    const statusBtn = event.target;
+    const originalText = statusBtn.innerHTML;
+    statusBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
+    statusBtn.disabled = true;
+    
+    // Make AJAX request
+    fetch(`/_update_order_status_route/${orderId}/${newStatus}`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        console.log('Response received:', response);
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('JSON data received:', data);
+        
+        if (data.success) {
+            console.log('Success! Status updated to:', newStatus);
+            // Show success message
+            showToast(`Order status updated to ${newStatus.replace('_', ' ').toUpperCase()}`, 'success');
+            
+            // Close the modal
+            const modal = document.getElementById(`statusModal${orderId}`);
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            modalInstance.hide();
+            
+            // Update the status badge immediately in the table
+            const statusBadges = document.querySelectorAll(`tr[data-order-id="${orderId}"] .status-badge`);
+            statusBadges.forEach(statusBadge => {
+                if (statusBadge) {
+                    statusBadge.className = `badge status-badge status-${newStatus.replace('_', '-')}`;
+                    statusBadge.textContent = newStatus.replace('_', ' ').toUpperCase();
+                    statusBadge.style.animation = 'pulse 0.5s ease';
+                    setTimeout(() => {
+                        statusBadge.style.animation = '';
+                    }, 500);
+                }
+            });
+            
+            // Update the status in the modal as well
+            const modalStatusBadge = document.querySelector(`#statusModal${orderId} .status-badge`);
+            if (modalStatusBadge) {
+                modalStatusBadge.className = `badge status-badge status-${newStatus.replace('_', '-')}`;
+                modalStatusBadge.textContent = newStatus.replace('_', ' ').toUpperCase();
+            }
+            
+            // Update the modal buttons based on new status
+            updateModalButtons(orderId, newStatus);
+            
+            // Handle moving order to pending approval section if status is admin_review
+            if (newStatus === 'admin_review') {
+                console.log('Order status changed to admin_review');
+                
+                // Move order to pending approval section dynamically
+                setTimeout(() => {
+                    moveOrderToPendingApproval(orderId);
+                }, 100);
+            }
+            
+            // Handle removing order from pending approval when approved
+            if (newStatus === 'approved') {
+                console.log('Order approved');
+                
+                // Move order to All Orders section dynamically
+                setTimeout(() => {
+                    removeOrderFromPendingApproval(orderId);
+                }, 100);
+            }
+            
+            // Update stats if they exist
+            if (typeof updateStats === 'function') {
+                updateStats();
+            }
+            
+            // Reset global flag
+            isProcessingRequest = false;
+        } else {
+            console.log('Error in response:', data.message);
+            // Show error message
+            showToast(data.message || 'Error updating order status', 'error');
+            
+            // Reset button
+            statusBtn.innerHTML = originalText;
+            statusBtn.disabled = false;
+            
+            // Reset global flag
+            isProcessingRequest = false;
+        }
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+        showToast('Error updating order status. Please try again.', 'error');
+        
+        // Reset button
+        statusBtn.innerHTML = originalText;
+        statusBtn.disabled = false;
+        
+        // Reset global flag
+        isProcessingRequest = false;
+    });
+}
+
+// Add smooth animations for order movement
+const fadeAnimationStyle = document.createElement('style');
+fadeAnimationStyle.textContent = `
+    @keyframes fadeOut {
+        from { opacity: 1; transform: translateX(0); }
+        to { opacity: 0; transform: translateX(-20px); }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideOut {
+        from { opacity: 1; transform: translateX(0); }
+        to { opacity: 0; transform: translateX(-100%); }
+    }
+    
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateX(100%); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    
+    .order-row {
+        transition: all 0.3s ease;
+    }
+    
+    .order-row.moving {
+        animation: slideOut 0.5s ease forwards;
+    }
+    
+    .order-row.new {
+        animation: slideIn 0.5s ease forwards;
+    }
+    
+    .table-responsive {
+        min-height: 100px;
+    }
+`;
+document.head.appendChild(fadeAnimationStyle);
+
+// Toast notification function
+function showToast(message, type = 'info') {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 350px;
+        `;
+        document.body.appendChild(toastContainer);
+    }
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show`;
+    toast.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    // Add to container
+    toastContainer.appendChild(toast);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.remove();
+        }
+    }, 5000);
+}
+
+function moveOrderToPendingApproval(orderId) {
+    console.log('moveOrderToPendingApproval called with orderId:', orderId);
+    
+    // Prevent multiple calls for the same order
+    if (window.movingOrders && window.movingOrders.has(orderId)) {
+        console.log('Order is already being moved, skipping duplicate call');
+        return;
+    }
+    
+    // Track moving orders to prevent duplicates
+    if (!window.movingOrders) {
+        window.movingOrders = new Set();
+    }
+    window.movingOrders.add(orderId);
+        // Find the order row in the "All Orders" table
+        let orderRow = document.querySelector(`tr[data-order-id="${orderId}"]`);
+        if (!orderRow) {
+            // Try to find by order ID in the text content
+            const allRows = document.querySelectorAll('tr');
+            for (const row of allRows) {
+                const cells = row.querySelectorAll('td');
+                for (const cell of cells) {
+                    if (cell.textContent.includes(orderId)) {
+                        console.log('Found order row by text content');
+                        orderRow = row;
+                        break;
+                    }
+                }
+                if (orderRow) break;
+            }
+            
+            if (!orderRow) {
+                console.log('Order row not found with any method');
+                window.movingOrders.delete(orderId);
+                return;
+            }
+        }
+    
+    // Get order details from the row - use more flexible selectors
+    const orderIdCell = orderRow.querySelector('.order-id') || orderRow.querySelector('code');
+    const customerCell = orderRow.querySelector('.customer-name') || orderRow.querySelector('td:nth-child(2)');
+    const totalCell = orderRow.querySelector('.price-amount') || orderRow.querySelector('.price') || orderRow.querySelector('td:nth-child(3)');
+    const dateCell = orderRow.querySelector('.date-text') || orderRow.querySelector('td:nth-child(5)');
+    
+    if (!orderIdCell || !customerCell || !totalCell || !dateCell) {
+        console.log('Could not find all required cells for order:', orderId);
+        window.movingOrders.delete(orderId);
+        return;
+    }
+    
+    // Get the values
+    const orderIdText = orderIdCell.textContent.trim();
+    const customerName = customerCell.textContent.trim();
+    const totalAmount = totalCell.textContent.trim();
+    const orderDate = dateCell.textContent.trim();
+    
+    // Get the status from the badge in the row
+    const statusBadge = orderRow.querySelector('.status-badge');
+    if (!statusBadge) {
+        console.log('Status badge not found for order:', orderId);
+        return;
+    }
+    const statusText = statusBadge.textContent.trim().toLowerCase();
+    console.log('Checking order status:', statusText, 'for order:', orderId);
+    
+    // Check for both 'admin review' and 'admin_review' (in case of different formatting)
+    // Also check for uppercase versions since the badge text is uppercase
+    if (statusText !== 'admin review' && statusText !== 'admin_review' && 
+        statusText !== 'ADMIN REVIEW' && statusText !== 'ADMIN_REVIEW') {
+        console.log('Order status is not admin_review, not moving to pending approval. Status:', statusText);
+        return;
+    }
+    
+    // Additional check to prevent cancelled orders from being moved
+    if (statusText === 'cancelled') {
+        console.log('Order is cancelled, not moving to pending approval');
+        return;
+    }
+    
+    // Find the pending approval table body (the table in the "Orders Awaiting Admin Approval" section)
+    const allCardsForPending = document.querySelectorAll('.card');
+    let pendingTableBody = null;
+    
+    for (const card of allCardsForPending) {
+        const header = card.querySelector('.card-header h5');
+        if (header && header.textContent.includes('Orders Awaiting Admin Approval')) {
+            pendingTableBody = card.querySelector('.table-responsive tbody');
+            break;
+        }
+    }
+    
+    if (!pendingTableBody) return;
+    
+    // Create new row for pending approval section
+    const newRow = document.createElement('tr');
+    newRow.setAttribute('data-order-id', orderId);
+    newRow.className = 'order-row animate__animated animate__fadeIn';
+    newRow.innerHTML = `
+        <td><code>${orderIdText}</code></td>
+        <td>${customerName}</td>
+        <td class="price">${totalAmount}</td>
+        <td>
+            <span class="badge status-badge status-admin-review">
+                ADMIN REVIEW
+            </span>
+        </td>
+        <td>${orderDate}</td>
+        <td>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-success btn-sm" onclick="approveOrder('${orderId}')">
+                    <i class="fas fa-crown me-1"></i>Approve Order
+                </button>
+                <a href="/order_comments/${orderId}#orders-awaiting-approval" class="btn btn-outline-info btn-sm">
+                    <i class="fas fa-comments me-1"></i>View Chat
+                </a>
+            </div>
+        </td>
+    `;
+    
+    // Add animation
+    newRow.style.animation = 'fadeIn 0.5s ease';
+    
+    // Check if order already exists in pending approval table
+    const existingPendingRow = pendingTableBody.querySelector(`tr[data-order-id="${orderId}"]`);
+    if (existingPendingRow) {
+        console.log('Order already exists in pending approval table, skipping add');
+        return;
+    }
+    
+    // Add to pending approval table
+    pendingTableBody.appendChild(newRow);
+    
+    // Create the approval modal for this order
+    createApprovalModal(orderId, orderIdText, customerName, totalAmount, orderDate);
+    
+    // Remove the order from "All Orders" table with animation
+    orderRow.style.animation = 'fadeOut 0.5s ease';
+    setTimeout(() => {
+        orderRow.remove();
+    }, 500);
+    
+    // Remove animation after it completes
+    setTimeout(() => {
+        newRow.style.animation = '';
+    }, 500);
+}
+
+function createApprovalModal(orderId, orderIdText, customerName, totalAmount, orderDate) {
+    // Check if modal already exists
+    const existingModal = document.getElementById(`approveOrderModal${orderId}`);
+    if (existingModal) {
+        console.log('Approval modal already exists for order:', orderId);
+        return;
+    }
+    
+    // Create approval modal
+    const modalHtml = `
+        <div class="modal fade" id="approveOrderModal${orderId}" tabindex="-1" aria-labelledby="approveOrderModalLabel${orderId}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="approveOrderModalLabel${orderId}">
+                            <i class="fas fa-crown me-2"></i>Authorize Order for Delivery
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Order Details:</strong>
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Order ID:</strong> ${orderIdText}<br>
+                                    <strong>Customer:</strong> ${customerName}<br>
+                                    <strong>Total Amount:</strong> ${totalAmount}<br>
+                                    <strong>Order Date:</strong> ${orderDate}
+                                </div>
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <strong>Are you sure you want to authorize this order for delivery?</strong><br>
+                                    <small>This action will approve the order and allow it to proceed to the delivery stage.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-success" onclick="approveOrder('${orderId}')">
+                            <i class="fas fa-crown me-2"></i>Authorize Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to the document
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Initialize the new modal
+    const newModal = document.getElementById(`approveOrderModal${orderId}`);
+    if (newModal) {
+        new bootstrap.Modal(newModal);
+    }
+    
+    console.log('Created approval modal for order:', orderId);
+}
+
+function removeOrderFromPendingApproval(orderId) {
+    console.log('removeOrderFromPendingApproval called with orderId:', orderId);
+    
+    // Check if order is already in "All Orders" table
+    const allCardsForRemoveCheck = document.querySelectorAll('.card');
+    let isAlreadyInAllOrders = false;
+    
+    for (const card of allCardsForRemoveCheck) {
+        const header = card.querySelector('.card-header h5');
+        if (header && header.textContent.includes('All Orders')) {
+            const existingRow = card.querySelector(`tr[data-order-id="${orderId}"]`);
+            if (existingRow) {
+                console.log('Order already exists in All Orders table, skipping move');
+                isAlreadyInAllOrders = true;
+                break;
+            }
+        }
+    }
+    
+    if (isAlreadyInAllOrders) {
+        // Just remove from pending approval without creating duplicate
+        const pendingOrderRow = document.querySelector(`tr[data-order-id="${orderId}"]`);
+        if (pendingOrderRow) {
+            pendingOrderRow.style.animation = 'fadeOut 0.5s ease';
+            setTimeout(() => {
+                pendingOrderRow.remove();
+            }, 500);
+        }
+        return;
+    }
+    
+    // Find the order row in the pending approval table
+    const pendingOrderRow = document.querySelector(`tr[data-order-id="${orderId}"]`);
+    if (!pendingOrderRow) {
+        console.log('Order row not found for orderId:', orderId);
+        console.log('Available order rows:', document.querySelectorAll('tr[data-order-id]').length);
+        return;
+    }
+    console.log('Found pending order row for orderId:', orderId);
+    
+    // Get order details from the row
+    const orderIdCell = pendingOrderRow.querySelector('td:first-child code');
+    const customerCell = pendingOrderRow.querySelector('td:nth-child(2)');
+    const totalCell = pendingOrderRow.querySelector('.price');
+    const dateCell = pendingOrderRow.querySelector('td:nth-child(5)');
+    
+    if (!orderIdCell || !customerCell || !totalCell || !dateCell) return;
+    
+    // Get the values
+    const orderIdText = orderIdCell.textContent;
+    const customerName = customerCell.textContent;
+    const totalAmount = totalCell.textContent;
+    const orderDate = dateCell.textContent;
+    
+    // Find the "All Orders" table body
+    const allCardsForAllOrders = document.querySelectorAll('.card');
+    let allOrdersTableBody = null;
+    let allOrdersCard = null;
+    
+    console.log('Looking for All Orders table...');
+    for (const card of allCardsForAllOrders) {
+        const header = card.querySelector('.card-header h5');
+        if (header) {
+            console.log('Found card with header:', header.textContent);
+            if (header.textContent.includes('All Orders')) {
+                console.log('Found All Orders card');
+                allOrdersCard = card;
+                allOrdersTableBody = card.querySelector('.admin-orders-table tbody');
+                if (allOrdersTableBody) {
+                    console.log('Found All Orders table body');
+                } else {
+                    console.log('All Orders table body not found');
+                }
+                break;
+            }
+        }
+    }
+    
+    // If table body doesn't exist, we need to create the table structure
+    if (!allOrdersTableBody) {
+        console.log('All Orders table body not found, creating table structure');
+        if (allOrdersCard) {
+            const cardBody = allOrdersCard.querySelector('.card-body');
+            if (cardBody) {
+                // Remove the "No Orders" message if it exists
+                const noOrdersDiv = cardBody.querySelector('.text-center');
+                if (noOrdersDiv) {
+                    noOrdersDiv.remove();
+                }
+                
+                // Create table structure
+                const tableContainer = document.createElement('div');
+                tableContainer.className = 'table-responsive';
+                tableContainer.innerHTML = `
+                    <table class="table table-hover admin-orders-table">
+                        <thead class="table-dark">
+                            <tr>
+                                <th><i class="fas fa-hashtag me-1"></i>Order ID</th>
+                                <th><i class="fas fa-user me-1"></i>Customer</th>
+                                <th><i class="fas fa-dollar-sign me-1"></i>Total</th>
+                                <th><i class="fas fa-info-circle me-1"></i>Status</th>
+                                <th><i class="fas fa-calendar me-1"></i>Date</th>
+                                <th><i class="fas fa-cogs me-1"></i>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                `;
+                cardBody.appendChild(tableContainer);
+                allOrdersTableBody = tableContainer.querySelector('tbody');
+                console.log('Created All Orders table structure');
+            }
+        }
+    }
+    
+    if (!allOrdersTableBody) {
+        console.log('All Orders table body still not found, cannot move order');
+        return;
+    }
+    
+    // Create new row for "All Orders" section
+    const newRow = document.createElement('tr');
+    newRow.setAttribute('data-order-id', orderId);
+    newRow.className = 'order-row animate__animated animate__fadeIn';
+    newRow.innerHTML = `
+        <td>
+            <div class="order-id-info">
+                <i class="fas fa-hashtag me-2"></i>
+                <code class="order-id">${orderId.substring(0, 8)}...</code>
+            </div>
+        </td>
+        <td>
+            <div class="customer-info">
+                <div class="customer-icon me-3">
+                    <i class="fas fa-user text-info"></i>
+                </div>
+                <div>
+                    <strong class="customer-name">${customerName}</strong>
+                </div>
+            </div>
+        </td>
+        <td>
+            <div class="order-price-info">
+                <div class="main-price">
+                    <i class="fas fa-dollar-sign me-2"></i>
+                    <span class="price-amount">${totalAmount}</span>
+                </div>
+            </div>
+        </td>
+        <td>
+            <div class="status-info">
+                <i class="fas fa-info-circle me-2"></i>
+                <span class="status-badge status-approved">APPROVED</span>
+            </div>
+        </td>
+        <td>
+            <div class="date-info">
+                <i class="fas fa-calendar me-2"></i>
+                <span class="date-text">${orderDate}</span>
+            </div>
+        </td>
+        <td>
+            <div class="btn-group" role="group">
+                <a href="/receipt/${orderId}" class="btn btn-outline-primary btn-sm" title="View Details">
+                    <i class="fas fa-info-circle"></i>
+                </a>
+                <a href="/order_comments/${orderId}#all-orders" class="btn btn-outline-info btn-sm" title="Order Chat">
+                    <i class="fas fa-comments"></i>
+                </a>
+                <button class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#statusModal${orderId}" title="Change Status">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </div>
+        </td>
+    `;
+    
+    // Add animation
+    newRow.style.animation = 'fadeIn 0.5s ease';
+    
+    // Add to "All Orders" table
+    allOrdersTableBody.appendChild(newRow);
+    
+    // Create modal for the new order
+    const modalHtml = `
+        <div class="modal fade" id="statusModal${orderId}" tabindex="-1" aria-labelledby="statusModalLabel${orderId}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title" id="statusModalLabel${orderId}">
+                            <i class="fas fa-edit me-2"></i>Change Order Status
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <strong>Order ID:</strong> ${orderId.substring(0, 8)}...<br>
+                            <strong>Customer:</strong> ${customerName}<br>
+                            <strong>Current Status:</strong> 
+                            <span class="badge status-badge status-approved">
+                                Approved
+                            </span>
+                        </div>
+                        <hr>
+                        <h6 class="mb-3">Select New Status:</h6>
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-outline-warning" onclick="changeOrderStatus('${orderId}', 'admin_review', event)" data-order-id="${orderId}">
+                                <i class="fas fa-undo me-2"></i>Bring Back for Review
+                            </button>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Order is approved for delivery.</strong><br>
+                                <small>The buyer will confirm delivery when they receive the order.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to the document
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Simple modal initialization for the new order
+    setTimeout(() => {
+        const newModal = document.getElementById(`statusModal${orderId}`);
+        if (newModal) {
+            // Create new modal instance
+            new bootstrap.Modal(newModal);
+        }
+    }, 100);
+    
+    // Remove the order from pending approval table with animation
+    pendingOrderRow.style.animation = 'fadeOut 0.5s ease';
+    setTimeout(() => {
+        pendingOrderRow.remove();
+    }, 500);
+    
+    // Remove animation after it completes
+    setTimeout(() => {
+        newRow.style.animation = '';
+    }, 500);
+}
+
+function createApprovalModal(orderId, orderIdText, customerName, totalAmount, orderDate) {
+    // Create the modal HTML
+    const modalHtml = `
+        <div class="modal fade" id="approveOrderModal${orderId}" tabindex="-1" aria-labelledby="approveOrderModalLabel${orderId}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="approveOrderModalLabel${orderId}">
+                            <i class="fas fa-crown me-2"></i>Authorize Order for Delivery
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Order Details:</strong>
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Order ID:</strong> ${orderIdText}<br>
+                                    <strong>Customer:</strong> ${customerName}<br>
+                                    <strong>Total Amount:</strong> ${totalAmount}<br>
+                                    <strong>Order Date:</strong> ${orderDate}
+                                </div>
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <strong>Are you sure you want to authorize this order for delivery?</strong><br>
+                                    <small>This action will approve the order and allow it to proceed to the delivery stage.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </button>
+                        <button type="button" class="btn btn-success approve-delivery-btn" data-order-id="${orderId}" onclick="approveOrder('${orderId}')">
+                            <i class="fas fa-crown me-2"></i>Authorize Delivery
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add the modal to the document
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+// Removed event delegation - using inline onclick handlers instead
+
+// Functions loaded: approveOrder, updateModalButtons
+
+
+
+// Robust order movement functions
+function moveOrderToPendingApproval(orderId) {
+    console.log('moveOrderToPendingApproval called with orderId:', orderId);
+    
+    // Prevent multiple calls for the same order
+    if (window.movingOrders && window.movingOrders.has(orderId)) {
+        console.log('Order is already being moved, skipping duplicate call');
+        return;
+    }
+    
+    // Track moving orders to prevent duplicates
+    if (!window.movingOrders) {
+        window.movingOrders = new Set();
+    }
+    window.movingOrders.add(orderId);
+    
+    try {
+        // Find the order row in the "All Orders" table
+        let orderRow = document.querySelector(`tr[data-order-id="${orderId}"]`);
+        console.log('Looking for order row with data-order-id:', orderId);
+        console.log('Found order row:', orderRow);
+        
+        if (!orderRow) {
+            // Try to find by order ID in the text content
+            console.log('Order row not found by data-order-id, searching by text content...');
+            const allRows = document.querySelectorAll('tr');
+            console.log('Total rows found:', allRows.length);
+            
+            for (const row of allRows) {
+                const cells = row.querySelectorAll('td');
+                for (const cell of cells) {
+                    if (cell.textContent.includes(orderId)) {
+                        console.log('Found order row by text content:', row);
+                        orderRow = row;
+                        break;
+                    }
+                }
+                if (orderRow) break;
+            }
+        }
+        
+        if (!orderRow) {
+            console.log('Order row not found with any method, skipping move');
+            window.movingOrders.delete(orderId);
+            showToast('Could not find order row. Please refresh the page.', 'error');
+            return;
+        }
+        
+        // Get order details from the row
+        const orderIdCell = orderRow.querySelector('code') || orderRow.querySelector('.order-id');
+        const customerCell = orderRow.querySelector('td:nth-child(2)');
+        const totalCell = orderRow.querySelector('td:nth-child(3)');
+        const dateCell = orderRow.querySelector('td:nth-child(5)');
+        
+        if (!orderIdCell || !customerCell || !totalCell || !dateCell) {
+            console.log('Could not find all required cells for order:', orderId);
+            window.movingOrders.delete(orderId);
+            return;
+        }
+        
+        // Get the values
+        const orderIdText = orderIdCell.textContent.trim();
+        const customerName = customerCell.textContent.trim();
+        const totalAmount = totalCell.textContent.trim();
+        const orderDate = dateCell.textContent.trim();
+        
+        // Find the pending approval table body
+        console.log('Looking for pending approval table...');
+        const allCards = document.querySelectorAll('.card');
+        console.log('Total cards found:', allCards.length);
+        
+        let pendingCard = null;
+        let pendingTableBody = null;
+        
+        for (const card of allCards) {
+            const header = card.querySelector('.card-header h5');
+            if (header) {
+                console.log('Card header text:', header.textContent);
+                if (header.textContent.includes('Orders Awaiting Admin Approval')) {
+                    console.log('Found pending approval card:', card);
+                    pendingCard = card;
+                    break;
+                }
+            }
+        }
+        
+        if (pendingCard) {
+            pendingTableBody = pendingCard.querySelector('tbody');
+            console.log('Found pending table body:', pendingTableBody);
+        } else {
+            console.log('Pending approval card not found');
+        }
+        
+        // If no table body exists, create the table structure
+        if (!pendingTableBody) {
+            console.log('No pending table body found, creating table structure...');
+            if (pendingCard) {
+                const cardBody = pendingCard.querySelector('.card-body');
+                console.log('Found card body:', cardBody);
+                
+                if (cardBody) {
+                    // Remove any "no orders" message
+                    const noOrdersDiv = cardBody.querySelector('.text-center');
+                    if (noOrdersDiv) {
+                        console.log('Removing no orders message');
+                        noOrdersDiv.remove();
+                    }
+                    
+                    // Create table structure
+                    console.log('Creating table structure...');
+                    const tableContainer = document.createElement('div');
+                    tableContainer.className = 'table-responsive';
+                    tableContainer.innerHTML = `
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th><i class="fas fa-hashtag me-1"></i>Order ID</th>
+                                    <th><i class="fas fa-user me-1"></i>Customer</th>
+                                    <th><i class="fas fa-dollar-sign me-1"></i>Total</th>
+                                    <th><i class="fas fa-info-circle me-1"></i>Status</th>
+                                    <th><i class="fas fa-calendar me-1"></i>Date</th>
+                                    <th><i class="fas fa-cogs me-1"></i>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    `;
+                    cardBody.appendChild(tableContainer);
+                    pendingTableBody = tableContainer.querySelector('tbody');
+                    console.log('Created table structure, new tbody:', pendingTableBody);
+                } else {
+                    console.log('No card body found');
+                }
+            } else {
+                console.log('No pending card found for table creation');
+            }
+        }
+        
+        if (!pendingTableBody) {
+            console.log('Could not find or create pending approval table body');
+            window.movingOrders.delete(orderId);
+            showToast('Could not find pending approval table. Please refresh the page.', 'error');
+            return;
+        }
+        
+        // Check if order already exists in pending approval table
+        const existingPendingRow = pendingTableBody.querySelector(`tr[data-order-id="${orderId}"]`);
+        if (existingPendingRow) {
+            console.log('Order already exists in pending approval table, skipping add');
+            window.movingOrders.delete(orderId);
+            return;
+        }
+        
+        console.log('Creating new row for pending approval...');
+        
+        // Create new row for pending approval section
+        const newRow = document.createElement('tr');
+        newRow.setAttribute('data-order-id', orderId);
+        newRow.className = 'order-row';
+        newRow.innerHTML = `
+            <td><code>${orderIdText}</code></td>
+            <td>${customerName}</td>
+            <td class="price">${totalAmount}</td>
+            <td>
+                <span class="badge status-badge status-admin-review">
+                    ADMIN REVIEW
+                </span>
+            </td>
+            <td>${orderDate}</td>
+            <td>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-success btn-sm" onclick="approveOrder('${orderId}')">
+                        <i class="fas fa-crown me-1"></i>Approve Order
+                    </button>
+                    <a href="/order_comments/${orderId}#orders-awaiting-approval" class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-comments me-1"></i>View Chat
+                    </a>
+                </div>
+            </td>
+        `;
+        
+        // Add animation class to new row
+        newRow.classList.add('new');
+        
+        // Add to pending approval table
+        console.log('Adding new row to pending approval table...');
+        pendingTableBody.appendChild(newRow);
+        console.log('Row added successfully');
+        
+        // Add animation class to old row and remove after animation
+        console.log('Removing old row with animation...');
+        orderRow.classList.add('moving');
+        setTimeout(() => {
+            orderRow.remove();
+            console.log('Old row removed');
+        }, 500);
+        
+        // Clean up tracking and show success
+        setTimeout(() => {
+            window.movingOrders.delete(orderId);
+            // Verify the order was actually moved
+            const movedOrder = document.querySelector(`tr[data-order-id="${orderId}"]`);
+            if (movedOrder) {
+                console.log('Order moved to pending approval successfully');
+                showToast('Order moved to pending approval successfully!', 'success');
+            }
+        }, 600);
+        
+    } catch (error) {
+        console.error('Error in moveOrderToPendingApproval:', error);
+        window.movingOrders.delete(orderId);
+        // Only show error if the movement actually failed
+        if (!document.querySelector(`tr[data-order-id="${orderId}"]`)) {
+            showToast('Error moving order. Please refresh the page.', 'error');
+        }
+    }
+}
+
+function removeOrderFromPendingApproval(orderId) {
+    console.log('removeOrderFromPendingApproval called with orderId:', orderId);
+    
+    // Prevent multiple calls for the same order
+    if (window.movingOrders && window.movingOrders.has(orderId)) {
+        console.log('Order is already being moved, skipping duplicate call');
+        return;
+    }
+    
+    // Track moving orders to prevent duplicates
+    if (!window.movingOrders) {
+        window.movingOrders = new Set();
+    }
+    window.movingOrders.add(orderId);
+    
+    try {
+        // Find the order row in the "Orders Awaiting Admin Approval" table
+        let orderRow = document.querySelector(`tr[data-order-id="${orderId}"]`);
+        console.log('Looking for order row with data-order-id:', orderId);
+        console.log('Found order row:', orderRow);
+        
+        if (!orderRow) {
+            // Try to find by order ID in the text content
+            console.log('Order row not found by data-order-id, searching by text content...');
+            const allRows = document.querySelectorAll('tr');
+            console.log('Total rows found:', allRows.length);
+            
+            for (const row of allRows) {
+                const cells = row.querySelectorAll('td');
+                for (const cell of cells) {
+                    if (cell.textContent.includes(orderId)) {
+                        console.log('Found order row by text content:', row);
+                        orderRow = row;
+                        break;
+                    }
+                }
+                if (orderRow) break;
+            }
+        }
+        
+        if (!orderRow) {
+            console.log('Order row not found with any method, skipping move');
+            window.movingOrders.delete(orderId);
+            showToast('Could not find order row. Please refresh the page.', 'error');
+            return;
+        }
+        
+        // Get order details from the row
+        const orderIdCell = orderRow.querySelector('code') || orderRow.querySelector('.order-id');
+        const customerCell = orderRow.querySelector('td:nth-child(2)');
+        const totalCell = orderRow.querySelector('td:nth-child(3)');
+        const dateCell = orderRow.querySelector('td:nth-child(5)');
+        
+        if (!orderIdCell || !customerCell || !totalCell || !dateCell) {
+            console.log('Could not find all required cells for order:', orderId);
+            window.movingOrders.delete(orderId);
+            return;
+        }
+        
+        // Get the values
+        const orderIdText = orderIdCell.textContent.trim();
+        const customerName = customerCell.textContent.trim();
+        const totalAmount = totalCell.textContent.trim();
+        const orderDate = dateCell.textContent.trim();
+        
+        // Find the "All Orders" table body
+        console.log('Looking for All Orders table...');
+        const allCards = document.querySelectorAll('.card');
+        console.log('Total cards found:', allCards.length);
+        
+        let allOrdersCard = null;
+        let allOrdersTableBody = null;
+        
+        for (const card of allCards) {
+            const header = card.querySelector('.card-header h5');
+            if (header) {
+                console.log('Card header text:', header.textContent);
+                if (header.textContent.includes('All Orders')) {
+                    console.log('Found All Orders card:', card);
+                    allOrdersCard = card;
+                    break;
+                }
+            }
+        }
+        
+        if (allOrdersCard) {
+            allOrdersTableBody = allOrdersCard.querySelector('tbody');
+            console.log('Found All Orders table body:', allOrdersTableBody);
+        } else {
+            console.log('All Orders card not found');
+        }
+        
+        // If no table body exists, create the table structure
+        if (!allOrdersTableBody) {
+            console.log('No All Orders table body found, creating table structure...');
+            if (allOrdersCard) {
+                const cardBody = allOrdersCard.querySelector('.card-body');
+                console.log('Found card body:', cardBody);
+                
+                if (cardBody) {
+                    // Remove any "no orders" message
+                    const noOrdersDiv = cardBody.querySelector('.text-center');
+                    if (noOrdersDiv) {
+                        console.log('Removing no orders message');
+                        noOrdersDiv.remove();
+                    }
+                    
+                    // Create table structure
+                    console.log('Creating All Orders table structure...');
+                    const tableContainer = document.createElement('div');
+                    tableContainer.className = 'table-responsive';
+                    tableContainer.innerHTML = `
+                        <table class="table table-hover admin-orders-table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th><i class="fas fa-hashtag me-1"></i>Order ID</th>
+                                    <th><i class="fas fa-user me-1"></i>Customer</th>
+                                    <th><i class="fas fa-dollar-sign me-1"></i>Total</th>
+                                    <th><i class="fas fa-info-circle me-1"></i>Status</th>
+                                    <th><i class="fas fa-calendar me-1"></i>Date</th>
+                                    <th><i class="fas fa-cogs me-1"></i>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    `;
+                    cardBody.appendChild(tableContainer);
+                    allOrdersTableBody = tableContainer.querySelector('tbody');
+                    console.log('Created All Orders table structure, new tbody:', allOrdersTableBody);
+                } else {
+                    console.log('No card body found');
+                }
+            } else {
+                console.log('No All Orders card found for table creation');
+            }
+        }
+        
+        if (!allOrdersTableBody) {
+            console.log('Could not find or create All Orders table body');
+            window.movingOrders.delete(orderId);
+            showToast('Could not find All Orders table. Please refresh the page.', 'error');
+            return;
+        }
+        
+        // Check if order already exists in All Orders table
+        const existingAllOrdersRow = allOrdersTableBody.querySelector(`tr[data-order-id="${orderId}"]`);
+        if (existingAllOrdersRow) {
+            console.log('Order already exists in All Orders table, skipping add');
+            window.movingOrders.delete(orderId);
+            return;
+        }
+        
+        console.log('Creating new row for All Orders...');
+        
+        // Create new row for All Orders section
+        const newRow = document.createElement('tr');
+        newRow.setAttribute('data-order-id', orderId);
+        newRow.className = 'order-row';
+        newRow.innerHTML = `
+            <td><code class="order-id">${orderIdText}</code></td>
+            <td class="customer-name">${customerName}</td>
+            <td class="price-amount">${totalAmount}</td>
+            <td>
+                <span class="badge status-badge status-approved">
+                    APPROVED
+                </span>
+            </td>
+            <td class="date-text">${orderDate}</td>
+            <td>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#statusModal${orderId}">
+                        <i class="fas fa-cogs me-1"></i>Change Status
+                    </button>
+                    <a href="/order_comments/${orderId}#all-orders" class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-comments me-1"></i>View Chat
+                    </a>
+                </div>
+            </td>
+        `;
+        
+        // Add animation class to new row
+        newRow.classList.add('new');
+        
+        // Add to All Orders table
+        console.log('Adding new row to All Orders table...');
+        allOrdersTableBody.appendChild(newRow);
+        console.log('Row added successfully');
+        
+        // Create modal for the new order
+        console.log('Creating status modal for new order...');
+        createStatusModal(orderId, orderIdText, customerName, totalAmount, orderDate);
+        console.log('Status modal created');
+        
+        // Add animation class to old row and remove after animation
+        console.log('Removing old row with animation...');
+        orderRow.classList.add('moving');
+        setTimeout(() => {
+            orderRow.remove();
+            console.log('Old row removed');
+        }, 500);
+        
+        // Clean up tracking and show success
+        setTimeout(() => {
+            window.movingOrders.delete(orderId);
+            // Verify the order was actually moved
+            const movedOrder = document.querySelector(`tr[data-order-id="${orderId}"]`);
+            if (movedOrder) {
+                console.log('Order moved to All Orders successfully');
+                showToast('Order moved to All Orders successfully!', 'success');
+            }
+        }, 600);
+        
+    } catch (error) {
+        console.error('Error in removeOrderFromPendingApproval:', error);
+        window.movingOrders.delete(orderId);
+        // Only show error if the movement actually failed
+        if (!document.querySelector(`tr[data-order-id="${orderId}"]`)) {
+            showToast('Error moving order. Please refresh the page.', 'error');
+        }
+    }
+}
+
+function createStatusModal(orderId, orderIdText, customerName, totalAmount, orderDate) {
+    // Check if modal already exists
+    const existingModal = document.getElementById(`statusModal${orderId}`);
+    if (existingModal) {
+        console.log('Status modal already exists for order:', orderId);
+        return;
+    }
+    
+    // Create status modal
+    const modalHtml = `
+        <div class="modal fade" id="statusModal${orderId}" tabindex="-1" aria-labelledby="statusModalLabel${orderId}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="statusModalLabel${orderId}">
+                            <i class="fas fa-cogs me-2"></i>Change Order Status
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Order Details:</strong>
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Order ID:</strong> ${orderIdText}<br>
+                                    <strong>Customer:</strong> ${customerName}<br>
+                                    <strong>Total Amount:</strong> ${totalAmount}<br>
+                                    <strong>Order Date:</strong> ${orderDate}
+                                </div>
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <strong>Select new status:</strong>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="btn btn-outline-warning" onclick="changeOrderStatus('${orderId}', 'pending')">
+                                        <i class="fas fa-clock me-2"></i>Pending
+                                    </button>
+                                    <button type="button" class="btn btn-outline-info" onclick="changeOrderStatus('${orderId}', 'receipt_pending')">
+                                        <i class="fas fa-receipt me-2"></i>Receipt Pending
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger" onclick="changeOrderStatus('${orderId}', 'admin_review')">
+                                        <i class="fas fa-undo me-2"></i>Bring Back for Review
+                                    </button>
+                                    <button type="button" class="btn btn-outline-success" onclick="changeOrderStatus('${orderId}', 'delivered')">
+                                        <i class="fas fa-check-circle me-2"></i>Delivered
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to the document
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Initialize the new modal
+    const newModal = document.getElementById(`statusModal${orderId}`);
+    if (newModal) {
+        new bootstrap.Modal(newModal);
+    }
+    
+    console.log('Created status modal for order:', orderId);
+}
+
+function updateModalButtons(orderId, newStatus) {
+    console.log('updateModalButtons called with orderId:', orderId, 'newStatus:', newStatus);
+}
+
+function refreshAllModalButtons() {
+    console.log('refreshAllModalButtons called');
+}
+
+function updateStats() {
+    console.log('updateStats called');
+}
+
+// Initialize all modal buttons when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing all modal buttons...');
+    refreshAllModalButtons();
+    
+    // Add click event listeners to all "Bring Back for Review" buttons
+    const bringBackButtons = document.querySelectorAll('button[onclick*="admin_review"]');
+    console.log('Found Bring Back for Review buttons:', bringBackButtons.length);
+    bringBackButtons.forEach(button => {
+        console.log('Button found:', button.textContent.trim());
+    });
+});
+
+function updateModalButtons(orderId, newStatus) {
+    const modal = document.getElementById(`statusModal${orderId}`);
+    if (!modal) return;
+    
+    const buttonContainer = modal.querySelector('.d-grid');
+    if (!buttonContainer) return;
+    
+    // Clear existing buttons
+    buttonContainer.innerHTML = '';
+    
+    // Add buttons based on new status
+    if (newStatus === 'pending') {
+        buttonContainer.innerHTML = `
+            <button type="button" class="btn btn-outline-orange" onclick="changeOrderStatus('${orderId}', 'receipt_pending', event)">
+                <i class="fas fa-receipt me-2"></i>Mark as Receipt Pending
+            </button>
+            <button type="button" class="btn btn-outline-purple" onclick="changeOrderStatus('${orderId}', 'admin_review', event)">
+                <i class="fas fa-eye me-2"></i>Send to Admin Review
+            </button>
+            <button type="button" class="btn btn-outline-success" onclick="changeOrderStatus('${orderId}', 'approved', event)">
+                <i class="fas fa-check me-2"></i>Approve for Delivery
+            </button>
+        `
+    } else if (newStatus === 'receipt_pending') {
+        buttonContainer.innerHTML = `
+            <button type="button" class="btn btn-outline-purple" onclick="changeOrderStatus('${orderId}', 'admin_review', event)">
+                <i class="fas fa-eye me-2"></i>Send to Admin Review
+            </button>
+            <button type="button" class="btn btn-outline-success" onclick="changeOrderStatus('${orderId}', 'approved', event)">
+                <i class="fas fa-check me-2"></i>Approve for Delivery
+            </button>
+        `;
+    } else if (newStatus === 'admin_review') {
+        buttonContainer.innerHTML = `
+            <button type="button" class="btn btn-outline-success" onclick="changeOrderStatus('${orderId}', 'approved', event)">
+                <i class="fas fa-check me-2"></i>Approve for Delivery
+            </button>
+        `;
+    } else if (newStatus === 'approved') {
+        buttonContainer.innerHTML = `
+            <button type="button" class="btn btn-outline-warning" onclick="changeOrderStatus('${orderId}', 'admin_review', event)">
+                <i class="fas fa-undo me-2"></i>Bring Back for Review
+            </button>
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Order is approved for delivery.</strong><br>
+                <small>The buyer will confirm delivery when they receive the order.</small>
+            </div>
+        `;
+    } else if (newStatus === 'delivered') {
+        buttonContainer.innerHTML = `
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>Order has been delivered and confirmed by the buyer.</strong><br>
+                <small>This order is complete and cannot be modified.</small>
+            </div>
+        `;
+    }
+}
+
+function refreshAllModalButtons() {
+    console.log('Refreshing all modal buttons...');
+    
+    // Get all order rows in both tables
+    const allOrderRows = document.querySelectorAll('tr[data-order-id]');
+    
+    allOrderRows.forEach(row => {
+        const orderId = row.getAttribute('data-order-id');
+        const statusBadge = row.querySelector('.status-badge');
+        
+        if (statusBadge) {
+            const statusText = statusBadge.textContent.trim().toLowerCase();
+            let status = '';
+            
+            // Convert status text to status value
+            if (statusText === 'pending') status = 'pending';
+            else if (statusText === 'receipt pending') status = 'receipt_pending';
+            else if (statusText === 'admin review') status = 'admin_review';
+            else if (statusText === 'approved') status = 'approved';
+            else if (statusText === 'delivered') status = 'delivered';
+            
+            if (status) {
+                console.log(`Updating modal buttons for order ${orderId} with status ${status}`);
+                updateModalButtons(orderId, status);
+            }
+        }
+    });
+    
+    // Reinitialize all Bootstrap modals
+    const allModals = document.querySelectorAll('.modal');
+    allModals.forEach(modal => {
+        // Destroy existing instance if it exists
+        const existingInstance = bootstrap.Modal.getInstance(modal);
+        if (existingInstance) {
+            existingInstance.dispose();
+        }
+        // Create new instance
+        new bootstrap.Modal(modal);
+    });
+    
+    console.log('All modal buttons refreshed and modals reinitialized');
+}
+
+function deleteOrder(orderId) {
+    console.log('deleteOrder called with orderId:', orderId);
+    
+    // Show confirmation modal
+    showDeleteConfirmationModal(orderId);
+}
+
+function showDeleteConfirmationModal(orderId) {
+    // Set the order ID in the modal
+    document.getElementById('deleteOrderId').textContent = orderId.substring(0, 8) + '...';
+    
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+    modal.show();
+    
+    // Handle the confirm delete button click
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    confirmBtn.onclick = function() {
+        performDeleteOrder(orderId, modal);
+    };
+}
+
+function performDeleteOrder(orderId, modal) {
+    console.log('performDeleteOrder called with orderId:', orderId);
+    
+    // Show loading state on the confirm button
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    const originalText = confirmBtn.innerHTML;
+    confirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Deleting...';
+    confirmBtn.disabled = true;
+    
+    // Make AJAX request
+    fetch(`/admin_delete_order/${orderId}`, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        console.log('Response received:', response);
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('JSON data received:', data);
+        
+        if (data.success) {
+            console.log('Success! Order deleted');
+            // Close the modal
+            modal.hide();
+            
+            // Show success message
+            showToast('Cancelled order deleted successfully!', 'success');
+            
+            // Remove the order row from the table with animation
+            const orderRow = document.querySelector(`tr[data-order-id="${orderId}"]`);
+            if (orderRow) {
+                orderRow.style.animation = 'fadeOut 0.5s ease';
+                setTimeout(() => {
+                    orderRow.remove();
+                }, 500);
+            }
+            
+            // Update stats if they exist
+            updateStats();
+        } else {
+            console.log('Error in response:', data.message);
+            // Show error message
+            showToast(data.message || 'Error deleting order', 'error');
+            
+            // Reset button
+            confirmBtn.innerHTML = originalText;
+            confirmBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+        showToast('Error deleting order. Please try again.', 'error');
+        
+        // Reset button
+        confirmBtn.innerHTML = originalText;
+        confirmBtn.disabled = false;
+    });
+}
+
+// Handle smooth scrolling to sections when page loads with hash
+if (window.location.hash) {
+    const targetElement = document.querySelector(window.location.hash);
+    if (targetElement) {
+        setTimeout(() => {
+            // Use scrollIntoView for better performance
+            targetElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }, 100); // Reduced delay for faster response
+    }
+}
+</script>
+
 {% endblock %}

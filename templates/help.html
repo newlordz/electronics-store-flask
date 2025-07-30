@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block title %}Help & FAQ - Electronics Store{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <h1 class="text-center mb-5 text-primary">
+                        <i class="fas fa-question-circle me-3"></i>Help & FAQ
+                    </h1>
+                    
+                    <!-- Quick Help Section -->
+                    <div class="row mb-5">
+                        <div class="col-12">
+                            <h3 class="text-center mb-4 text-success">
+                                <i class="fas fa-lightbulb me-2"></i>Quick Help
+                            </h3>
+                            
+                            <div class="row">
+                                <div class="col-md-3 text-center mb-4">
+                                    <div class="help-card p-3">
+                                        <i class="fas fa-shopping-cart fa-3x text-primary mb-3"></i>
+                                        <h5>How to Order</h5>
+                                        <p class="small">Learn how to place and track your orders</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 text-center mb-4">
+                                    <div class="help-card p-3">
+                                        <i class="fas fa-undo fa-3x text-success mb-3"></i>
+                                        <h5>Returns & Refunds</h5>
+                                        <p class="small">Our return policy and refund process</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 text-center mb-4">
+                                    <div class="help-card p-3">
+                                        <i class="fas fa-shipping-fast fa-3x text-info mb-3"></i>
+                                        <h5>Shipping Info</h5>
+                                        <p class="small">Delivery times and shipping options</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 text-center mb-4">
+                                    <div class="help-card p-3">
+                                        <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
+                                        <h5>Warranty</h5>
+                                        <p class="small">Product warranty and protection plans</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Section -->
+                    <div class="row mb-5">
+                        <div class="col-12">
+                            <h3 class="text-center mb-4 text-primary">
+                                <i class="fas fa-question me-2"></i>Frequently Asked Questions
+                            </h3>
+                            
+                            <div class="accordion" id="faqAccordion">
+                                <!-- Ordering Questions -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                            <i class="fas fa-shopping-cart me-2"></i>How do I place an order?
+                                        </button>
+                                    </h2>
+                                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            <ol>
+                                                <li>Browse our products and add items to your cart</li>
+                                                <li>Review your cart and proceed to checkout</li>
+                                                <li>Enter your shipping and payment information</li>
+                                                <li>Confirm your order and complete payment</li>
+                                                <li>You'll receive an order confirmation email</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                            <i class="fas fa-search me-2"></i>How can I track my order?
+                                        </button>
+                                    </h2>
+                                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            You can track your order by:
+                                            <ul>
+                                                <li>Logging into your account and visiting your dashboard</li>
+                                                <li>Checking the order status in your order history</li>
+                                                <li>Looking for tracking updates in your email</li>
+                                                <li>Contacting our customer support for assistance</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Payment Questions -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                            <i class="fas fa-credit-card me-2"></i>What payment methods do you accept?
+                                        </button>
+                                    </h2>
+                                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            We accept the following payment methods:
+                                            <ul>
+                                                <li>Credit and debit cards (Visa, MasterCard, American Express)</li>
+                                                <li>Mobile money payments (MTN, Vodafone, AirtelTigo)</li>
+                                                <li>Bank transfers</li>
+                                                <li>Cash on delivery (for select areas)</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Shipping Questions -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                            <i class="fas fa-truck me-2"></i>How long does shipping take?
+                                        </button>
+                                    </h2>
+                                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            Shipping times vary by location:
+                                            <ul>
+                                                <li><strong>Same city:</strong> 1-2 business days</li>
+                                                <li><strong>Other cities:</strong> 2-5 business days</li>
+                                                <li><strong>Rural areas:</strong> 3-7 business days</li>
+                                                <li><strong>Express shipping:</strong> Available for faster delivery</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Returns Questions -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                            <i class="fas fa-undo me-2"></i>What is your return policy?
+                                        </button>
+                                    </h2>
+                                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            Our return policy:
+                                            <ul>
+                                                <li><strong>30-day return window</strong> for most products</li>
+                                                <li>Items must be in original condition with all packaging</li>
+                                                <li>Some restrictions apply to certain electronics</li>
+                                                <li>Contact us within 30 days to initiate a return</li>
+                                                <li>Refunds processed within 5-7 business days</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Product Questions -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                                            <i class="fas fa-box me-2"></i>Do products come with warranty?
+                                        </button>
+                                    </h2>
+                                    <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            Yes, all our products include:
+                                            <ul>
+                                                <li><strong>Manufacturer warranty</strong> - varies by product</li>
+                                                <li><strong>Extended warranty options</strong> available for purchase</li>
+                                                <li><strong>Technical support</strong> during warranty period</li>
+                                                <li><strong>Repair or replacement</strong> for defective items</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Account Questions -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq7">
+                                            <i class="fas fa-user me-2"></i>How do I create an account?
+                                        </button>
+                                    </h2>
+                                    <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            Creating an account is easy:
+                                            <ol>
+                                                <li>Click "Register" in the top navigation</li>
+                                                <li>Fill in your personal information</li>
+                                                <li>Choose your account type (buyer, seller, or admin)</li>
+                                                <li>Verify your email address</li>
+                                                <li>Start shopping or selling!</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Support Section -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card bg-light border-0">
+                                <div class="card-body p-4 text-center">
+                                    <h3 class="text-primary mb-3">
+                                        <i class="fas fa-headset me-2"></i>Still Need Help?
+                                    </h3>
+                                    <p class="mb-4">Our customer support team is here to help you with any questions or concerns.</p>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <i class="fas fa-envelope fa-2x text-primary mb-2"></i>
+                                            <h5>Email Support</h5>
+                                            <p class="small">support@electronicsstore.com</p>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <i class="fas fa-phone fa-2x text-success mb-2"></i>
+                                            <h5>Phone Support</h5>
+                                            <p class="small">+1 (234) 567-8900</p>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <i class="fas fa-comments fa-2x text-info mb-2"></i>
+                                            <h5>Live Chat</h5>
+                                            <p class="small">Available 24/7</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-envelope me-2"></i>Contact Support
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.help-card {
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.help-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #e7f3ff;
+    color: #0d6efd;
+}
+
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+</style>
+{% endblock %} 

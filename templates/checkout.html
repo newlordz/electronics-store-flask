@@ -4,172 +4,211 @@
 
 {% block content %}
 <div class="container py-5">
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-credit-card me-2"></i>Payment Information</h5>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg rounded-3">
+                <div class="card-header bg-primary text-white rounded-top-3">
+                    <h4 class="mb-0"><i class="fas fa-cash-register me-2"></i>Checkout</h4>
                 </div>
                 <div class="card-body">
-                    <form method="POST">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="firstName" class="form-label">First Name *</label>
-                                <input type="text" class="form-control" id="firstName" name="first_name" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="lastName" class="form-label">Last Name *</label>
-                                <input type="text" class="form-control" id="lastName" name="last_name" required>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email *</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="address" class="form-label">Address *</label>
-                            <input type="text" class="form-control" id="address" name="address" required>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="city" class="form-label">City *</label>
-                                <input type="text" class="form-control" id="city" name="city" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="state" class="form-label">State/Province *</label>
-                                <input type="text" class="form-control" id="state" name="state" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="zip" class="form-label">ZIP Code *</label>
-                                <input type="text" class="form-control" id="zip" name="zip" required>
-                            </div>
-                        </div>
-                        
-                        <hr>
-                        
-                        <h6 class="mb-3">Payment Method</h6>
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="creditCard" value="credit_card" checked>
-                                    <label class="form-check-label" for="creditCard">
-                                        <i class="fas fa-credit-card me-2"></i>Credit Card
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="paypal" value="paypal">
-                                    <label class="form-check-label" for="paypal">
-                                        <i class="fab fa-paypal me-2"></i>PayPal
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="momo" value="momo">
-                                    <label class="form-check-label" for="momo">
-                                        <i class="fas fa-mobile-alt me-2"></i>Mobile Money
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div id="creditCardFields" class="payment-fields">
-                            <div class="mb-3">
-                                <label for="cardNumber" class="form-label">Card Number</label>
-                                <input type="text" class="form-control" id="cardNumber" name="card_number" placeholder="1234 5678 9012 3456">
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="expiryDate" class="form-label">Expiry Date</label>
-                                    <input type="text" class="form-control" id="expiryDate" name="expiry_date" placeholder="MM/YY">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="cvv" class="form-label">CVV</label>
-                                    <input type="text" class="form-control" id="cvv" name="cvv" placeholder="123">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div id="momoFields" class="payment-fields" style="display: none;">
-                            <div class="mb-3">
-                                <label for="momoNumber" class="form-label">Mobile Money Number</label>
-                                <input type="tel" class="form-control" id="momoNumber" name="momo_number" placeholder="+233 XX XXX XXXX">
-                            </div>
-                            <div class="mb-3">
-                                <label for="momoProvider" class="form-label">Provider</label>
-                                <select class="form-select" id="momoProvider" name="momo_provider">
-                                    <option value="">Select Provider</option>
-                                    <option value="mtn">MTN Mobile Money</option>
-                                    <option value="vodafone">Vodafone Cash</option>
-                                    <option value="airtel">AirtelTigo Money</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-success btn-lg w-100 animate__animated animate__pulse animate__infinite">
-                            <i class="fas fa-lock me-2"></i>Complete Order - ${{ "%.2f"|format(total) }}
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Order Summary</h5>
-                </div>
-                <div class="card-body">
-                    {% for item in cart_items %}
-                        <div class="d-flex justify-content-between align-items-center mb-2">
+                    {% if session.get('pending_order_id') %}
+                    <div class="alert alert-warning mb-3">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>You have a pending order!</strong>
+                        <br>You have an order waiting for payment. 
+                        <a href="{{ url_for('receipt', order_id=session.get('pending_order_id')) }}" class="alert-link">Click here to view and pay for your pending order</a>
+                        or continue with this new order.
+                    </div>
+                    {% endif %}
+                    
+                    {% if cart_items %}
+                    <h5 class="card-title mb-3">Your Order Summary</h5>
+                    <ul class="list-group list-group-flush mb-4">
+                        {% for item in cart_items %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="mb-0">{{ item.product.name }}</h6>
-                                <small class="text-muted">Qty: {{ item.item.quantity }}</small>
+                                <strong>{{ item.product.name }}</strong>
+                                <br><small class="text-muted">Quantity: {{ item.item.quantity }} x ${{ "%.2f"|format(item.product.price) }}</small>
                             </div>
                             <span class="price">${{ "%.2f"|format(item.total) }}</span>
-                        </div>
-                        <hr>
-                    {% endfor %}
-                    
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Total</h5>
-                        <h5 class="mb-0 price">${{ "%.2f"|format(total) }}</h5>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">${{ "%.2f"|format(total) }}</span>
                     </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-2 text-success" id="discountRow" style="display: none;">
+                        <span>Discount:</span>
+                        <span id="discountAmount">-$0.00</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0">Total:</h5>
+                        <h4 class="price mb-0" id="finalTotal">${{ "%.2f"|format(total) }}</h4>
+                    </div>
+
+                    <!-- Discount Code Section -->
+                    <div class="mb-4">
+                        <h6 class="mb-3">
+                            <i class="fas fa-tag text-warning me-2"></i>Have a Discount Code?
+                        </h6>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="discount_code" placeholder="Enter your discount code (e.g., SPIN20)" maxlength="10">
+                            <button class="btn btn-outline-warning" type="button" onclick="applyDiscount()">
+                                <i class="fas fa-check me-1"></i>Apply
+                            </button>
+                        </div>
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Spin the wheel on the products page to get discount codes!
+                        </small>
+                    </div>
+                    
+                    <hr>
+
+                    <form method="POST" id="checkoutForm">
+                        <!-- Hidden fields to pass discount information -->
+                        <input type="hidden" id="appliedDiscountCode" name="applied_discount_code" value="">
+                        <input type="hidden" id="appliedDiscountPercentage" name="applied_discount_percentage" value="">
+                        <input type="hidden" id="appliedDiscountAmount" name="applied_discount_amount" value="">
+                        <input type="hidden" id="finalTotalAmount" name="final_total_amount" value="{{ total }}">
+                        
+                        <button type="submit" class="btn btn-success btn-lg w-100 animate__animated animate__pulse animate__infinite">
+                            <i class="fas fa-shopping-cart me-2"></i>Place Order
+                        </button>
+                    </form>
+
+                    <div class="mt-3 d-grid gap-2">
+                        <a href="{{ url_for('cart') }}" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Cart
+                        </a>
+                        <a href="{{ url_for('products_list') }}" class="btn btn-outline-info w-100">
+                            <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-shopping-cart fa-5x text-muted mb-3"></i>
+                        <h4>Your Cart is Empty!</h4>
+                        <p class="text-muted">Add some products before checking out.</p>
+                        <a href="{{ url_for('products_list') }}" class="btn btn-primary mt-3">
+                            <i class="fas fa-store me-2"></i>Go to Products
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
-            </div>
-            
-            <div class="mt-3">
-                <a href="{{ url_for('view_cart') }}" class="btn btn-outline-secondary w-100">
-                    <i class="fas fa-arrow-left me-1"></i>Back to Cart
-                </a>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const paymentMethods = document.querySelectorAll('input[name="payment_method"]');
-    const creditCardFields = document.getElementById('creditCardFields');
-    const momoFields = document.getElementById('momoFields');
+    let currentSubtotal = {{ total }};
+    let appliedDiscount = null;
     
-    paymentMethods.forEach(method => {
-        method.addEventListener('change', function() {
-            creditCardFields.style.display = 'none';
-            momoFields.style.display = 'none';
-            
-            if (this.value === 'credit_card') {
-                creditCardFields.style.display = 'block';
-            } else if (this.value === 'momo') {
-                momoFields.style.display = 'block';
+    function applyDiscount() {
+        const discountInput = document.querySelector('input[name="discount_code"]');
+        const discountCode = discountInput.value.trim().toUpperCase();
+        
+        if (!discountCode) {
+            alert('Please enter a discount code');
+            return;
+        }
+        
+        // Validate discount code via AJAX
+        fetch('/validate_discount_code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                discount_code: discountCode
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.valid) {
+                appliedDiscount = data.discount;
+                updateDiscountDisplay();
+                discountInput.style.borderColor = '#28a745';
+                discountInput.style.backgroundColor = '#f8fff9';
+            } else {
+                alert(`Invalid discount code: ${data.message}`);
+                discountInput.style.borderColor = '#dc3545';
+                discountInput.style.backgroundColor = '#fff8f8';
+                appliedDiscount = null;
+                updateDiscountDisplay();
             }
+        })
+        .catch(error => {
+            alert('Error validating discount code');
+            console.error('Error:', error);
         });
+    }
+    
+    function updateDiscountDisplay() {
+        const discountRow = document.getElementById('discountRow');
+        const discountAmount = document.getElementById('discountAmount');
+        const finalTotal = document.getElementById('finalTotal');
+        
+        // Hidden fields for form submission
+        const appliedDiscountCode = document.getElementById('appliedDiscountCode');
+        const appliedDiscountPercentage = document.getElementById('appliedDiscountPercentage');
+        const appliedDiscountAmount = document.getElementById('appliedDiscountAmount');
+        const finalTotalAmount = document.getElementById('finalTotalAmount');
+        
+        if (appliedDiscount) {
+            const discountValue = (currentSubtotal * appliedDiscount.percentage) / 100;
+            const finalTotalValue = currentSubtotal - discountValue;
+            
+            discountAmount.textContent = `-$${discountValue.toFixed(2)}`;
+            finalTotal.textContent = `$${finalTotalValue.toFixed(2)}`;
+            discountRow.style.display = 'flex';
+            
+            // Update hidden fields
+            appliedDiscountCode.value = appliedDiscount.code;
+            appliedDiscountPercentage.value = appliedDiscount.percentage;
+            appliedDiscountAmount.value = discountValue.toFixed(2);
+            finalTotalAmount.value = finalTotalValue.toFixed(2);
+            
+            // Debug logging
+            console.log('Discount applied:', {
+                code: appliedDiscount.code,
+                percentage: appliedDiscount.percentage,
+                discountValue: discountValue.toFixed(2),
+                finalTotal: finalTotalValue.toFixed(2)
+            });
+        } else {
+            discountRow.style.display = 'none';
+            finalTotal.textContent = `$${currentSubtotal.toFixed(2)}`;
+            
+            // Clear hidden fields
+            appliedDiscountCode.value = '';
+            appliedDiscountPercentage.value = '';
+            appliedDiscountAmount.value = '';
+            finalTotalAmount.value = currentSubtotal.toFixed(2);
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkoutForm = document.getElementById('checkoutForm');
+        if (checkoutForm) {
+            checkoutForm.addEventListener('submit', function(event) {
+                console.log('Checkout form submitted!'); // Debugging log
+                
+                // Debug: Log form data
+                const formData = new FormData(checkoutForm);
+                console.log('Form data:');
+                for (let [key, value] of formData.entries()) {
+                    console.log(`${key}: ${value}`);
+                }
+            });
+        }
     });
-});
 </script>
 {% endblock %}

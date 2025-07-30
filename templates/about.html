@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}About Us - Electronics Store{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <h1 class="text-center mb-4 text-primary">
+                        <i class="fas fa-store me-3"></i>About Electronics Store
+                    </h1>
+                    
+                    <div class="row mb-5">
+                        <div class="col-md-6">
+                            <h3 class="text-success mb-3">
+                                <i class="fas fa-rocket me-2"></i>Our Mission
+                            </h3>
+                            <p class="lead">
+                                To provide high-quality electronics and exceptional customer service, 
+                                making cutting-edge technology accessible to everyone.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h3 class="text-info mb-3">
+                                <i class="fas fa-eye me-2"></i>Our Vision
+                            </h3>
+                            <p class="lead">
+                                To become the leading destination for electronics, 
+                                offering innovative products and seamless shopping experiences.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-5">
+                        <div class="col-12">
+                            <h3 class="text-primary mb-4">
+                                <i class="fas fa-history me-2"></i>Our Story
+                            </h3>
+                            <p>
+                                Founded in 2025, Electronics Store began as a small local shop with a big dream: 
+                                to bring the latest technology to our community. What started as a passion project 
+                                has grown into a trusted destination for electronics enthusiasts and everyday consumers alike.
+                            </p>
+                            <p>
+                                We believe that technology should enhance your life, not complicate it. That's why we 
+                                carefully curate our product selection, ensuring every item meets our high standards 
+                                for quality, reliability, and value.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-5">
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="bg-light p-4 rounded">
+                                <i class="fas fa-award fa-3x text-warning mb-3"></i>
+                                <h4>Quality Assured</h4>
+                                <p>All products are carefully tested and verified for quality and performance.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="bg-light p-4 rounded">
+                                <i class="fas fa-shipping-fast fa-3x text-success mb-3"></i>
+                                <h4>Fast Delivery</h4>
+                                <p>Quick and reliable shipping to get your products to you as soon as possible.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="bg-light p-4 rounded">
+                                <i class="fas fa-headset fa-3x text-info mb-3"></i>
+                                <h4>24/7 Support</h4>
+                                <p>Our customer support team is always ready to help you with any questions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="text-primary mb-4">
+                                <i class="fas fa-users me-2"></i>Our Team
+                            </h3>
+                            <p>
+                                Our dedicated team of technology enthusiasts and customer service professionals 
+                                work tirelessly to ensure you have the best shopping experience possible. 
+                                From our knowledgeable sales staff to our technical support specialists, 
+                                everyone at Electronics Store is committed to your satisfaction.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-5">
+                        <a href="{{ url_for('products_list') }}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-shopping-cart me-2"></i>Shop Now
+                        </a>
+                        <a href="{{ url_for('contact') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-envelope me-2"></i>Contact Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

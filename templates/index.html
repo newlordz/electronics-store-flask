@@ -1,81 +1,670 @@
 {% extends "base.html" %}
 
-{% block title %}Home - Electronics Store{% endblock %}
+{% block title %}Home - ELECTRONICS STORES{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <!-- Hero Section -->
-    <div class="hero-section text-white p-5 mb-5">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h1 class="display-4 fw-bold">Welcome to Electronics Store</h1>
-                <p class="lead">Discover the latest in technology with our premium collection of electronics. From laptops to smartphones, we have everything you need.</p>
-                <a href="{{ url_for('products_list') }}" class="btn btn-light btn-lg">
-                    <i class="fas fa-shopping-bag me-2"></i>Shop Now
-                </a>
-            </div>
-            <div class="col-md-6 text-center">
-                <i class="fas fa-laptop display-1"></i>
+<!-- Hero Section with Background Image -->
+<div class="hero-section-enhanced">
+    <div class="hero-overlay">
+        <div class="container">
+            <div class="row align-items-center min-vh-75">
+                <div class="col-lg-6">
+                    <div class="hero-content animate__animated animate__fadeInLeft">
+                        <h1 class="hero-title">Welcome to ELECTRONICS STORES!</h1>
+                        <p class="hero-subtitle">Discover premium electronics at unbeatable prices. From laptops to smartwatches, we have everything you need!</p>
+                        <div class="hero-buttons">
+                            <a href="/products" class="btn btn-primary btn-lg me-3">
+                                <i class="fas fa-shopping-bag me-2"></i>Shop Now
+                            </a>
+                            <a href="#flash-deals" class="btn btn-outline-light btn-lg">
+                                <i class="fas fa-bolt me-2"></i>Flash Deals
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image-container animate__animated animate__fadeInRight">
+                        <img src="/static/uploads/electronics-store-ad.jpg" 
+                             alt="ELECTRONICS STORES - Premium Electronics Collection" 
+                             class="hero-image"
+                             style="border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Categories Section -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <h2 class="text-center mb-4">Shop by Category</h2>
-            <div class="d-flex flex-wrap justify-content-center">
-                {% for category in categories %}
-                <a href="{{ url_for('products_list', category=category) }}" class="category-pill">
-                    {{ category }}
-                </a>
+<!-- Trust Banner -->
+<div class="trust-banner">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <i class="fas fa-shipping-fast fa-2x mb-2"></i>
+                <h6>Free Shipping</h6>
+                <small>On orders over $50</small>
+            </div>
+            <div class="col-md-3">
+                <i class="fas fa-shield-alt fa-2x mb-2"></i>
+                <h6>Secure Payment</h6>
+                <small>100% secure checkout</small>
+            </div>
+            <div class="col-md-3">
+                <i class="fas fa-undo fa-2x mb-2"></i>
+                <h6>Easy Returns</h6>
+                <small>30-day return policy</small>
+            </div>
+            <div class="col-md-3">
+                <i class="fas fa-headset fa-2x mb-2"></i>
+                <h6>24/7 Support</h6>
+                <small>Always here to help</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Categories Section -->
+<section class="py-5 categories-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-header text-center mb-5">
+                    <h2 class="section-title">
+                        <i class="fas fa-th-large text-primary me-2"></i>
+                        Explore Categories
+                    </h2>
+                    <p class="section-subtitle">Discover amazing products in your favorite categories</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for category in categories %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="enhanced-category-card" data-category="{{ category.lower() }}">
+                    <div class="category-card-inner">
+                        <div class="category-icon-wrapper">
+                            <div class="category-icon">
+                                {% if category == 'Laptops' %}
+                                    <i class="fas fa-laptop"></i>
+                                {% elif category == 'Smartphones' %}
+                                    <i class="fas fa-mobile-alt"></i>
+                                {% elif category == 'Mice' %}
+                                    <i class="fas fa-mouse"></i>
+                                {% elif category == 'Keyboards' %}
+                                    <i class="fas fa-keyboard"></i>
+                                {% elif category == 'Headphones' %}
+                                    <i class="fas fa-headphones"></i>
+                                {% elif category == 'Tablets' %}
+                                    <i class="fas fa-tablet-alt"></i>
+                                {% elif category == 'Accessories' %}
+                                    <i class="fas fa-tools"></i>
+                                {% else %}
+                                    <i class="fas fa-box"></i>
+                                {% endif %}
+                            </div>
+                            <div class="category-bg-pattern"></div>
+                        </div>
+                        <div class="category-content">
+                            <h5 class="category-title">{{ category }}</h5>
+                            <p class="category-description">Explore our premium {{ category.lower() }} collection</p>
+                            <div class="category-stats">
+                                <span class="product-count">
+                                    <i class="fas fa-cube me-1"></i>
+                                    <span class="count-number">50+</span> Products
+                                </span>
+                            </div>
+                            <a href="{{ url_for('products_list', category=category.lower()) }}" class="category-btn">
+                                <span>Shop Now</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Flash Sale Slideshow Section -->
+{% if promotional_products %}
+<section id="flash-deals" class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-header text-center mb-5">
+                    <h2 class="section-title">
+                        <i class="fas fa-bolt text-warning me-2"></i>
+                        Flash Sale Deals
+                    </h2>
+                    <p class="section-subtitle">Limited time offers! Don't miss out on these amazing deals.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slideshow-container">
+            <div class="slideshow-wrapper">
+                {% for product in promotional_products %}
+                <div class="slide-item" data-index="{{ loop.index0 }}">
+                    <div class="slide-content">
+                        <div class="product-card-flash">
+                            <div class="product-image-container">
+                                <img src="/static/uploads/{{ product.image_filename }}" 
+                                     alt="{{ product.name }}" 
+                                     class="product-image"
+                                     onerror="this.src='/static/uploads/placeholder.jpg';">
+                                <div class="flash-badge">
+                                    <i class="fas fa-fire"></i> FLASH SALE
+                                </div>
+                                <div class="discount-badge">
+                                    -{{ ((product.price - product.promotional_price) / product.price * 100) | round(0) }}%
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">{{ product.name }}</h3>
+                                <p class="product-description">{{ product.description[:100] }}{% if product.description|length > 100 %}...{% endif %}</p>
+                                <div class="price-container">
+                                    <span class="current-price">${{ "%.2f"|format(product.promotional_price) }}</span>
+                                    <span class="original-price">${{ "%.2f"|format(product.price) }}</span>
+                                </div>
+                                <div class="countdown-timer" data-end="{{ product.promotional_end_date }}">
+                                    <i class="fas fa-clock me-1"></i>
+                                    <span class="time-remaining">Loading...</span>
+                                </div>
+                                <div class="product-actions">
+                                    <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye me-1"></i>View
+                                    </a>
+                                    <button class="btn btn-success btn-sm add-to-cart-btn" data-product-id="{{ product.id }}">
+                                        <i class="fas fa-cart-plus me-1"></i>Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <button class="slideshow-btn prev-btn" onclick="changeSlide(-1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="slideshow-btn next-btn" onclick="changeSlide(1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <!-- Dots -->
+            <div class="slideshow-dots">
+                {% for product in promotional_products %}
+                <span class="dot" onclick="currentSlide({{ loop.index }})"></span>
                 {% endfor %}
             </div>
         </div>
     </div>
+</section>
+{% endif %}
 
-    <!-- Featured Products -->
-    {% if products %}
-    <div class="row">
-        <div class="col-12">
-            <h2 class="text-center mb-4">Featured Products</h2>
-        </div>
-    </div>
-    
-    <div class="product-grid">
-        {% for product in products %}
-        <div class="card h-100">
-            {% if product.image_filename %}
-                <img src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" 
-                     class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
-            {% else %}
-                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                    <i class="fas fa-image fa-3x text-muted"></i>
-                </div>
-            {% endif %}
-            
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ product.name }}</h5>
-                <p class="card-text">{{ product.description[:100] }}{% if product.description|length > 100 %}...{% endif %}</p>
-                <div class="mt-auto">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="price">${{ "%.2f"|format(product.price) }}</span>
-                        <span class="badge bg-secondary">{{ product.category }}</span>
-                    </div>
-                    <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-primary w-100 mt-2">
-                        <i class="fas fa-eye me-1"></i>View Details
-                    </a>
+<!-- Featured Products Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-header text-center mb-5">
+                    <h2 class="section-title">
+                        <i class="fas fa-star text-warning me-2"></i>
+                        Featured Products
+                    </h2>
+                    <p class="section-subtitle">Handpicked products for you</p>
                 </div>
             </div>
         </div>
-        {% endfor %}
+        
+        <div class="row">
+            {% for product in products[:8] %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="/static/uploads/{{ product.image_filename }}" 
+                             alt="{{ product.name }}" 
+                             class="product-image"
+                             onerror="this.src='/static/uploads/placeholder.jpg';">
+                        {% if product.is_promotional %}
+                        <div class="promotional-badge">
+                            <i class="fas fa-fire"></i> SALE
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <h5 class="product-title">{{ product.name }}</h5>
+                        <p class="product-description">{{ product.description[:80] }}{% if product.description|length > 80 %}...{% endif %}</p>
+                        <div class="price-container">
+                            {% if product.is_promotional and product.promotional_price %}
+                            <span class="current-price">${{ "%.2f"|format(product.promotional_price) }}</span>
+                            <span class="original-price">${{ "%.2f"|format(product.price) }}</span>
+                            {% else %}
+                            <span class="current-price">${{ "%.2f"|format(product.price) }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="product-actions">
+                            <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>View
+                            </a>
+                            <button class="btn btn-primary btn-sm add-to-cart-btn" data-product-id="{{ product.id }}">
+                                <i class="fas fa-cart-plus me-1"></i>Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="/products" class="btn btn-primary btn-lg">
+                <i class="fas fa-shopping-bag me-2"></i>View All Products
+            </a>
+        </div>
     </div>
-    {% else %}
-    <div class="text-center py-5">
-        <i class="fas fa-box-open fa-5x text-muted mb-3"></i>
-        <h3>No products available</h3>
-        <p class="text-muted">Check back later for new products!</p>
+</section>
+
+<!-- Lucky Spin Section -->
+<section class="py-5 bg-gradient-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="spin-content">
+                    <h2 class="spin-title">
+                        <i class="fas fa-gift me-2"></i>
+                        Lucky Spin & Win!
+                    </h2>
+                    <p class="spin-description">
+                        Spin the wheel and get amazing discounts! Every customer gets 3 free spins per day.
+                        Win up to 50% off on your next purchase!
+                    </p>
+                    <div class="spin-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <span>Free spins for everyone</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <span>Instant discount codes</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <span>No purchase required</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="spin-wheel-container">
+                    <div class="spin-wheel" id="spinWheel">
+                        <div class="wheel-section" style="--i:0; --clr:#ff6b6b;">
+                            <span>10% OFF</span>
+                        </div>
+                        <div class="wheel-section" style="--i:1; --clr:#4ecdc4;">
+                            <span>20% OFF</span>
+                        </div>
+                        <div class="wheel-section" style="--i:2; --clr:#45b7d1;">
+                            <span>5% OFF</span>
+                        </div>
+                        <div class="wheel-section" style="--i:3; --clr:#96ceb4;">
+                            <span>15% OFF</span>
+                        </div>
+                        <div class="wheel-section" style="--i:4; --clr:#feca57;">
+                            <span>25% OFF</span>
+                        </div>
+                        <div class="wheel-section" style="--i:5; --clr:#ff9ff3;">
+                            <span>30% OFF</span>
+                        </div>
+                        <div class="wheel-section" style="--i:6; --clr:#54a0ff;">
+                            <span>50% OFF</span>
+                        </div>
+                        <div class="wheel-section" style="--i:7; --clr:#5f27cd;">
+                            <span>FREE SHIPPING</span>
+                        </div>
+                    </div>
+                    <div class="spin-pointer"></div>
+                    <button class="spin-btn" id="spinButton">
+                        <i class="fas fa-play"></i>
+                        SPIN NOW
+                    </button>
+                </div>
+                <div class="spin-info mt-3">
+                    <div id="spinStatus" class="spin-status"></div>
+                    <div id="spinsRemaining" class="spins-remaining"></div>
+                </div>
+                <div id="spinResult" class="spin-result mt-3"></div>
+            </div>
+        </div>
     </div>
-    {% endif %}
-</div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="py-5 bg-dark text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h3 class="newsletter-title">
+                    <i class="fas fa-envelope me-2"></i>
+                    Stay Updated
+                </h3>
+                <p class="newsletter-description">
+                    Subscribe to our newsletter and be the first to know about new products, 
+                    exclusive deals, and special offers!
+                </p>
+            </div>
+            <div class="col-lg-6">
+                <form class="newsletter-form">
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Enter your email address" required>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-paper-plane me-2"></i>Subscribe
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Slideshow functionality
+let currentSlideIndex = 0;
+let slideInterval;
+
+function showSlide(index) {
+    const slides = document.querySelectorAll('.slide-item');
+    const dots = document.querySelectorAll('.dot');
+    
+    if (slides.length === 0) return;
+    
+    // Hide all slides
+    slides.forEach(slide => {
+        slide.style.display = 'none';
+    });
+    
+    // Remove active class from all dots
+    dots.forEach(dot => {
+        dot.classList.remove('active');
+    });
+    
+    // Show current slide
+    if (slides[index]) {
+        slides[index].style.display = 'block';
+    }
+    
+    // Add active class to current dot
+    if (dots[index]) {
+        dots[index].classList.add('active');
+    }
+}
+
+function changeSlide(direction) {
+    const slides = document.querySelectorAll('.slide-item');
+    if (slides.length === 0) return;
+    
+    currentSlideIndex += direction;
+    
+    if (currentSlideIndex >= slides.length) {
+        currentSlideIndex = 0;
+    } else if (currentSlideIndex < 0) {
+        currentSlideIndex = slides.length - 1;
+    }
+    
+    showSlide(currentSlideIndex);
+}
+
+function currentSlide(index) {
+    currentSlideIndex = index - 1;
+    showSlide(currentSlideIndex);
+}
+
+function startSlideshow() {
+    const slides = document.querySelectorAll('.slide-item');
+    if (slides.length === 0) return;
+    
+    showSlide(0);
+    
+    slideInterval = setInterval(() => {
+        changeSlide(1);
+    }, 5000); // Change slide every 5 seconds
+}
+
+// Countdown timer functionality
+function updateCountdownTimers() {
+    const timers = document.querySelectorAll('.countdown-timer');
+    
+    timers.forEach(timer => {
+        const endDate = new Date(timer.dataset.end);
+        const now = new Date();
+        const timeLeft = endDate - now;
+        
+        if (timeLeft > 0) {
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            
+            timer.querySelector('.time-remaining').textContent = 
+                `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        } else {
+            timer.querySelector('.time-remaining').textContent = 'EXPIRED';
+            timer.classList.add('expired');
+        }
+    });
+}
+
+// Add to cart functionality
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('add-to-cart-btn')) {
+        const productId = e.target.dataset.productId;
+        
+        fetch(`/add_to_cart/${productId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                const btn = e.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check me-1"></i>Added!';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-success');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('btn-success');
+                    btn.classList.add('btn-primary');
+                }, 2000);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while adding to cart.');
+        });
+    }
+});
+
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize slideshow
+    showSlide(0);
+    startSlideshow();
+    
+    // Initialize countdown timers
+    updateCountdownTimers();
+    setInterval(updateCountdownTimers, 1000);
+    
+    // Spin wheel functionality
+    const spinWheel = document.getElementById('spinWheel');
+    const spinButton = document.getElementById('spinButton');
+    const spinResult = document.getElementById('spinResult');
+    const spinStatus = document.getElementById('spinStatus');
+    const spinsRemaining = document.getElementById('spinsRemaining');
+    let isSpinning = false;
+    
+    function checkSpinStatus() {
+        fetch('/check_spin_status', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        throw new Error('Not logged in');
+                    }
+                    throw new Error('Server error');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const spinsLeft = data.max_spins - data.current_spins;
+                if (data.can_spin) {
+                    spinStatus.innerHTML = '<i class="fas fa-check-circle text-success me-2"></i>Ready to spin!';
+                    spinsRemaining.innerHTML = `<i class="fas fa-gift me-2"></i>Spins remaining: ${spinsLeft}`;
+                    spinButton.disabled = false;
+                    spinButton.innerHTML = '<i class="fas fa-play"></i> SPIN NOW';
+                } else {
+                    spinStatus.innerHTML = '<i class="fas fa-clock text-warning me-2"></i>Come back later for more spins!';
+                    spinsRemaining.innerHTML = `<i class="fas fa-gift me-2"></i>Spins remaining: ${spinsLeft}`;
+                    spinButton.disabled = true;
+                    spinButton.innerHTML = '<i class="fas fa-clock"></i> NO SPINS LEFT';
+                }
+            })
+            .catch(error => {
+                console.error('Error checking spin status:', error);
+                if (error.message === 'Not logged in') {
+                    spinStatus.innerHTML = '<i class="fas fa-sign-in-alt text-info me-2"></i>Please log in to spin!';
+                    spinsRemaining.innerHTML = '<i class="fas fa-gift me-2"></i>Login required';
+                    spinButton.disabled = true;
+                    spinButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> LOGIN TO SPIN';
+                } else {
+                    spinStatus.innerHTML = '<i class="fas fa-exclamation-triangle text-danger me-2"></i>Error checking status';
+                }
+            });
+    }
+    
+    if (spinWheel && spinButton) {
+        checkSpinStatus();
+        
+        spinButton.addEventListener('click', function() {
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            spinButton.disabled = true;
+            spinButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SPINNING...';
+            
+            // Define wheel sections that match the visual wheel exactly
+            // Each section is 45 degrees (360/8 = 45)
+            // The wheel starts at 0 degrees and goes clockwise
+            const wheelSections = [
+                { discount: 10, angle: 22.5 },    // 10% OFF (center of first section)
+                { discount: 20, angle: 67.5 },    // 20% OFF (center of second section)
+                { discount: 5, angle: 112.5 },    // 5% OFF (center of third section)
+                { discount: 15, angle: 157.5 },   // 15% OFF (center of fourth section)
+                { discount: 25, angle: 202.5 },   // 25% OFF (center of fifth section)
+                { discount: 30, angle: 247.5 },   // 30% OFF (center of sixth section)
+                { discount: 50, angle: 292.5 },   // 50% OFF (center of seventh section)
+                { discount: 0, angle: 337.5 }     // FREE SHIPPING (center of eighth section)
+            ];
+            
+            // Randomly select a result
+            const selectedResult = wheelSections[Math.floor(Math.random() * wheelSections.length)];
+            
+            fetch('/spin_wheel_result', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    expected_discount: selectedResult.discount
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        throw new Error('Not logged in');
+                    }
+                    throw new Error('Server error');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Use the selected result angle for consistent wheel landing
+                    const rotations = 5 + Math.random() * 5; // 5-10 rotations
+                    const totalRotation = rotations * 360 + selectedResult.angle;
+                    
+                    spinWheel.style.transition = 'transform 4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    spinWheel.style.transform = `rotate(${totalRotation}deg)`;
+                    
+                    setTimeout(() => {
+                        const prizeText = data.discount_percentage > 0 ? 
+                            `${data.discount_percentage}% discount` : 
+                            'Free shipping';
+                        
+                        const discountCodeText = data.discount_code ? 
+                            `<br><small>Discount code: ${data.discount_code}</small>` : 
+                            '';
+                        
+                        spinResult.innerHTML = `
+                            <div class="alert alert-success mt-3">
+                                <i class="fas fa-trophy me-2"></i>
+                                <strong>Congratulations!</strong> You won ${prizeText}!
+                                ${discountCodeText}
+                            </div>
+                        `;
+                        isSpinning = false;
+                        checkSpinStatus();
+                    }, 4000);
+                } else {
+                    spinResult.innerHTML = `
+                        <div class="alert alert-danger mt-3">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Error:</strong> ${data.message}
+                        </div>
+                    `;
+                    isSpinning = false;
+                    checkSpinStatus();
+                }
+            })
+            .catch(error => {
+                console.error('Spin wheel error:', error);
+                if (error.message === 'Not logged in') {
+                    spinResult.innerHTML = `
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            <strong>Login Required:</strong> Please log in to use the spin wheel.
+                        </div>
+                    `;
+                } else {
+                    spinResult.innerHTML = `
+                        <div class="alert alert-danger mt-3">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Error:</strong> An error occurred while spinning the wheel.
+                        </div>
+                    `;
+                }
+                isSpinning = false;
+                checkSpinStatus();
+            });
+        });
+    }
+});
+</script>
 {% endblock %}

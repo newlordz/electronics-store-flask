@@ -1850,17 +1850,16 @@ def uploaded_file(filename):
     """Serve uploaded files (product images)."""
     try:
         upload_folder = app.config['UPLOAD_FOLDER']
-        logger.info(f"Attempting to serve file: {filename} from {upload_folder}")
         
         # Check if file exists
         file_path = os.path.join(upload_folder, filename)
         if not os.path.exists(file_path):
             logger.warning(f"File not found: {file_path}")
-            # Return a default placeholder image
-            return send_from_directory('static/uploads', 'placeholder.jpg')
+            # Return a default image instead of placeholder
+            return send_from_directory('static/uploads', 'electronics-store-ad.jpg')
         
         return send_from_directory(upload_folder, filename)
     except Exception as e:
         logger.error(f"Error serving file {filename}: {e}")
-        # Return a default placeholder image
-        return send_from_directory('static/uploads', 'placeholder.jpg')
+        # Return a default image instead of placeholder
+        return send_from_directory('static/uploads', 'electronics-store-ad.jpg')

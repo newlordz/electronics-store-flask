@@ -35,16 +35,15 @@ logger.info("Flask app initialized successfully")
 from models import initialize_data_and_defaults, save_data, get_cart_items
 initialize_data_and_defaults() # Call the new combined function
 
-# Register a teardown function to save data when the app context ends
-# Only save data if there were actual changes to avoid infinite loops
-@app.teardown_appcontext
-def teardown_db(exception):
-    # Only save if there's an active request and it's not a static file request
-    if request and not request.path.startswith('/static/') and not request.path.startswith('/uploads/'):
-        try:
-            save_data()
-        except Exception as e:
-            logger.error(f"Error saving data: {e}")
+# Comment out automatic saving to prevent infinite loops
+# @app.teardown_appcontext
+# def teardown_db(exception):
+#     # Only save if there's an active request and it's not a static file request
+#     if request and not request.path.startswith('/static/') and not request.path.startswith('/uploads/'):
+#         try:
+#             save_data()
+#         except Exception as e:
+#             logger.error(f"Error saving data: {e}")
 
 # Context processor to make cart_items_count available in all templates
 @app.context_processor

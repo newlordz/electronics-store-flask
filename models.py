@@ -269,7 +269,7 @@ class Product:
         self.price = price
         self.category = category
         self.vendor_id = vendor_id
-        self.image_filename = image_filename if image_filename else 'placeholder.jpg'
+        self.image_filename = image_filename if image_filename else 'electronics-store-ad.jpg'
         self.is_active = True # Products can be active/inactive
         self.stock = int(stock) # Ensure stock is an integer
         self.is_promotional = is_promotional

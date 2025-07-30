@@ -3,46 +3,75 @@
 {% block title %}Categories - Electronics Store{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<!-- Hero Section -->
+<div class="categories-hero bg-gradient-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3">
+                    <i class="fas fa-th-large me-3"></i>Shop by Category
+                </h1>
+                <p class="lead mb-4">Discover amazing products organized by category. Find exactly what you're looking for with our comprehensive selection.</p>
+            </div>
+            <div class="col-lg-4 text-center">
+                <i class="fas fa-shopping-bag fa-6x opacity-75"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Categories Grid -->
+<div class="container py-5">
     <div class="row">
         <div class="col-12">
-            <h1 class="text-center mb-5 text-primary">
-                <i class="fas fa-th-large me-3"></i>Shop by Category
-            </h1>
-            
-            <div class="row">
+            <div class="row g-4">
                 {% for category in categories %}
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card h-100 shadow-lg border-0 category-card" 
-                         onclick="window.location.href='{{ url_for('products_list', category=category) }}'">
-                        <div class="card-body text-center p-4">
-                            <div class="category-icon mb-3">
-                                {% if category == 'Laptops' %}
-                                    <i class="fas fa-laptop fa-4x text-primary"></i>
-                                {% elif category == 'Smartphones' %}
-                                    <i class="fas fa-mobile-alt fa-4x text-success"></i>
-                                {% elif category == 'Mice' %}
-                                    <i class="fas fa-mouse fa-4x text-info"></i>
-                                {% elif category == 'Keyboards' %}
-                                    <i class="fas fa-keyboard fa-4x text-warning"></i>
-                                {% elif category == 'Headphones' %}
-                                    <i class="fas fa-headphones fa-4x text-danger"></i>
-                                {% elif category == 'Tablets' %}
-                                    <i class="fas fa-tablet-alt fa-4x text-secondary"></i>
-                                {% elif category == 'Accessories' %}
-                                    <i class="fas fa-tools fa-4x text-dark"></i>
-                                {% else %}
-                                    <i class="fas fa-box fa-4x text-muted"></i>
-                                {% endif %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="category-card h-100" onclick="window.location.href='{{ url_for('products_list', category=category.lower()) }}'">
+                        <div class="category-image">
+                            {% if category == 'Laptops' %}
+                                <img src="{{ url_for('static', filename='uploads/gaming-laptop.jpg') }}" alt="Laptops" class="img-fluid">
+                            {% elif category == 'Smartphones' %}
+                                <img src="{{ url_for('static', filename='uploads/smartphone-5g.jpg') }}" alt="Smartphones" class="img-fluid">
+                            {% elif category == 'Mice' %}
+                                <img src="{{ url_for('static', filename='uploads/gaming-mouse.jpg') }}" alt="Mice" class="img-fluid">
+                            {% elif category == 'Keyboards' %}
+                                <img src="{{ url_for('static', filename='uploads/mechanical-keyboard.jpg') }}" alt="Keyboards" class="img-fluid">
+                            {% elif category == 'Headphones' %}
+                                <img src="{{ url_for('static', filename='uploads/noise-cancelling-headphones.jpg') }}" alt="Headphones" class="img-fluid">
+                            {% elif category == 'Tablets' %}
+                                <img src="{{ url_for('static', filename='uploads/tablet-pro.jpg') }}" alt="Tablets" class="img-fluid">
+                            {% elif category == 'Accessories' %}
+                                <img src="{{ url_for('static', filename='uploads/usb-c-hub.jpg') }}" alt="Accessories" class="img-fluid">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='uploads/electronics-store-ad.jpg') }}" alt="{{ category }}" class="img-fluid">
+                            {% endif %}
+                            <div class="category-overlay">
+                                <div class="category-icon">
+                                    {% if category == 'Laptops' %}
+                                        <i class="fas fa-laptop fa-3x"></i>
+                                    {% elif category == 'Smartphones' %}
+                                        <i class="fas fa-mobile-alt fa-3x"></i>
+                                    {% elif category == 'Mice' %}
+                                        <i class="fas fa-mouse fa-3x"></i>
+                                    {% elif category == 'Keyboards' %}
+                                        <i class="fas fa-keyboard fa-3x"></i>
+                                    {% elif category == 'Headphones' %}
+                                        <i class="fas fa-headphones fa-3x"></i>
+                                    {% elif category == 'Tablets' %}
+                                        <i class="fas fa-tablet-alt fa-3x"></i>
+                                    {% elif category == 'Accessories' %}
+                                        <i class="fas fa-tools fa-3x"></i>
+                                    {% else %}
+                                        <i class="fas fa-box fa-3x"></i>
+                                    {% endif %}
+                                </div>
                             </div>
-                            
-                            <h3 class="card-title text-primary mb-2">{{ category }}</h3>
-                            
-                            <p class="text-muted mb-3">
-                                {{ category_counts.get(category, 0) }} products available
-                            </p>
-                            
-                            <div class="category-description mb-3">
+                        </div>
+                        <div class="category-content">
+                            <h3 class="category-title">{{ category }}</h3>
+                            <p class="category-count">{{ category_counts.get(category, 0) }} products available</p>
+                            <p class="category-description">
                                 {% if category == 'Laptops' %}
                                     High-performance laptops for work, gaming, and everyday use
                                 {% elif category == 'Smartphones' %}
@@ -60,92 +89,106 @@
                                 {% else %}
                                     Quality electronics and accessories
                                 {% endif %}
+                            </p>
+                            <div class="category-action">
+                                <span class="btn btn-primary">
+                                    <i class="fas fa-arrow-right me-2"></i>Browse {{ category }}
+                                </span>
                             </div>
-                            
-                            <button class="btn btn-primary btn-lg">
-                                <i class="fas fa-arrow-right me-2"></i>Browse {{ category }}
-                            </button>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
-            
-            <!-- Featured Categories Section -->
-            <div class="row mt-5">
-                <div class="col-12">
-                    <h2 class="text-center mb-4 text-success">
-                        <i class="fas fa-star me-2"></i>Featured Categories
-                    </h2>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <div class="card bg-gradient-primary text-white h-100">
-                                <div class="card-body p-4">
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-3">
-                                            <i class="fas fa-fire fa-3x"></i>
-                                        </div>
-                                        <div>
-                                            <h4>Hot Deals</h4>
-                                            <p class="mb-3">Check out our latest promotional offers and discounts</p>
-                                            <a href="{{ url_for('deals') }}" class="btn btn-light">
-                                                <i class="fas fa-tags me-2"></i>View Deals
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6 mb-4">
-                            <div class="card bg-gradient-success text-white h-100">
-                                <div class="card-body p-4">
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-3">
-                                            <i class="fas fa-gift fa-3x"></i>
-                                        </div>
-                                        <div>
-                                            <h4>New Arrivals</h4>
-                                            <p class="mb-3">Discover the latest products just added to our store</p>
-                                            <a href="{{ url_for('products_list') }}" class="btn btn-light">
-                                                <i class="fas fa-plus me-2"></i>Explore New
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Sections -->
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center mb-5">
+                <i class="fas fa-star text-warning me-2"></i>Featured Collections
+            </h2>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="featured-card deals-card">
+                <div class="featured-image">
+                    <img src="{{ url_for('static', filename='uploads/electronics-store-ad.jpg') }}" alt="Hot Deals" class="img-fluid">
+                    <div class="featured-overlay">
+                        <div class="featured-content">
+                            <h3><i class="fas fa-fire me-2"></i>Hot Deals</h3>
+                            <p>Check out our latest promotional offers and discounts</p>
+                            <a href="{{ url_for('deals') }}" class="btn btn-light btn-lg">
+                                <i class="fas fa-tags me-2"></i>View Deals
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Category Tips Section -->
-            <div class="row mt-5">
-                <div class="col-12">
-                    <div class="card bg-light border-0">
-                        <div class="card-body p-4">
-                            <h3 class="text-center mb-4 text-primary">
-                                <i class="fas fa-lightbulb me-2"></i>Shopping Tips
-                            </h3>
-                            
-                            <div class="row">
-                                <div class="col-md-4 text-center mb-3">
-                                    <i class="fas fa-search fa-2x text-info mb-2"></i>
-                                    <h5>Compare Products</h5>
-                                    <p class="small">Use our comparison tools to find the best value for your needs</p>
-                                </div>
-                                <div class="col-md-4 text-center mb-3">
-                                    <i class="fas fa-star fa-2x text-warning mb-2"></i>
-                                    <h5>Read Reviews</h5>
-                                    <p class="small">Check customer reviews and ratings before making your purchase</p>
-                                </div>
-                                <div class="col-md-4 text-center mb-3">
-                                    <i class="fas fa-shipping-fast fa-2x text-success mb-2"></i>
-                                    <h5>Fast Shipping</h5>
-                                    <p class="small">Most orders ship within 24 hours with tracking included</p>
-                                </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="featured-card new-arrivals-card">
+                <div class="featured-image">
+                    <img src="{{ url_for('static', filename='uploads/electronics-store-ad.jpg') }}" alt="New Arrivals" class="img-fluid">
+                    <div class="featured-overlay">
+                        <div class="featured-content">
+                            <h3><i class="fas fa-gift me-2"></i>New Arrivals</h3>
+                            <p>Discover the latest products just added to our store</p>
+                            <a href="{{ url_for('products_list') }}" class="btn btn-light btn-lg">
+                                <i class="fas fa-plus me-2"></i>Explore New
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Shopping Tips -->
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="tips-card">
+                <div class="tips-header text-center mb-5">
+                    <h2><i class="fas fa-lightbulb text-warning me-2"></i>Shopping Tips</h2>
+                    <p class="lead">Make the most of your shopping experience</p>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="tip-item text-center">
+                            <div class="tip-icon">
+                                <i class="fas fa-search fa-3x text-primary"></i>
                             </div>
+                            <h4 class="mt-3">Compare Products</h4>
+                            <p>Use our comparison tools to find the best value for your needs. Compare features, prices, and reviews.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="tip-item text-center">
+                            <div class="tip-icon">
+                                <i class="fas fa-star fa-3x text-warning"></i>
+                            </div>
+                            <h4 class="mt-3">Read Reviews</h4>
+                            <p>Check customer reviews and ratings before making your purchase. Learn from other customers' experiences.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="tip-item text-center">
+                            <div class="tip-icon">
+                                <i class="fas fa-shipping-fast fa-3x text-success"></i>
+                            </div>
+                            <h4 class="mt-3">Fast Shipping</h4>
+                            <p>Most orders ship within 24 hours with tracking included. Free shipping on orders over $50.</p>
                         </div>
                     </div>
                 </div>
@@ -155,30 +198,279 @@
 </div>
 
 <style>
+/* Hero Section */
+.categories-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.categories-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+/* Category Cards */
 .category-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
     cursor: pointer;
+    position: relative;
 }
 
 .category-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
 }
 
-.category-icon {
+.category-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.category-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     transition: transform 0.3s ease;
 }
 
-.category-card:hover .category-icon {
+.category-card:hover .category-image img {
     transform: scale(1.1);
 }
 
-.bg-gradient-primary {
-    background: linear-gradient(135deg, #007bff, #0056b3);
+.category-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.bg-gradient-success {
-    background: linear-gradient(135deg, #28a745, #1e7e34);
+.category-card:hover .category-overlay {
+    opacity: 1;
+}
+
+.category-icon {
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.category-content {
+    padding: 1.5rem;
+}
+
+.category-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.category-count {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.category-description {
+    color: #495057;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.category-action {
+    text-align: center;
+}
+
+.category-action .btn {
+    border-radius: 25px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.category-action .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Featured Cards */
+.featured-card {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.featured-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.featured-image {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+}
+
+.featured-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.featured-card:hover .featured-image img {
+    transform: scale(1.05);
+}
+
+.featured-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.4));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.featured-content {
+    text-align: center;
+    color: white;
+}
+
+.featured-content h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.featured-content p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+}
+
+.featured-content .btn {
+    border-radius: 25px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.featured-content .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* Tips Section */
+.tips-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.tips-header h2 {
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.tips-header .lead {
+    color: #6c757d;
+    font-size: 1.2rem;
+}
+
+.tip-item {
+    padding: 2rem 1rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.tip-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.tip-icon {
+    margin-bottom: 1rem;
+}
+
+.tip-item h4 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.tip-item p {
+    color: #6c757d;
+    line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .categories-hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .category-image {
+        height: 150px;
+    }
+    
+    .featured-image {
+        height: 200px;
+    }
+    
+    .tips-card {
+        padding: 2rem 1rem;
+    }
+    
+    .tip-item {
+        padding: 1.5rem 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .categories-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .category-content {
+        padding: 1rem;
+    }
+    
+    .category-title {
+        font-size: 1.25rem;
+    }
+    
+    .featured-content h3 {
+        font-size: 1.5rem;
+    }
 }
 </style>
 {% endblock %} 

@@ -550,16 +550,20 @@ body {
 }
 
 /* Universal Product Title Styles - Ensure Consistency */
-.product-title {
-    color: var(--temu-blue);
-    font-weight: 700;
-    font-size: 1rem;
-    line-height: 1.3;
-    margin-bottom: 0.5rem;
+.product-title,
+.product-card .product-title,
+.products-page .product-title,
+.wishlist-page .product-title,
+.card-title {
+    color: var(--temu-blue) !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+    line-height: 1.3 !important;
+    margin-bottom: 0.5rem !important;
     /* Ensure consistent text rendering */
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
 }
 
 /* Prevent image loading layout shifts */
@@ -1622,7 +1626,7 @@ body {
 .product-info {
     flex: 1;
     padding: 1.5rem;
-    padding-bottom: 2.5rem;
+    padding-bottom: 3rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -1865,6 +1869,7 @@ img {
 /* Additional button spacing and alignment fixes */
 .product-card .product-actions {
     margin-top: auto;
+    margin-bottom: 3.5rem;
     display: flex;
     gap: 0.5rem;
     /* Prevent layout shifts */

@@ -560,7 +560,9 @@ body {
 .product-card .product-title,
 .products-page .product-title,
 .wishlist-page .product-title,
-.card-title {
+.card-title,
+h3.product-title,
+h5.product-title {
     color: var(--temu-blue) !important;
     font-weight: 700 !important;
     font-size: 1rem !important;
@@ -1591,6 +1593,7 @@ body {
 .product-card-flash {
     display: flex;
     height: 100%;
+    min-height: 500px;
     background: var(--temu-white);
     border-radius: var(--temu-radius);
     overflow: hidden;
@@ -1637,7 +1640,8 @@ body {
     font-weight: bold;
 }
 
-.product-info {
+.product-info,
+.product-card-flash .product-info {
     flex: 1;
     padding: 1.5rem;
     padding-bottom: 3.5rem;
@@ -1667,7 +1671,8 @@ body {
     hyphens: auto;
 }
 
-.product-description {
+.product-description,
+.product-card-flash .product-description {
     color: #666;
     margin-bottom: 1rem;
     font-size: 0.9rem;

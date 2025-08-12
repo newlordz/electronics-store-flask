@@ -803,26 +803,36 @@ body {
 
 #flash-deals .slideshow-dots {
     position: absolute;
-    bottom: 20px;
+    bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 10px;
-    z-index: 10;
+    gap: 6px;
+    z-index: 25;
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    pointer-events: auto;
 }
 
 .dot {
-    width: 12px;
-    height: 12px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    flex-shrink: 0;
 }
 
 .dot.active {
     background: white;
-    transform: scale(1.2);
+    transform: scale(1.1);
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 /* Responsive Design */
@@ -858,6 +868,19 @@ body {
     
     .next-btn {
         right: 10px;
+    }
+    
+    #flash-deals .slideshow-dots {
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 6px 12px;
+        gap: 8px;
+    }
+    
+    .dot {
+        width: 6px;
+        height: 6px;
     }
 }
 
@@ -1582,6 +1605,7 @@ body {
 .product-info {
     flex: 1;
     padding: 1.5rem;
+    padding-bottom: 2.5rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -1626,7 +1650,7 @@ body {
     background: #f8f9fa;
     padding: 0.5rem;
     border-radius: 10px;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     text-align: center;
     font-size: 0.9rem;
     color: #666;
@@ -1641,6 +1665,10 @@ body {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+    margin-top: 0.5rem;
+    position: relative;
+    z-index: 10;
 }
 
 .product-actions .btn {

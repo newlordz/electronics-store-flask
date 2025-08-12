@@ -389,6 +389,10 @@ body {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    /* Ensure consistent text rendering */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .product-card .product-description {
@@ -543,6 +547,19 @@ body {
         padding: 0.4rem 0.6rem;
         height: 32px;
     }
+}
+
+/* Universal Product Title Styles - Ensure Consistency */
+.product-title {
+    color: var(--temu-blue);
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+    /* Ensure consistent text rendering */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Prevent image loading layout shifts */
@@ -1613,9 +1630,20 @@ body {
 
 .product-title {
     color: var(--temu-blue);
-    font-weight: 900;
+    font-weight: 700;
     margin-bottom: 0.5rem;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    /* Ensure consistent text rendering */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Prevent text overflow */
+    line-height: 1.3;
+    height: 2.4em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .product-description {
@@ -2207,16 +2235,20 @@ img {
 .wishlist-page .product-title,
 .wishlist-page .card-title {
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 0.5rem;
-    color: #333;
-    line-height: 1.2;
+    color: var(--temu-blue);
+    line-height: 1.3;
     height: 2.4em;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     word-wrap: break-word;
+    /* Ensure consistent text rendering */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .wishlist-page .product-description,
@@ -2376,16 +2408,20 @@ img {
 .products-page .card-title,
 .products-page .product-title {
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 0.5rem;
-    color: #333;
-    line-height: 1.2;
+    color: var(--temu-blue);
+    line-height: 1.3;
     height: 2.4em;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     word-wrap: break-word;
+    /* Ensure consistent text rendering */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .products-page .card-text,
